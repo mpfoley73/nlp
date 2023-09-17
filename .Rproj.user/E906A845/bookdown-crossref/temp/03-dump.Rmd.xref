@@ -1,0 +1,20 @@
+h1:text-mining Text Mining
+h2:topic-modeling-chapter Topic Modeling Chapter
+fig:nice-fig Here is a nice figure!
+h3:lda LDA
+h3:stm STM
+h2:sentiment-analysis Sentiment Analysis
+h3:n-grams N-Grams
+h3:converting-to-and-from-non-tidy-formats Converting to and from non-tidy formats
+h3:example Example
+h2:text-classification-modeling Text Classification Modeling
+h2:named-entity-recognition Named Entity Recognition
+h2:tidy-text Tidy Text
+h2:appendix-regular-expressions Appendix: Regular Expressions
+h3:base-r Base R
+h3:stringr stringr
+h3:regular-expressions Regular Expressions
+h2:appendix-tidytext Appendix: tidytext
+h2:appendix-tm Appendix: tm
+h1:drop DROP
+

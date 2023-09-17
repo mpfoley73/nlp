@@ -1,0 +1,116 @@
+# Data Preparation
+
+This section covers how to prepare a corpus for text analysis. I'll work with the [customer reviews of London-based hotels](https://data.world/promptcloud/customer-of-reviews-of-london-based-hotels) data set hosted on data.world. `hotel_raw` contains 27K reviews of the top 10 most- and least-expensive hotels in London. The csv file is located online [here](https://bhciaaablob.blob.core.windows.net/cmotionsnlpblogs/RestoReviewRawdata.csv). I saved it to my \\inputs directory.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidytext)
+library(scales)
+library(glue)
+```
+
+```{r message=FALSE}
+hotel_0 <- read_csv("input/london_hotel_reviews.csv") %>%
+  mutate(
+    `Date Of Review` = lubridate::mdy(`Date Of Review`),
+    `Property Name` = str_trim(str_remove(`Property Name`, "Hotel")),
+    `Property Name` = str_trim(str_remove(`Property Name`, "The")),
+    `Property Name` = case_when(
+      str_detect(`Property Name`, "^45 Park Lane") ~ "45 Park Lane",
+      str_detect(`Property Name`, "^Apex") ~ "Apex",
+      str_detect(`Property Name`, "^Bulgari") ~ "Bulgari",
+      str_detect(`Property Name`, "^Corinthia") ~ "Corinthia",
+      str_detect(`Property Name`, "^London Guest House") ~ "Guest House",
+      str_detect(`Property Name`, "^Xenia") ~ "Xenia",
+      str_detect(`Property Name`, "^Mandarin") ~ "Mandarin",
+      str_detect(`Property Name`, "^Mondrian") ~ "Mondrian",
+      str_detect(`Property Name`, "^Wellesley") ~ "Wellesley",
+      TRUE ~ `Property Name`
+    ),
+    `Property Name` = factor(`Property Name`),
+    review_id = row_number()
+  ) %>%
+  janitor::clean_names(case = "snake") %>%
+  rename(review_dt = date_of_review, reviewer_loc = location_of_the_reviewer) %>%
+  select(review_id, everything())
+```
+
+`hotel_0` contains `r nrow(hotel_0) %>% comma(1)` reviews of `r n_distinct(hotel_0$property_name)` hotels posted between `r min(hotel_0$review_dt, na.rm = TRUE)` and `r max(hotel_0$review_dt, na.rm = TRUE)`.
+
+The raw data needs cleaned. One issue is tags like *\<e9\>* and unicode characters like *<U+0440>*. [One way](https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters) to get rid of unicode characters is to convert them to ASCII tags with `iconv()` and then remove the ASCII tags with `str_remove()`. E.g., `iconv()` converts <U+0093> to <93> which you can remove with regex `"\\<[:alnum]+\\>]"`.^[More help with regex on [RStudio's cheat sheets](https://rstudio.com/resources/cheatsheets/).] 
+
+```{r}
+hotel_1 <- hotel_0 %>%
+  mutate(
+    review_text = iconv(review_text, from = "", to = "ASCII", sub = "byte"),
+    review_text = str_remove_all(review_text, "\\<[[:alnum:]]+\\>")
+  ) %>%
+  # Exclude reviews written in a foreign language. One heuristic to handle this 
+  # is to look for words common in other languages that do not also occur in English.
+  filter(!str_detect(review_text, "( das )|( der )|( und )|( en )")) %>% # German
+  filter(!str_detect(review_text, "( et )|( de )|( le )|( les )")) %>%   # French
+  filter(!str_detect(review_text, "( di )|( e )|( la )")) %>%            # Italian
+  filter(!str_detect(review_text, "( un )|( y )"))                       # Spanish
+
+hotel_1 %>% 
+  count(property_name, review_rating) %>%
+  mutate(review_rating = factor(review_rating)) %>%
+  ggplot(aes(y = fct_rev(property_name), x = n, fill = fct_rev(review_rating))) +
+  geom_col(color = "gray80") +
+  scale_fill_brewer(type = "div", direction = -1) +
+  labs(
+    y = NULL, fill = NULL, 
+    title = glue("{comma(nrow(hotel_1),1)} Reviews of 20 Hotels")
+  )
+```
+
+That removes `r comma(nrow(hotel_1) - nrow(hotel_2))` rows. Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize into unigrams first to clean and regularize.
+
+```{r}
+# Get list of misspellings and their correction. Unfortunately, there are multiple
+# possible right spellings! (sigh) just choose one.
+spell_check <- fuzzyjoin::misspellings %>% distinct(misspelling, .keep_all = TRUE)
+
+# Create a list of stop words. Start with a standard list.
+stop_0 <- stopwords::stopwords(language = 'en',source='stopwords-iso')
+# Some are potentially useful, so remove them from the stop list.
+stop_restart <- c(
+  "appreciate", ""
+)
+stop_1 <- stop_0[!stop_0 %in% stop_restart]
+# Add your own custom words
+
+hotel_2 <- hotel_1 %>%
+  # remove punctuation
+  mutate(review_text = str_remove_all(review_text, "[:punct:]")) %>%
+  # create unigrams
+  unnest_tokens("word", review_text) %>%
+  # correct misspellings 
+  left_join(
+    fuzzyjoin::misspellings %>% distinct(misspelling, .keep_all = TRUE),
+    by = join_by(word == misspelling)
+  ) %>%
+  mutate(word = coalesce(correct, word)) %>%
+  select(-correct) %>%
+  # lemmatize words 
+  mutate(word = textstem::lemmatize_words(word, dictionary = lexicon::hash_lemmas)) %>%
+  # remove stop words
+  anti_join(stop_words, by = "word") %>%
+  # reconstruct the text
+  nest(token_list = word) %>%
+  mutate(review_text = map_chr(token_list, ~ unlist(.) %>% paste(collapse = " "))) %>%
+  select(-token_list)
+  
+
+tokens_0 %>%
+  count(review_id) %>%
+  mutate(n_bin = cut(n, breaks = c(0, seq(50, 500, 50), Inf))) %>%
+  summarize(.by = n_bin, n = n()) %>%
+  ggplot(aes(x = n_bin, y = n)) +
+  geom_col()
+
+
+```
+
+At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics [@VanGils2020]. I'll 
+

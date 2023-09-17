@@ -1,0 +1,27 @@
+{
+    "id": "2EC2CD1F",
+    "path": "~/GitHub/nlp/02-topic-modeling.Rmd",
+    "project_path": "02-topic-modeling.Rmd",
+    "type": "r_markdown",
+    "hash": "881648909",
+    "contents": "",
+    "dirty": false,
+    "created": 1694862161256.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "docOutlineVisible": "1",
+        "cursorPosition": "108,69",
+        "scrollLine": "101"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1680740841,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1680740841,
+    "read_only": false,
+    "read_only_alternatives": []
+}
