@@ -21,11 +21,3 @@
 "0","  janitor::clean_names(case = ""snake"") %>%"
 "0","  rename(review_dt = date_of_review, reviewer_loc = location_of_the_reviewer) %>%"
 "0","  select(review_id, everything())"
-"2","[1mRows: [22m[34m27330[39m [1mColumns: [22m[34m6[39m"
-"2","[36m──[39m [1mColumn specification[22m [36m───────────────────────────────────────────────────────────────────────────────────────[39m
-[1mDelimiter:[22m "",""
-[31mchr[39m (5): Property Name, Review Title, Review Text, Location Of The Reviewer, Date Of Review
-[32mdbl[39m (1): Review Rating"
-"2","
-[36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
-[36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message."

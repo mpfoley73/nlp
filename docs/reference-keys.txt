@@ -15,3 +15,16 @@ emotion-classification
 comparison-cloud
 statistical-test
 final-words
+learning-by-example-1
+data-formats-1
+subjectivity-lexicons-1
+polarity-scoring-1
+tidytext-3
+sentimentr-1
+qdap-1
+emotion-classification-1
+comparison-cloud-1
+statistical-test-1
+applications
+example-one
+example-two
