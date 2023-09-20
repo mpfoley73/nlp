@@ -1,0 +1,7 @@
+"0","hotel_sentr_polarity_1 <- hotel %>%"
+"0","  mutate(sentences = get_sentences(review_text)) %$%"
+"0","  sentiment_by(sentences, review_id)"
+"0",""
+"0","hotel_sentr_polarity <- hotel %>%"
+"0","  left_join(hotel_sentr_polarity_1, by = ""review_id"") %>%"
+"0","  mutate(polarity_desc = if_else(ave_sentiment >= 0, ""Positive"", ""Negative""))"

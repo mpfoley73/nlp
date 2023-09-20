@@ -1,3 +1,7 @@
+tab:unnamed-chunk-14
+tab:unnamed-chunk-17
+tab:unnamed-chunk-18
+tab:unnamed-chunk-19
 data-preparation
 topicmodeling
 learning-by-example
@@ -15,16 +19,3 @@ emotion-classification
 comparison-cloud
 statistical-test
 final-words
-learning-by-example-1
-data-formats-1
-subjectivity-lexicons-1
-polarity-scoring-1
-tidytext-3
-sentimentr-1
-qdap-1
-emotion-classification-1
-comparison-cloud-1
-statistical-test-1
-applications
-example-one
-example-two

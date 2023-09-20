@@ -1,0 +1,3 @@
+"0","my_aov <- aov(polarity_score ~ as.factor(review_rating), data = hotel_tidy_polarity_bing)"
+"0","my_anova <- anova(my_aov)"
+"0","broom::tidy(my_anova)"

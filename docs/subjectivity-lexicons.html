@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3.1 Subjectivity Lexicons | Natural Language Processing in R</title>
+  <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3.1 Subjectivity Lexicons | Natural Language Processing in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3.1 Subjectivity Lexicons | Natural Language Processing in R" />
+  
+  <meta name="twitter:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  
+
+<meta name="author" content="Michael Foley" />
+
+
+<meta name="date" content="2023-09-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sentimentanalysis.html"/>
+<link rel="next" href="polarity-scoring.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="assets/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
+<script src="assets/tabwid-1.1.3/tabwid.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Intro</a></li>
+<li class="chapter" data-level="1" data-path="data-preparation.html"><a href="data-preparation.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a></li>
+<li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
+<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
+<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
+<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a></li>
+<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
+<li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a></li>
+<li class="chapter" data-level="3.3" data-path="emotion-classification.html"><a href="emotion-classification.html"><i class="fa fa-check"></i><b>3.3</b> Emotion Classification</a></li>
+<li class="chapter" data-level="3.4" data-path="comparison-cloud.html"><a href="comparison-cloud.html"><i class="fa fa-check"></i><b>3.4</b> Comparison Cloud</a></li>
+<li class="chapter" data-level="3.5" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.5</b> Statistical Test</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>4</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Natural Language Processing in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="subjectivity-lexicons" class="section level2 hasAnchor" number="3.1">
+<h2><span class="header-section-number">3.1</span> Subjectivity Lexicons<a href="subjectivity-lexicons.html#subjectivity-lexicons" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>There are three common sentiment lexicons. You commonly use <strong>Bing</strong> for polarity scoring, and <strong>AFINN</strong> for identifying emotions.</p>
+<ul>
+<li>Bing classifies words as <em>positive</em> or <em>negative</em>.</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="subjectivity-lexicons.html#cb17-1" tabindex="-1"></a>sentiment_bing <span class="ot">&lt;-</span> <span class="fu">get_sentiments</span>(<span class="st">&quot;bing&quot;</span>) </span>
+<span id="cb17-2"><a href="subjectivity-lexicons.html#cb17-2" tabindex="-1"></a>sentiment_bing <span class="sc">%&gt;%</span> <span class="fu">count</span>(sentiment) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href="subjectivity-lexicons.html#cb17-3" tabindex="-1"></a>  <span class="fu">adorn_totals</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="subjectivity-lexicons.html#cb17-4" tabindex="-1"></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span> <span class="fu">autofit</span>() <span class="sc">%&gt;%</span> <span class="fu">colformat_int</span>(<span class="at">j =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">set_caption</span>(<span class="st">&quot;Bing Lexicon&quot;</span>)</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-d4b59896{}.cl-d4aeb274{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d4aeb288{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d4b14570{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d4b14571{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d4b1552e{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b1552f{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b15538{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b15539{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b1553a{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b1553b{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b15542{width:0.941in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4b15543{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-d4b59896'>
+
+<caption style="display:table-caption;margin:0pt;text-align:left;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;">
+<span id="tab:unnamed-chunk-17">Table 3.2: </span><span>Bing Lexicon</span>
+</caption>
+
+<thead><tr style="overflow-wrap:break-word;"><th class="cl-d4b1552e"><p class="cl-d4b14570"><span class="cl-d4aeb274">sentiment</span></p></th><th class="cl-d4b1552f"><p class="cl-d4b14571"><span class="cl-d4aeb274">n</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d4b15538"><p class="cl-d4b14570"><span class="cl-d4aeb288">negative</span></p></td><td class="cl-d4b15539"><p class="cl-d4b14571"><span class="cl-d4aeb288">4,781</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4b1553a"><p class="cl-d4b14570"><span class="cl-d4aeb288">positive</span></p></td><td class="cl-d4b1553b"><p class="cl-d4b14571"><span class="cl-d4aeb288">2,005</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4b15542"><p class="cl-d4b14570"><span class="cl-d4aeb288">Total</span></p></td><td class="cl-d4b15543"><p class="cl-d4b14571"><span class="cl-d4aeb288">6,786</span></p></td></tr></tbody></table></div>
+<ul>
+<li>The AFINN lexicon associates words with a manually rated valence integer between -5 (negative) and +5 (positive) by Finn Arup Nielsen.</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="subjectivity-lexicons.html#cb18-1" tabindex="-1"></a>sentiment_afinn <span class="ot">&lt;-</span> <span class="fu">get_sentiments</span>(<span class="st">&quot;afinn&quot;</span>) </span>
+<span id="cb18-2"><a href="subjectivity-lexicons.html#cb18-2" tabindex="-1"></a>sentiment_afinn <span class="sc">%&gt;%</span> <span class="fu">count</span>(value) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="subjectivity-lexicons.html#cb18-3" tabindex="-1"></a>  <span class="fu">adorn_totals</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="subjectivity-lexicons.html#cb18-4" tabindex="-1"></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span> <span class="fu">autofit</span>() <span class="sc">%&gt;%</span> <span class="fu">colformat_int</span>(<span class="at">j =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">set_caption</span>(<span class="st">&quot;AFINN Lexicon&quot;</span>)</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-d507dbb0{}.cl-d5018a26{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d5018a30{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d503ec62{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d503ec6c{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d503fa2c{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa36{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa37{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa38{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa40{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa41{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa4a{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa4b{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa4c{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa54{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa55{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa56{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa5e{width:0.64in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d503fa5f{width:0.633in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-d507dbb0'>
+
+<caption style="display:table-caption;margin:0pt;text-align:left;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;">
+<span id="tab:unnamed-chunk-18">Table 3.3: </span><span>AFINN Lexicon</span>
+</caption>
+
+<thead><tr style="overflow-wrap:break-word;"><th class="cl-d503fa2c"><p class="cl-d503ec62"><span class="cl-d5018a26">value</span></p></th><th class="cl-d503fa36"><p class="cl-d503ec6c"><span class="cl-d5018a26">n</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d503fa37"><p class="cl-d503ec62"><span class="cl-d5018a30">-5</span></p></td><td class="cl-d503fa38"><p class="cl-d503ec6c"><span class="cl-d5018a30">16</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa40"><p class="cl-d503ec62"><span class="cl-d5018a30">-4</span></p></td><td class="cl-d503fa41"><p class="cl-d503ec6c"><span class="cl-d5018a30">43</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa40"><p class="cl-d503ec62"><span class="cl-d5018a30">-3</span></p></td><td class="cl-d503fa41"><p class="cl-d503ec6c"><span class="cl-d5018a30">264</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa4a"><p class="cl-d503ec62"><span class="cl-d5018a30">-2</span></p></td><td class="cl-d503fa4b"><p class="cl-d503ec6c"><span class="cl-d5018a30">966</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa40"><p class="cl-d503ec62"><span class="cl-d5018a30">-1</span></p></td><td class="cl-d503fa41"><p class="cl-d503ec6c"><span class="cl-d5018a30">309</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa4a"><p class="cl-d503ec62"><span class="cl-d5018a30">0</span></p></td><td class="cl-d503fa4b"><p class="cl-d503ec6c"><span class="cl-d5018a30">1</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa4a"><p class="cl-d503ec62"><span class="cl-d5018a30">1</span></p></td><td class="cl-d503fa4b"><p class="cl-d503ec6c"><span class="cl-d5018a30">208</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa4a"><p class="cl-d503ec62"><span class="cl-d5018a30">2</span></p></td><td class="cl-d503fa4b"><p class="cl-d503ec6c"><span class="cl-d5018a30">448</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa40"><p class="cl-d503ec62"><span class="cl-d5018a30">3</span></p></td><td class="cl-d503fa41"><p class="cl-d503ec6c"><span class="cl-d5018a30">172</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa4c"><p class="cl-d503ec62"><span class="cl-d5018a30">4</span></p></td><td class="cl-d503fa54"><p class="cl-d503ec6c"><span class="cl-d5018a30">45</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa55"><p class="cl-d503ec62"><span class="cl-d5018a30">5</span></p></td><td class="cl-d503fa56"><p class="cl-d503ec6c"><span class="cl-d5018a30">5</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d503fa5e"><p class="cl-d503ec62"><span class="cl-d5018a30">Total</span></p></td><td class="cl-d503fa5f"><p class="cl-d503ec6c"><span class="cl-d5018a30">2,477</span></p></td></tr></tbody></table></div>
+<ul>
+<li>The NRC lexicon associates words with eight emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust) corresponding to the second level of <a href="https://www.6seconds.org/2020/08/11/plutchik-wheel-emotions/">Plutchik’s Wheel of Emotions</a> and two sentiments (negative and positive). NRC was created by manual annotation on a crowdsourcing platform. Read more <a href="https://nrc.canada.ca/en/research-development/products-services/technical-advisory-services/sentiment-emotion-lexicons">here</a>.</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="subjectivity-lexicons.html#cb19-1" tabindex="-1"></a>sentiment_nrc <span class="ot">&lt;-</span> <span class="fu">get_sentiments</span>(<span class="st">&quot;nrc&quot;</span>)</span>
+<span id="cb19-2"><a href="subjectivity-lexicons.html#cb19-2" tabindex="-1"></a>sentiment_nrc <span class="sc">%&gt;%</span> <span class="fu">count</span>(sentiment) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="subjectivity-lexicons.html#cb19-3" tabindex="-1"></a>  <span class="fu">adorn_totals</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="subjectivity-lexicons.html#cb19-4" tabindex="-1"></a>  <span class="fu">flextable</span>() <span class="sc">%&gt;%</span> <span class="fu">autofit</span>() <span class="sc">%&gt;%</span> <span class="fu">colformat_int</span>(<span class="at">j =</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> <span class="fu">set_caption</span>(<span class="st">&quot;NRC Lexicon&quot;</span>)</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-d51f7c70{}.cl-d519032c{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d5190336{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d51b8dd6{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d51b8de0{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d51b9ca4{width:0.988in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cae{width:0.71in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9caf{width:0.988in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cb0{width:0.71in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cb8{width:0.988in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cb9{width:0.71in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cba{width:0.988in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cc2{width:0.71in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cc3{width:0.988in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9ccc{width:0.71in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9ccd{width:0.988in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d51b9cce{width:0.71in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-d51f7c70'>
+
+<caption style="display:table-caption;margin:0pt;text-align:left;border-bottom: 0.00pt solid transparent;border-top: 0.00pt solid transparent;border-left: 0.00pt solid transparent;border-right: 0.00pt solid transparent;padding-top:3pt;padding-bottom:3pt;padding-left:3pt;padding-right:3pt;line-height: 1;background-color:transparent;">
+<span id="tab:unnamed-chunk-19">Table 3.4: </span><span>NRC Lexicon</span>
+</caption>
+
+<thead><tr style="overflow-wrap:break-word;"><th class="cl-d51b9ca4"><p class="cl-d51b8dd6"><span class="cl-d519032c">sentiment</span></p></th><th class="cl-d51b9cae"><p class="cl-d51b8de0"><span class="cl-d519032c">n</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d51b9caf"><p class="cl-d51b8dd6"><span class="cl-d5190336">anger</span></p></td><td class="cl-d51b9cb0"><p class="cl-d51b8de0"><span class="cl-d5190336">1,245</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cb8"><p class="cl-d51b8dd6"><span class="cl-d5190336">anticipation</span></p></td><td class="cl-d51b9cb9"><p class="cl-d51b8de0"><span class="cl-d5190336">837</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cba"><p class="cl-d51b8dd6"><span class="cl-d5190336">disgust</span></p></td><td class="cl-d51b9cc2"><p class="cl-d51b8de0"><span class="cl-d5190336">1,056</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cc3"><p class="cl-d51b8dd6"><span class="cl-d5190336">fear</span></p></td><td class="cl-d51b9ccc"><p class="cl-d51b8de0"><span class="cl-d5190336">1,474</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cba"><p class="cl-d51b8dd6"><span class="cl-d5190336">joy</span></p></td><td class="cl-d51b9cc2"><p class="cl-d51b8de0"><span class="cl-d5190336">687</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cba"><p class="cl-d51b8dd6"><span class="cl-d5190336">negative</span></p></td><td class="cl-d51b9cc2"><p class="cl-d51b8de0"><span class="cl-d5190336">3,316</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cb8"><p class="cl-d51b8dd6"><span class="cl-d5190336">positive</span></p></td><td class="cl-d51b9cb9"><p class="cl-d51b8de0"><span class="cl-d5190336">2,308</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cc3"><p class="cl-d51b8dd6"><span class="cl-d5190336">sadness</span></p></td><td class="cl-d51b9ccc"><p class="cl-d51b8de0"><span class="cl-d5190336">1,187</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cb8"><p class="cl-d51b8dd6"><span class="cl-d5190336">surprise</span></p></td><td class="cl-d51b9cb9"><p class="cl-d51b8de0"><span class="cl-d5190336">532</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9cc3"><p class="cl-d51b8dd6"><span class="cl-d5190336">trust</span></p></td><td class="cl-d51b9ccc"><p class="cl-d51b8de0"><span class="cl-d5190336">1,230</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d51b9ccd"><p class="cl-d51b8dd6"><span class="cl-d5190336">Total</span></p></td><td class="cl-d51b9cce"><p class="cl-d51b8de0"><span class="cl-d5190336">13,872</span></p></td></tr></tbody></table></div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sentimentanalysis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="polarity-scoring.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "static"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

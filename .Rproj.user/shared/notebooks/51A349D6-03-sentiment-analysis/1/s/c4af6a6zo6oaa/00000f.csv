@@ -1,0 +1,7 @@
+"0","# hotel_sentr_polarity <- hotel %>%"
+"0","#   mutate(sentences = get_sentences(review_text)) %>%"
+"0","#   sentiment_by(sentences, list(review_id))"
+"0","# hotel_qdap_polarity <- hotel %$%"
+"0","#   polarity(review_text, review_id)"
+"0","# "
+"0","# scores(hotel_qdap_polarity)"

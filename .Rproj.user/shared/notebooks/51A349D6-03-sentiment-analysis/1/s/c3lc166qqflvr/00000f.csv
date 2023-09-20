@@ -1,0 +1,5 @@
+"0","# sawyer_tidy %>%"
+"0","#   inner_join(get_sentiments(""afinn""), by = ""word"") %>%"
+"0","#   count(chapter, value) %>%"
+"0","#   ggplot(aes(area = n, fill = value)) +"
+"0","#   treemapify::geom_treemap()"

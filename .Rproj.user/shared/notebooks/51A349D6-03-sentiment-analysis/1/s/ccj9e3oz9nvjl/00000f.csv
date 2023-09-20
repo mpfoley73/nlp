@@ -1,0 +1,6 @@
+"0","hotel <- hotel_raw_2 %>%"
+"0","  filter(!str_detect(review_text, ""( das )|( der )|( und )|( en )"")) %>% # German"
+"0","  filter(!str_detect(review_text, ""( et )|( de )|( le )|( les )"")) %>% # French"
+"0","  filter(!str_detect(review_text, ""( di )|( e )|( la )"")) %>%          # Italian"
+"0","  filter(!str_detect(review_text, ""( un )|( y )"")) %>%                 # Spanish"
+"0","  select(review_id, everything())"

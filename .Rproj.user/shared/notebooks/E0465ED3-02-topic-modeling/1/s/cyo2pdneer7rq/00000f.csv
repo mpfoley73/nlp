@@ -1,0 +1,1 @@
+"0","plotRemoved(gadarian_processed$documents, lower.thresh = seq(10, 200, by = 10))"
