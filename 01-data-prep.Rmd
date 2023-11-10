@@ -1,6 +1,6 @@
 # Data Preparation
 
-This section covers how to prepare a corpus for text analysis. I'll work with the [customer reviews of London-based hotels](https://data.world/promptcloud/customer-of-reviews-of-london-based-hotels) data set hosted on data.world. `hotel_raw` contains 27K reviews of the top 10 most- and least-expensive hotels in London. The csv file is located online [here](https://bhciaaablob.blob.core.windows.net/cmotionsnlpblogs/RestoReviewRawdata.csv). I saved it to my \\inputs directory.
+This section covers how to prepare a corpus for text analysis. I'll work with the [customer reviews of London-based hotels](https://data.world/promptcloud/customer-of-reviews-of-london-based-hotels) data set hosted on data.world. `hotel_raw` contains 27K reviews of the ten most- and ten least-expensive hotels in London. The csv file is located online [here](https://bhciaaablob.blob.core.windows.net/cmotionsnlpblogs/RestoReviewRawdata.csv). I saved it to my \\inputs directory.
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -10,107 +10,171 @@ library(glue)
 ```
 
 ```{r message=FALSE}
-hotel_0 <- read_csv("input/london_hotel_reviews.csv") %>%
-  mutate(
-    `Date Of Review` = lubridate::mdy(`Date Of Review`),
-    `Property Name` = str_trim(str_remove(`Property Name`, "Hotel")),
-    `Property Name` = str_trim(str_remove(`Property Name`, "The")),
-    `Property Name` = case_when(
-      str_detect(`Property Name`, "^45 Park Lane") ~ "45 Park Lane",
-      str_detect(`Property Name`, "^Apex") ~ "Apex",
-      str_detect(`Property Name`, "^Bulgari") ~ "Bulgari",
-      str_detect(`Property Name`, "^Corinthia") ~ "Corinthia",
-      str_detect(`Property Name`, "^London Guest House") ~ "Guest House",
-      str_detect(`Property Name`, "^Xenia") ~ "Xenia",
-      str_detect(`Property Name`, "^Mandarin") ~ "Mandarin",
-      str_detect(`Property Name`, "^Mondrian") ~ "Mondrian",
-      str_detect(`Property Name`, "^Wellesley") ~ "Wellesley",
-      TRUE ~ `Property Name`
-    ),
-    `Property Name` = factor(`Property Name`),
-    review_id = row_number()
+hotel_0 <- 
+  read_csv(
+    "input/london_hotel_reviews.csv", 
+    col_types = "cicccc",
+    col_names = c("property", "rating", "title", "review", "reviewer_loc", "review_dt"),
+    skip = 1
   ) %>%
-  janitor::clean_names(case = "snake") %>%
-  rename(review_dt = date_of_review, reviewer_loc = location_of_the_reviewer) %>%
+  mutate(review_id = row_number()) %>%
   select(review_id, everything())
+
+glimpse(hotel_0)
 ```
 
-`hotel_0` contains `r nrow(hotel_0) %>% comma(1)` reviews of `r n_distinct(hotel_0$property_name)` hotels posted between `r min(hotel_0$review_dt, na.rm = TRUE)` and `r max(hotel_0$review_dt, na.rm = TRUE)`.
+## Scrub
 
-The raw data needs cleaned. One issue is tags like *\<e9\>* and unicode characters like *<U+0440>*. [One way](https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters) to get rid of unicode characters is to convert them to ASCII tags with `iconv()` and then remove the ASCII tags with `str_remove()`. E.g., `iconv()` converts <U+0093> to <93> which you can remove with regex `"\\<[:alnum]+\\>]"`.^[More help with regex on [RStudio's cheat sheets](https://rstudio.com/resources/cheatsheets/).] 
+The data needs cleaning. I'll follow some of the techniques used by @Nagelkerke2020a. One issue is tags like *\<e9\>* and unicode characters like *<U+0440>*. [One way](https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters) to get rid of unicode characters is to convert them to ASCII tags with `iconv()` and then remove the ASCII tags with `str_remove()`. E.g., `iconv()` converts <U+0093> to <93> which you can remove with regex `"\\<[:alnum]+\\>]"`.^[More help with regex on [RStudio's cheat sheets](https://rstudio.com/resources/cheatsheets/).] There are also some reviews in other languages that I'll just drop. And some hotel names are pretty long, so I'll abbreviate them.
 
 ```{r}
 hotel_1 <- hotel_0 %>%
   mutate(
-    review_text = iconv(review_text, from = "", to = "ASCII", sub = "byte"),
-    review_text = str_remove_all(review_text, "\\<[[:alnum:]]+\\>")
+    review = iconv(review, from = "", to = "ASCII", sub = "byte"),
+    # Remove <..>
+    review = str_remove_all(review, "\\<[[:alnum:]]+\\>"),
+    # Remove <U+####>
+    review = str_remove_all(review, "\\<U\\+[:alnum:]{4}\\>"),
+    # Shorten some of the hotel names.
+    property = factor(str_remove_all(
+      property, "( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)"
+    )),
+    # Interesting metadata
+    review_chrs = str_length(review)
   ) %>%
   # Exclude reviews written in a foreign language. One heuristic to handle this 
   # is to look for words common in other languages that do not also occur in English.
-  filter(!str_detect(review_text, "( das )|( der )|( und )|( en )")) %>% # German
-  filter(!str_detect(review_text, "( et )|( de )|( le )|( les )")) %>%   # French
-  filter(!str_detect(review_text, "( di )|( e )|( la )")) %>%            # Italian
-  filter(!str_detect(review_text, "( un )|( y )"))                       # Spanish
+  filter(
+    !str_detect(review, "( das )|( der )|( und )|( en )"), # German
+    !str_detect(review, "( et )|( de )|( le )|( les )"),   # French
+    !str_detect(review, "( di )|( e )|( la )"),            # Italian
+    !str_detect(review, "( un )|( y )"),                   # Spanish
+    str_length(review) > 0
+  )  
 
-hotel_1 %>% 
-  count(property_name, review_rating) %>%
-  mutate(review_rating = factor(review_rating)) %>%
-  ggplot(aes(y = fct_rev(property_name), x = n, fill = fct_rev(review_rating))) +
-  geom_col(color = "gray80") +
-  scale_fill_brewer(type = "div", direction = -1) +
-  labs(
-    y = NULL, fill = NULL, 
-    title = glue("{comma(nrow(hotel_1),1)} Reviews of 20 Hotels")
-  )
+# x <- hotel_0 %>% filter(review_id == 175) %>% pull(review)
+# str_remove_all(x, "\\<U\\+[:alnum:]{4}\\>")
+# hotel_1 %>% filter(review_id == 175)
+# hotel_0 %>% inner_join(hotel_1, by = "review_id") %>% filter(review.x != review.y)  
 ```
 
-That removes `r comma(nrow(hotel_0) - nrow(hotel_1))` rows. Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize into unigrams first to clean and regularize.
+That might be enough. Let's explore the data.
 
 ```{r}
-# Get list of misspellings and their correction. Unfortunately, there are multiple
-# possible right spellings! (sigh) just choose one.
-spell_check <- fuzzyjoin::misspellings %>% distinct(misspelling, .keep_all = TRUE)
+# 90% of reviews rate the property a 4 or 5.
+hotel_1 %>% janitor::tabyl(rating)
 
-# Create a list of stop words. Start with a standard list.
-stop_0 <- stopwords::stopwords(language = 'en',source='stopwords-iso')
-# Some are potentially useful, so remove them from the stop list.
-stop_restart <- c(
-  "appreciate", ""
-)
-stop_1 <- stop_0[!stop_0 %in% stop_restart]
-# Add your own custom words
+# Some reviews are as small as 16 characters, but they can get quite large.
+hotel_1 %>% pull(review_chrs) %>% summary()
 
-hotel_2 <- hotel_1 %>%
-  # remove punctuation
-  mutate(review_text = str_remove_all(review_text, "[:punct:]")) %>%
-  # create unigrams
-  unnest_tokens("word", review_text) %>%
-  # correct misspellings 
-  left_join(
-    fuzzyjoin::misspellings %>% distinct(misspelling, .keep_all = TRUE),
-    by = join_by(word == misspelling)
-  ) %>%
-  mutate(word = coalesce(correct, word)) %>%
-  select(-correct) %>%
-  # lemmatize words 
-  mutate(word = textstem::lemmatize_words(word, dictionary = lexicon::hash_lemmas)) %>%
-  # remove stop words
-  anti_join(stop_words, by = "word") %>%
-  # reconstruct the text
-  nest(token_list = word) %>%
-  mutate(review_text = map_chr(token_list, ~ unlist(.) %>% paste(collapse = " "))) %>%
-  select(-token_list)
-  
-
-# tokens_0 %>%
-#   count(review_id) %>%
-#   mutate(n_bin = cut(n, breaks = c(0, seq(50, 500, 50), Inf))) %>%
-#   summarize(.by = n_bin, n = n()) %>%
-#   ggplot(aes(x = n_bin, y = n)) +
-#   geom_col()
-
-
+# A few reviews
+hotel_1 %>% sample_n(3, seed = 12345) %>% select(review_chrs, review) %>% 
+  flextable::flextable() %>% flextable::valign(j = 1, valign = "top") %>% flextable::autofit()
 ```
 
-At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics [@VanGils2020]. I'll 
+@Nagelkerke2020a recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (<= 3 chars) for anything other than sentiment analysis. I'm going to keep punctuation and short reviews for now.
 
+## Tokenize
+
+Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize into unigrams first to clean and regularize.
+
+```{r}
+token_0 <- 
+  hotel_1 %>%
+  select(review_id, review) %>%
+  unnest_tokens("word", review)
+
+# Reviews range from 1-5,712 words.
+token_0 %>% count(review_id) %>% pull(n) %>% summary()
+```
+
+Some reviews are as short as three words and as long as 7,938(!) words. @Nagelkerke2020a recommends discarding reviews with few (<=50) tokens on the grounds that short reviews will not add much in terms of _different_ topics _within_ reviews.^[TODO: what does Nagelkerke mean - why is this important?]. That's about 25% of this sample. I'll leave them in for now.
+
+## Spell-check
+
+Run a spell-check to regularize the data. Its possible to land on the wrong correction, but there is probably more to gain than lose. Only a very small fraction of the tokens were misspellings.
+
+```{r}
+# There are multiple possible right spellings, so just choose one.
+spell_check <- fuzzyjoin::misspellings %>% distinct(misspelling, .keep_all = TRUE)
+
+token_1 <-
+  token_0 %>%
+  left_join(spell_check, by = join_by(word == misspelling)) %>%
+  mutate(word = coalesce(correct, word)) %>%
+  select(-correct)
+
+# Only .08% of words were misspelled.
+mean(token_0$word != token_1$word)
+
+# Examples.
+tibble(before = token_0$word, after = token_1$word) %>% filter(before != after) %>% head()
+```
+
+## Lemmatize
+
+Stemming and lemmatizing are ways to convert word variations like "staying", "stayed", and "stay" into a generic form: "stay". Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., "staying" becomes "stai". Lemmatize gives you the more natural "stay".
+
+```{r}
+token_2 <- token_1 %>% mutate(word = textstem::lemmatize_words(word))
+
+# Examples.
+tibble(before = token_1$word, after = token_2$word) %>% filter(before != after) %>% head()
+```
+
+## Remove Stop Words
+
+Stop words usually add no value, but you should pay attention to what you are dropping. Be ready to add pertinent words back and perhaps drop others.
+
+```{r}
+# Start with a standard list.
+stop <- tidytext::stop_words %>%
+  # Don't remove potentially useful words.
+  filter(!word %in% c("appreciate", "room")) %>%
+  # But also exclude these words.
+  bind_rows(tibble(word = as.character(0:9)))
+
+token_3 <- token_2 %>% anti_join(stop, by = "word")
+
+# Most frequently removed words
+token_2 %>% semi_join(stop, by = "word") %>% count(word, sort = TRUE)
+
+# A typical review, before and after
+bind_cols(
+  review_id = 2:4,
+  before = hotel_1 %>% filter(review_id %in% 2:4) %>% pull(review),
+  after = token_3 %>% filter(review_id %in% 2:4) %>% 
+    summarize(.by = review_id, x = paste(word, collapse = " ")) %>%
+    pull(x)
+) %>%
+  flextable::flextable() %>% flextable::valign(valign = "top") %>% flextable::autofit()
+```
+
+At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics [@VanGils2020]. 
+
+## Bigrams
+
+I don't want bigrams where one or both tokens are stop words, but on the other hand, I don't want to construct bigrams after removing the stop words either since they are not actually in the text. `token_2` had spell-checked and lemmatized tokens, but stop words still present. Reconstruct the reviews, then tokenize to bigrams.
+
+```{r}
+bigrams_0 <-
+  token_2 %>%
+  summarize(.by = review_id, reconstructed = paste(word, collapse = " ")) %>%
+  unnest_tokens("bigram", reconstructed, token = "ngrams", n = 2)
+
+# Remove the bigrams where one or both words are stop words
+bigrams_1 <- 
+  bigrams_0 %>%
+  separate(bigram, into = c("word1", "word2"), sep = " ") %>%
+  anti_join(stop, by = join_by(word1 == word)) %>%
+  anti_join(stop, by = join_by(word2 == word)) %>%
+  mutate(bigram = paste(word1, word2, collapse = " ")) %>%
+  select(review_id, bigram)
+```
+
+
+## Further Reading
+
+These notes are heavily indebted to this series of articles from Nagelkerke
+
+- [NLP with R part 0: Preparing Review Data for NLP and Predictive Modeling](https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312)

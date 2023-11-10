@@ -1,15 +1,14 @@
 {
     "sources": [
         {
-            "URL": "https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b",
+            "URL": "https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312",
             "author": [
                 {
-                    "dropping-particle": "van",
-                    "family": "Gils",
-                    "given": "Wouter"
+                    "family": "Nagelkerke",
+                    "given": "Jurriaan"
                 }
             ],
-            "id": "VanGils2020",
+            "id": "Nagelkerke2020a",
             "issued": {
                 "date-parts": [
                     [
@@ -18,7 +17,8 @@
                     ]
                 ]
             },
-            "title": "Natural language processing for predictive purposes with r",
+            "title": "NLP with r part 0: Preparing review data for NLP and predictive modeling",
+            "title-short": "NLP with r part 0",
             "type": "article-journal"
         },
         {
@@ -45,6 +45,27 @@
             "publisher": "O’Reilly Media",
             "title": "Text mining with r",
             "type": "book"
+        },
+        {
+            "URL": "https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b",
+            "author": [
+                {
+                    "dropping-particle": "van",
+                    "family": "Gils",
+                    "given": "Wouter"
+                }
+            ],
+            "id": "VanGils2020",
+            "issued": {
+                "date-parts": [
+                    [
+                        2020,
+                        11
+                    ]
+                ]
+            },
+            "title": "Natural language processing for predictive purposes with r",
+            "type": "article-journal"
         },
         {
             "URL": "http://yihui.org/knitr/",

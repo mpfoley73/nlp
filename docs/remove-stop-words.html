@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1.5 Remove Stop Words | Natural Language Processing in R</title>
+  <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1.5 Remove Stop Words | Natural Language Processing in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1.5 Remove Stop Words | Natural Language Processing in R" />
+  
+  <meta name="twitter:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  
+
+<meta name="author" content="Michael Foley" />
+
+
+<meta name="date" content="2023-11-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lemmatize.html"/>
+<link rel="next" href="bigrams.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="assets/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
+<script src="assets/tabwid-1.1.3/tabwid.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Intro</a></li>
+<li class="chapter" data-level="1" data-path="data-preparation.html"><a href="data-preparation.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
+<li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
+<li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
+<li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
+<li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
+<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
+<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
+<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
+<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
+<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
+<ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
+<li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
+<li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
+<li class="chapter" data-level="3.2.3" data-path="polarity-scoring.html"><a href="polarity-scoring.html#qdap"><i class="fa fa-check"></i><b>3.2.3</b> qdap</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="emotion-classification.html"><a href="emotion-classification.html"><i class="fa fa-check"></i><b>3.3</b> Emotion Classification</a></li>
+<li class="chapter" data-level="3.4" data-path="comparison-cloud.html"><a href="comparison-cloud.html"><i class="fa fa-check"></i><b>3.4</b> Comparison Cloud</a></li>
+<li class="chapter" data-level="3.5" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.5</b> Statistical Test</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>4</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Natural Language Processing in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="remove-stop-words" class="section level2 hasAnchor" number="1.5">
+<h2><span class="header-section-number">1.5</span> Remove Stop Words<a href="remove-stop-words.html#remove-stop-words" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Stop words usually add no value, but you should pay attention to what you are dropping. Be ready to add pertinent words back and perhaps drop others.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="remove-stop-words.html#cb18-1" tabindex="-1"></a><span class="co"># Start with a standard list.</span></span>
+<span id="cb18-2"><a href="remove-stop-words.html#cb18-2" tabindex="-1"></a>stop <span class="ot">&lt;-</span> tidytext<span class="sc">::</span>stop_words <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="remove-stop-words.html#cb18-3" tabindex="-1"></a>  <span class="co"># Don&#39;t remove potentially useful words.</span></span>
+<span id="cb18-4"><a href="remove-stop-words.html#cb18-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;appreciate&quot;</span>, <span class="st">&quot;room&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="remove-stop-words.html#cb18-5" tabindex="-1"></a>  <span class="co"># But also exclude these words.</span></span>
+<span id="cb18-6"><a href="remove-stop-words.html#cb18-6" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(<span class="at">word =</span> <span class="fu">as.character</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)))</span>
+<span id="cb18-7"><a href="remove-stop-words.html#cb18-7" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="remove-stop-words.html#cb18-8" tabindex="-1"></a>token_3 <span class="ot">&lt;-</span> token_2 <span class="sc">%&gt;%</span> <span class="fu">anti_join</span>(stop, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>)</span>
+<span id="cb18-9"><a href="remove-stop-words.html#cb18-9" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="remove-stop-words.html#cb18-10" tabindex="-1"></a><span class="co"># Most frequently removed words</span></span>
+<span id="cb18-11"><a href="remove-stop-words.html#cb18-11" tabindex="-1"></a>token_2 <span class="sc">%&gt;%</span> <span class="fu">semi_join</span>(stop, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 523 × 2
+##    word       n
+##    &lt;chr&gt;  &lt;int&gt;
+##  1 the   196448
+##  2 be    162699
+##  3 and   117632
+##  4 a      98229
+##  5 to     78025
+##  6 in     54402
+##  7 we     47724
+##  8 of     44775
+##  9 i      43744
+## 10 have   40066
+## # ℹ 513 more rows</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="remove-stop-words.html#cb20-1" tabindex="-1"></a><span class="co"># A typical review, before and after</span></span>
+<span id="cb20-2"><a href="remove-stop-words.html#cb20-2" tabindex="-1"></a><span class="fu">bind_cols</span>(</span>
+<span id="cb20-3"><a href="remove-stop-words.html#cb20-3" tabindex="-1"></a>  <span class="at">review_id =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>,</span>
+<span id="cb20-4"><a href="remove-stop-words.html#cb20-4" tabindex="-1"></a>  <span class="at">before =</span> hotel_1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(review),</span>
+<span id="cb20-5"><a href="remove-stop-words.html#cb20-5" tabindex="-1"></a>  <span class="at">after =</span> token_3 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-6"><a href="remove-stop-words.html#cb20-6" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">x =</span> <span class="fu">paste</span>(word, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-7"><a href="remove-stop-words.html#cb20-7" tabindex="-1"></a>    <span class="fu">pull</span>(x)</span>
+<span id="cb20-8"><a href="remove-stop-words.html#cb20-8" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="remove-stop-words.html#cb20-9" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">valign =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">autofit</span>()</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-07bb3cc6{}.cl-07b4aa3c{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-07b4aa46{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-07b72744{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-07b72758{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-07b72759{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-07b72762{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-07b73572{width:0.918in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b73573{width:87.36in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b7357c{width:44.019in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b7357d{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b73586{width:87.36in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b73587{width:44.019in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b73590{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b73591{width:87.36in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b73592{width:44.019in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b7359a{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b7359b{width:87.36in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-07b735a4{width:44.019in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-07bb3cc6'><thead><tr style="overflow-wrap:break-word;"><th class="cl-07b73572"><p class="cl-07b72744"><span class="cl-07b4aa3c">review_id</span></p></th><th class="cl-07b73573"><p class="cl-07b72758"><span class="cl-07b4aa3c">before</span></p></th><th class="cl-07b7357c"><p class="cl-07b72758"><span class="cl-07b4aa3c">after</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-07b7357d"><p class="cl-07b72759"><span class="cl-07b4aa46">2</span></p></td><td class="cl-07b73586"><p class="cl-07b72762"><span class="cl-07b4aa46">I had a pleasure of staying in this hotel for 7 nights recently. This hotel was perfect in every way. Communication with the hotel before staying was prompt, and very efficient. Checking in was a breeze. You go through the spectacular lobby with modern glass chandeliers and take the elevator to your room. My room, they gave me an upgrade to junior suite, was spectacular. We had a walk-in closet of the size where you could have put a small bed in there; it served us nicely for the seven day stay. The decor was very refined, and oh the bathroom! Carrera marble floor was heated throughout, rain shower was to die for! | Location, as it turned out, was as good as it can be. We were 5 minutes walk to Trafalgar Square, but it was very quiet. Right outside was Embankment tube stop. We would walk to theater area and to numerous restaurants, and many major sites, such as London Eye or Westminster Abbey were within walking distance. | We had buffet breakfast or room service every morning. It was pricy, but my rate included it. Couple of nights, we had glass of wine sitting in front of fire place in the lobby. I used the spa, which is included in the room rate, almost every night. After a windchill day of sightseeing, the steam sauna and jacuzzi would soften my weary muscles. | I have stayed in many 5 star hotels around the world, but this hotel tops it. I would return here in a heartbeat next time I am in London.</span></p></td><td class="cl-07b73587"><p class="cl-07b72762"><span class="cl-07b4aa46">pleasure stay hotel night recently hotel perfect communication hotel stay prompt efficient check breeze spectacular lobby modern glass chandelier elevator room room upgrade junior suite spectacular walk closet size bed serve nicely day stay decor refine bathroom carrera marble floor heat rain shower die location minute walk trafalgar square quiet embankment tube stop walk theater numerous restaurant major site london eye westminster abbey walk distance buffet breakfast room service morning pricy rate include couple night glass wine sit front fire lobby spa include room rate night windchill day sightsee steam sauna jacuzzi soften weary muscle stay star hotel world hotel top return heartbeat time london</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-07b73590"><p class="cl-07b72759"><span class="cl-07b4aa46">3</span></p></td><td class="cl-07b73591"><p class="cl-07b72762"><span class="cl-07b4aa46">A very lovely first visit to this iconic hotel bar! | Wonderful service, without being intrusive at all! Very delicious cocktails and just generally all round, a very indulgent experience. | Well worth visiting only for that 'once in a lifetime' experience, though do make sure you are feeling 'flush' it doesn't come cheap!</span></p></td><td class="cl-07b73592"><p class="cl-07b72762"><span class="cl-07b4aa46">lovely visit iconic hotel bar wonderful service intrusive delicious cocktail round indulgent experience worth visit lifetime experience feel flush cheap</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-07b7359a"><p class="cl-07b72759"><span class="cl-07b4aa46">4</span></p></td><td class="cl-07b7359b"><p class="cl-07b72762"><span class="cl-07b4aa46">3 of us stayed at the Rhodes Hotel for 4 nights, its a great location for taking the Paddington Express from Heathrow. We like the location clost to the partk and in walking distance of most locations. The room and bath were small compared to American Hotels but very clean. We enjoyed the free WIFI. The owners and the staff were very friendly and helpful with taxi's and resturant recomendations. We would stay there again.</span></p></td><td class="cl-07b735a4"><p class="cl-07b72762"><span class="cl-07b4aa46">stay rhodes hotel night location paddington express heathrow location clost partk walk distance location room bath compare american hotel clean enjoy free wifi owner staff friendly helpful taxi's restaurant recomendations stay</span></p></td></tr></tbody></table></div>
+<p>At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics <span class="citation">(<a href="#ref-VanGils2020">Gils 2020</a>)</span>.</p>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-VanGils2020" class="csl-entry">
+Gils, Wouter van. 2020. <span>“Natural Language Processing for Predictive Purposes with r,”</span> November. <a href="https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b">https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lemmatize.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bigrams.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "static"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

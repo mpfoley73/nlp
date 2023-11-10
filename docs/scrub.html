@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>1.1 Scrub | Natural Language Processing in R</title>
+  <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="1.1 Scrub | Natural Language Processing in R" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="1.1 Scrub | Natural Language Processing in R" />
+  
+  <meta name="twitter:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
+  
+
+<meta name="author" content="Michael Foley" />
+
+
+<meta name="date" content="2023-11-10" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="data-preparation.html"/>
+<link rel="next" href="tokenize.html"/>
+<script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="assets/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="assets/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
+<script src="assets/tabwid-1.1.3/tabwid.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Intro</a></li>
+<li class="chapter" data-level="1" data-path="data-preparation.html"><a href="data-preparation.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
+<li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
+<li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
+<li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
+<li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
+<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
+<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
+<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
+<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
+<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
+<ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
+<li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
+<li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
+<li class="chapter" data-level="3.2.3" data-path="polarity-scoring.html"><a href="polarity-scoring.html#qdap"><i class="fa fa-check"></i><b>3.2.3</b> qdap</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="emotion-classification.html"><a href="emotion-classification.html"><i class="fa fa-check"></i><b>3.3</b> Emotion Classification</a></li>
+<li class="chapter" data-level="3.4" data-path="comparison-cloud.html"><a href="comparison-cloud.html"><i class="fa fa-check"></i><b>3.4</b> Comparison Cloud</a></li>
+<li class="chapter" data-level="3.5" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.5</b> Statistical Test</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>4</b> Final Words</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Natural Language Processing in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="scrub" class="section level2 hasAnchor" number="1.1">
+<h2><span class="header-section-number">1.1</span> Scrub<a href="scrub.html#scrub" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The data needs cleaning. I’ll follow some of the techniques used by <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span>. One issue is tags like <em>&lt;e9&gt;</em> and unicode characters like <em>&lt;U+0440&gt;</em>. <a href="https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters">One way</a> to get rid of unicode characters is to convert them to ASCII tags with <code>iconv()</code> and then remove the ASCII tags with <code>str_remove()</code>. E.g., <code>iconv()</code> converts &lt;U+0093&gt; to &lt;93&gt; which you can remove with regex <code>"\\&lt;[:alnum]+\\&gt;]"</code>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> There are also some reviews in other languages that I’ll just drop. And some hotel names are pretty long, so I’ll abbreviate them.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="scrub.html#cb4-1" tabindex="-1"></a>hotel_1 <span class="ot">&lt;-</span> hotel_0 <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="scrub.html#cb4-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-3"><a href="scrub.html#cb4-3" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">iconv</span>(review, <span class="at">from =</span> <span class="st">&quot;&quot;</span>, <span class="at">to =</span> <span class="st">&quot;ASCII&quot;</span>, <span class="at">sub =</span> <span class="st">&quot;byte&quot;</span>),</span>
+<span id="cb4-4"><a href="scrub.html#cb4-4" tabindex="-1"></a>    <span class="co"># Remove &lt;..&gt;</span></span>
+<span id="cb4-5"><a href="scrub.html#cb4-5" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_remove_all</span>(review, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&lt;[[:alnum:]]+</span><span class="sc">\\</span><span class="st">&gt;&quot;</span>),</span>
+<span id="cb4-6"><a href="scrub.html#cb4-6" tabindex="-1"></a>    <span class="co"># Remove &lt;U+####&gt;</span></span>
+<span id="cb4-7"><a href="scrub.html#cb4-7" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_remove_all</span>(review, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&lt;U</span><span class="sc">\\</span><span class="st">+[:alnum:]{4}</span><span class="sc">\\</span><span class="st">&gt;&quot;</span>),</span>
+<span id="cb4-8"><a href="scrub.html#cb4-8" tabindex="-1"></a>    <span class="co"># Shorten some of the hotel names.</span></span>
+<span id="cb4-9"><a href="scrub.html#cb4-9" tabindex="-1"></a>    <span class="at">property =</span> <span class="fu">factor</span>(<span class="fu">str_remove_all</span>(</span>
+<span id="cb4-10"><a href="scrub.html#cb4-10" tabindex="-1"></a>      property, <span class="st">&quot;( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)&quot;</span></span>
+<span id="cb4-11"><a href="scrub.html#cb4-11" tabindex="-1"></a>    )),</span>
+<span id="cb4-12"><a href="scrub.html#cb4-12" tabindex="-1"></a>    <span class="co"># Interesting metadata</span></span>
+<span id="cb4-13"><a href="scrub.html#cb4-13" tabindex="-1"></a>    <span class="at">review_chrs =</span> <span class="fu">str_length</span>(review)</span>
+<span id="cb4-14"><a href="scrub.html#cb4-14" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="scrub.html#cb4-15" tabindex="-1"></a>  <span class="co"># Exclude reviews written in a foreign language. One heuristic to handle this </span></span>
+<span id="cb4-16"><a href="scrub.html#cb4-16" tabindex="-1"></a>  <span class="co"># is to look for words common in other languages that do not also occur in English.</span></span>
+<span id="cb4-17"><a href="scrub.html#cb4-17" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb4-18"><a href="scrub.html#cb4-18" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( das )|( der )|( und )|( en )&quot;</span>), <span class="co"># German</span></span>
+<span id="cb4-19"><a href="scrub.html#cb4-19" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( et )|( de )|( le )|( les )&quot;</span>),   <span class="co"># French</span></span>
+<span id="cb4-20"><a href="scrub.html#cb4-20" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( di )|( e )|( la )&quot;</span>),            <span class="co"># Italian</span></span>
+<span id="cb4-21"><a href="scrub.html#cb4-21" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( un )|( y )&quot;</span>),                   <span class="co"># Spanish</span></span>
+<span id="cb4-22"><a href="scrub.html#cb4-22" tabindex="-1"></a>    <span class="fu">str_length</span>(review) <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb4-23"><a href="scrub.html#cb4-23" tabindex="-1"></a>  )  </span>
+<span id="cb4-24"><a href="scrub.html#cb4-24" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="scrub.html#cb4-25" tabindex="-1"></a><span class="co"># x &lt;- hotel_0 %&gt;% filter(review_id == 175) %&gt;% pull(review)</span></span>
+<span id="cb4-26"><a href="scrub.html#cb4-26" tabindex="-1"></a><span class="co"># str_remove_all(x, &quot;\\&lt;U\\+[:alnum:]{4}\\&gt;&quot;)</span></span>
+<span id="cb4-27"><a href="scrub.html#cb4-27" tabindex="-1"></a><span class="co"># hotel_1 %&gt;% filter(review_id == 175)</span></span>
+<span id="cb4-28"><a href="scrub.html#cb4-28" tabindex="-1"></a><span class="co"># hotel_0 %&gt;% inner_join(hotel_1, by = &quot;review_id&quot;) %&gt;% filter(review.x != review.y)  </span></span></code></pre></div>
+<p>That might be enough. Let’s explore the data.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="scrub.html#cb5-1" tabindex="-1"></a><span class="co"># 90% of reviews rate the property a 4 or 5.</span></span>
+<span id="cb5-2"><a href="scrub.html#cb5-2" tabindex="-1"></a>hotel_1 <span class="sc">%&gt;%</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(rating)</span></code></pre></div>
+<pre><code>##  rating     n    percent
+##       1   498 0.02096401
+##       2   587 0.02471059
+##       3  1379 0.05805094
+##       4  4860 0.20458851
+##       5 16431 0.69168596</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="scrub.html#cb7-1" tabindex="-1"></a><span class="co"># Some reviews are as small as 16 characters, but they can get quite large.</span></span>
+<span id="cb7-2"><a href="scrub.html#cb7-2" tabindex="-1"></a>hotel_1 <span class="sc">%&gt;%</span> <span class="fu">pull</span>(review_chrs) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##     1.0   307.5   514.0   714.0   870.0 30734.0</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="scrub.html#cb9-1" tabindex="-1"></a><span class="co"># A few reviews</span></span>
+<span id="cb9-2"><a href="scrub.html#cb9-2" tabindex="-1"></a>hotel_1 <span class="sc">%&gt;%</span> <span class="fu">sample_n</span>(<span class="dv">3</span>, <span class="at">seed =</span> <span class="dv">12345</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review_chrs, review) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="scrub.html#cb9-3" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">valign =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">autofit</span>()</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-05139ca2{}.cl-050c5442{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-050c5456{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-050f30b8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-050f30c2{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-050f30cc{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-050f43f0{width:1.088in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f43fa{width:65.716in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f43fb{width:1.088in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f4404{width:65.716in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f4405{width:1.088in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f440e{width:65.716in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f440f{width:1.088in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-050f4418{width:65.716in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-05139ca2'><thead><tr style="overflow-wrap:break-word;"><th class="cl-050f43f0"><p class="cl-050f30b8"><span class="cl-050c5442">review_chrs</span></p></th><th class="cl-050f43fa"><p class="cl-050f30c2"><span class="cl-050c5442">review</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-050f43fb"><p class="cl-050f30cc"><span class="cl-050c5456">1,060</span></p></td><td class="cl-050f4404"><p class="cl-050f30c2"><span class="cl-050c5456">The high tea comprises finger sandwiches &amp;amp; scones (refillable), asparagus &amp;amp; egg with hollandaise sauce, a slice of cake, glass of champagne &amp;amp; tea of course. The other tea option replaces the asparagus with a selection of pastries. | Comparing the Savoy and Claridges | Ambience: Savoy is grander and has a larger dining room. Both have live music | Service: Both excellent, but Claridges seemed a bit warmer and more genuine | Scones: Claridges wins. The scones at Savoy were served not as warm, larger but not as flavourful, the cream/jam did not come in individual portions for each diner. The marco polo gelee at Claridges is more aromatic and finer than Savoy which serves a good but not remarkable strawberry jam. The clotted cream at both hotels were to me identical. But overall I was not blown away by Savoy's scones. | Sandwiches: Claridges wins. The sandwich filling is thicker, more even, and tastier fillings. | Overall, Savoy is good but Claridges has that extra attention to detail in their scones and sandwiches that makes it better.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-050f4405"><p class="cl-050f30cc"><span class="cl-050c5456">230</span></p></td><td class="cl-050f440e"><p class="cl-050f30c2"><span class="cl-050c5456">We have had just had the most amazing time ever at this restaurant. Our host Greta was the most amazing lady ever, Greta looked after us so well and made our day,we love her the food was A* and couldnt b faulted at all :-) x x x x</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-050f440f"><p class="cl-050f30cc"><span class="cl-050c5456">242</span></p></td><td class="cl-050f4418"><p class="cl-050f30c2"><span class="cl-050c5456">Went here for afternoon tea whilst we were in London for the weekend for my mum's birthday. It was very reasonably priced, lots and lots of delicious sandwiches and cakes and a never ending supply of tea! A great venue for a special occasion.</span></p></td></tr></tbody></table></div>
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span> recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (&lt;= 3 chars) for anything other than sentiment analysis. I’m going to keep punctuation and short reviews for now.</p>
+</div>
+<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-Nagelkerke2020a" class="csl-entry">
+Nagelkerke, Jurriaan. 2020. <span>“NLP with r Part 0: Preparing Review Data for NLP and Predictive Modeling,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312">https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312</a>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>More help with regex on <a href="https://rstudio.com/resources/cheatsheets/">RStudio’s cheat sheets</a>.<a href="scrub.html#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="data-preparation.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="tokenize.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="assets/gitbook-2.6.7/js/app.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="assets/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="assets/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection",
+"scroll_highlight": true
+},
+"toolbar": {
+"position": "static"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
