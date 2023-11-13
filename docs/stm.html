@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-10" />
+<meta name="date" content="2023-11-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -170,7 +170,7 @@ div.csl-indent {
 <li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
@@ -230,7 +230,7 @@ div.csl-indent {
 * removes stop words (including custom stop words!), numbers, and punctuation, and
 * stems words.</p>
 <p>After processing, <code>stm::prepDocuments()</code> removes infrequently appearing words, and removes any documents that contain no words after processing and removing words.</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="stm.html#cb24-1" tabindex="-1"></a>gadarian_processed <span class="ot">&lt;-</span> <span class="fu">textProcessor</span>(gadarian_dat<span class="sc">$</span>comment, <span class="at">metadata =</span> gadarian_dat)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="stm.html#cb27-1" tabindex="-1"></a>gadarian_processed <span class="ot">&lt;-</span> <span class="fu">textProcessor</span>(gadarian_dat<span class="sc">$</span>comment, <span class="at">metadata =</span> gadarian_dat)</span></code></pre></div>
 <pre><code>## Building corpus... 
 ## Converting to Lower Case... 
 ## Removing punctuation... 
@@ -238,8 +238,8 @@ div.csl-indent {
 ## Removing numbers... 
 ## Stemming... 
 ## Creating Output...</code></pre>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="stm.html#cb26-1" tabindex="-1"></a><span class="fu">plotRemoved</span>(gadarian_processed<span class="sc">$</span>documents, <span class="at">lower.thresh =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">200</span>, <span class="at">by =</span> <span class="dv">10</span>))</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="stm.html#cb29-1" tabindex="-1"></a><span class="fu">plotRemoved</span>(gadarian_processed<span class="sc">$</span>documents, <span class="at">lower.thresh =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">200</span>, <span class="at">by =</span> <span class="dv">10</span>))</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
 <div id="prepare" class="section level3 unnumbered hasAnchor">
 <h3>Prepare<a href="stm.html#prepare" class="anchor-section" aria-label="Anchor link to header"></a></h3>

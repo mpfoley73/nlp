@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-10" />
+<meta name="date" content="2023-11-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -170,7 +170,7 @@ div.csl-indent {
 <li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
@@ -233,25 +233,25 @@ div.csl-indent {
 <div id="tm" class="section level4 unnumbered hasAnchor">
 <h4>tm<a href="data-formats.html#tm" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p>Turn the character vector <code>sawyer_raw$text</code> into a text source with <code>VectorSource()</code>, then turn the text source into a corpus with <code>vCorpus()</code>. Clean the corpus with a series of utility functions. One particularly important function, <code>removeWords()</code>, removes stop words, plus any custom stop words. I would normally add “tom” because it is so ubiquitous throughout the text. However, in this case I won’t because <code>stopwords</code> includes valence shifting words like “very” which are used in polarity scoring. I can remove them later for other exercises.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="data-formats.html#cb27-1" tabindex="-1"></a><span class="co"># (sawyer_tm &lt;- VCorpus(VectorSource(sawyer$text)) %&gt;%</span></span>
-<span id="cb27-2"><a href="data-formats.html#cb27-2" tabindex="-1"></a><span class="co">#   tm_map(content_transformer(replace_abbreviation)) %&gt;%</span></span>
-<span id="cb27-3"><a href="data-formats.html#cb27-3" tabindex="-1"></a><span class="co">#   tm_map(removePunctuation) %&gt;%</span></span>
-<span id="cb27-4"><a href="data-formats.html#cb27-4" tabindex="-1"></a><span class="co">#   tm_map(removeNumbers) %&gt;%</span></span>
-<span id="cb27-5"><a href="data-formats.html#cb27-5" tabindex="-1"></a><span class="co">#   tm_map(content_transformer(tolower)) %&gt;%</span></span>
-<span id="cb27-6"><a href="data-formats.html#cb27-6" tabindex="-1"></a><span class="co">#   tm_map(removeWords, c(stopwords(&quot;en&quot;), &quot;tom&quot;)) %&gt;%</span></span>
-<span id="cb27-7"><a href="data-formats.html#cb27-7" tabindex="-1"></a><span class="co">#   tm_map(stripWhitespace))</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="data-formats.html#cb30-1" tabindex="-1"></a><span class="co"># (sawyer_tm &lt;- VCorpus(VectorSource(sawyer$text)) %&gt;%</span></span>
+<span id="cb30-2"><a href="data-formats.html#cb30-2" tabindex="-1"></a><span class="co">#   tm_map(content_transformer(replace_abbreviation)) %&gt;%</span></span>
+<span id="cb30-3"><a href="data-formats.html#cb30-3" tabindex="-1"></a><span class="co">#   tm_map(removePunctuation) %&gt;%</span></span>
+<span id="cb30-4"><a href="data-formats.html#cb30-4" tabindex="-1"></a><span class="co">#   tm_map(removeNumbers) %&gt;%</span></span>
+<span id="cb30-5"><a href="data-formats.html#cb30-5" tabindex="-1"></a><span class="co">#   tm_map(content_transformer(tolower)) %&gt;%</span></span>
+<span id="cb30-6"><a href="data-formats.html#cb30-6" tabindex="-1"></a><span class="co">#   tm_map(removeWords, c(stopwords(&quot;en&quot;), &quot;tom&quot;)) %&gt;%</span></span>
+<span id="cb30-7"><a href="data-formats.html#cb30-7" tabindex="-1"></a><span class="co">#   tm_map(stripWhitespace))</span></span></code></pre></div>
 <p>Each document in the <code>sawyer_tm</code> VCorpus is a line of text. Use <code>DocumentTermMaterix()</code> to convert the vCorpus into <strong>tm</strong>’s bag-of-words format, DTM.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="data-formats.html#cb28-1" tabindex="-1"></a><span class="co"># (sawyer_tm_dtm &lt;- DocumentTermMatrix(sawyer_tm))</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="data-formats.html#cb31-1" tabindex="-1"></a><span class="co"># (sawyer_tm_dtm &lt;- DocumentTermMatrix(sawyer_tm))</span></span></code></pre></div>
 <p>This is a very sparse (nearly 100% sparse) matrix documents as rows and distinct words as columns.</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="data-formats.html#cb29-1" tabindex="-1"></a><span class="co">#   group_by(chapter) %&gt;%</span></span>
-<span id="cb29-2"><a href="data-formats.html#cb29-2" tabindex="-1"></a><span class="co">#   mutate(text = paste(text, collapse = &quot; &quot;)) %&gt;%</span></span>
-<span id="cb29-3"><a href="data-formats.html#cb29-3" tabindex="-1"></a><span class="co">#   slice_head(n = 1) %&gt;%</span></span>
-<span id="cb29-4"><a href="data-formats.html#cb29-4" tabindex="-1"></a><span class="co">#   select(chapter, text)</span></span>
-<span id="cb29-5"><a href="data-formats.html#cb29-5" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb29-6"><a href="data-formats.html#cb29-6" tabindex="-1"></a><span class="co"># sawyer_sent &lt;- sawyer %&gt;%</span></span>
-<span id="cb29-7"><a href="data-formats.html#cb29-7" tabindex="-1"></a><span class="co">#   sentSplit(&quot;text&quot;)</span></span>
-<span id="cb29-8"><a href="data-formats.html#cb29-8" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb29-9"><a href="data-formats.html#cb29-9" tabindex="-1"></a><span class="co"># skimr::skim(sawyer)</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="data-formats.html#cb32-1" tabindex="-1"></a><span class="co">#   group_by(chapter) %&gt;%</span></span>
+<span id="cb32-2"><a href="data-formats.html#cb32-2" tabindex="-1"></a><span class="co">#   mutate(text = paste(text, collapse = &quot; &quot;)) %&gt;%</span></span>
+<span id="cb32-3"><a href="data-formats.html#cb32-3" tabindex="-1"></a><span class="co">#   slice_head(n = 1) %&gt;%</span></span>
+<span id="cb32-4"><a href="data-formats.html#cb32-4" tabindex="-1"></a><span class="co">#   select(chapter, text)</span></span>
+<span id="cb32-5"><a href="data-formats.html#cb32-5" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb32-6"><a href="data-formats.html#cb32-6" tabindex="-1"></a><span class="co"># sawyer_sent &lt;- sawyer %&gt;%</span></span>
+<span id="cb32-7"><a href="data-formats.html#cb32-7" tabindex="-1"></a><span class="co">#   sentSplit(&quot;text&quot;)</span></span>
+<span id="cb32-8"><a href="data-formats.html#cb32-8" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb32-9"><a href="data-formats.html#cb32-9" tabindex="-1"></a><span class="co"># skimr::skim(sawyer)</span></span></code></pre></div>
 </div>
 <div id="quanteda" class="section level4 unnumbered hasAnchor">
 <h4>quanteda<a href="data-formats.html#quanteda" class="anchor-section" aria-label="Anchor link to header"></a></h4>

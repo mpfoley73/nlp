@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-10" />
+<meta name="date" content="2023-11-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -170,7 +170,7 @@ div.csl-indent {
 <li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
@@ -222,18 +222,18 @@ div.csl-indent {
 <div id="statistical-test" class="section level2 hasAnchor" number="3.5">
 <h2><span class="header-section-number">3.5</span> Statistical Test<a href="statistical-test.html#statistical-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Since this is a comparison of a numeric outcome to a multinominal predictor (<code>property_name</code>) or ordinal predictor(<code>review_rating</code>), you could perform an ANOVA test.</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="statistical-test.html#cb70-1" tabindex="-1"></a>my_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(polarity_score <span class="sc">~</span> <span class="fu">as.factor</span>(review_rating), <span class="at">data =</span> hotel_tidy_polarity_bing)</span>
-<span id="cb70-2"><a href="statistical-test.html#cb70-2" tabindex="-1"></a>my_anova <span class="ot">&lt;-</span> <span class="fu">anova</span>(my_aov)</span>
-<span id="cb70-3"><a href="statistical-test.html#cb70-3" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(my_anova)</span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="statistical-test.html#cb76-1" tabindex="-1"></a>my_aov <span class="ot">&lt;-</span> <span class="fu">aov</span>(polarity_score <span class="sc">~</span> <span class="fu">as.factor</span>(review_rating), <span class="at">data =</span> hotel_tidy_polarity_bing)</span>
+<span id="cb76-2"><a href="statistical-test.html#cb76-2" tabindex="-1"></a>my_anova <span class="ot">&lt;-</span> <span class="fu">anova</span>(my_aov)</span>
+<span id="cb76-3"><a href="statistical-test.html#cb76-3" tabindex="-1"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(my_anova)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 6
 ##   term                        df sumsq  meansq statistic p.value
 ##   &lt;chr&gt;                    &lt;int&gt; &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1 as.factor(review_rating)     4  908. 227.        1875.       0
 ## 2 Residuals                23271 2818.   0.121       NA       NA</code></pre>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="statistical-test.html#cb72-1" tabindex="-1"></a><span class="co">#plot(TukeyHSD(my_aov))</span></span>
-<span id="cb72-2"><a href="statistical-test.html#cb72-2" tabindex="-1"></a></span>
-<span id="cb72-3"><a href="statistical-test.html#cb72-3" tabindex="-1"></a>my_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(polarity_score <span class="sc">~</span> <span class="fu">as.factor</span>(review_rating), <span class="at">data =</span> hotel_tidy_polarity_bing)</span>
-<span id="cb72-4"><a href="statistical-test.html#cb72-4" tabindex="-1"></a><span class="fu">summary</span>(my_lm)</span></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="statistical-test.html#cb78-1" tabindex="-1"></a><span class="co">#plot(TukeyHSD(my_aov))</span></span>
+<span id="cb78-2"><a href="statistical-test.html#cb78-2" tabindex="-1"></a></span>
+<span id="cb78-3"><a href="statistical-test.html#cb78-3" tabindex="-1"></a>my_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(polarity_score <span class="sc">~</span> <span class="fu">as.factor</span>(review_rating), <span class="at">data =</span> hotel_tidy_polarity_bing)</span>
+<span id="cb78-4"><a href="statistical-test.html#cb78-4" tabindex="-1"></a><span class="fu">summary</span>(my_lm)</span></code></pre></div>
 <pre><code>## 
 ## Call:
 ## lm(formula = polarity_score ~ as.factor(review_rating), data = hotel_tidy_polarity_bing)
@@ -256,24 +256,24 @@ div.csl-indent {
 ##   (497 observations deleted due to missingness)
 ## Multiple R-squared:  0.2438, Adjusted R-squared:  0.2436 
 ## F-statistic:  1875 on 4 and 23271 DF,  p-value: &lt; 2.2e-16</code></pre>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="statistical-test.html#cb74-1" tabindex="-1"></a><span class="fu">tbl_regression</span>(my_lm)</span></code></pre></div>
-<div id="qkuhpyrjwq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#qkuhpyrjwq table {
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="statistical-test.html#cb80-1" tabindex="-1"></a><span class="fu">tbl_regression</span>(my_lm)</span></code></pre></div>
+<div id="tmyeizmfmc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#tmyeizmfmc table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#qkuhpyrjwq thead, #qkuhpyrjwq tbody, #qkuhpyrjwq tfoot, #qkuhpyrjwq tr, #qkuhpyrjwq td, #qkuhpyrjwq th {
+#tmyeizmfmc thead, #tmyeizmfmc tbody, #tmyeizmfmc tfoot, #tmyeizmfmc tr, #tmyeizmfmc td, #tmyeizmfmc th {
   border-style: none;
 }
 
-#qkuhpyrjwq p {
+#tmyeizmfmc p {
   margin: 0;
   padding: 0;
 }
 
-#qkuhpyrjwq .gt_table {
+#tmyeizmfmc .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -299,12 +299,12 @@ div.csl-indent {
   border-left-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_caption {
+#tmyeizmfmc .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#qkuhpyrjwq .gt_title {
+#tmyeizmfmc .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -316,7 +316,7 @@ div.csl-indent {
   border-bottom-width: 0;
 }
 
-#qkuhpyrjwq .gt_subtitle {
+#tmyeizmfmc .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -328,7 +328,7 @@ div.csl-indent {
   border-top-width: 0;
 }
 
-#qkuhpyrjwq .gt_heading {
+#tmyeizmfmc .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -340,13 +340,13 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_bottom_border {
+#tmyeizmfmc .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_col_headings {
+#tmyeizmfmc .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -361,7 +361,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_col_heading {
+#tmyeizmfmc .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -381,7 +381,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#qkuhpyrjwq .gt_column_spanner_outer {
+#tmyeizmfmc .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -393,15 +393,15 @@ div.csl-indent {
   padding-right: 4px;
 }
 
-#qkuhpyrjwq .gt_column_spanner_outer:first-child {
+#tmyeizmfmc .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#qkuhpyrjwq .gt_column_spanner_outer:last-child {
+#tmyeizmfmc .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#qkuhpyrjwq .gt_column_spanner {
+#tmyeizmfmc .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -413,11 +413,11 @@ div.csl-indent {
   width: 100%;
 }
 
-#qkuhpyrjwq .gt_spanner_row {
+#tmyeizmfmc .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#qkuhpyrjwq .gt_group_heading {
+#tmyeizmfmc .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -443,7 +443,7 @@ div.csl-indent {
   text-align: left;
 }
 
-#qkuhpyrjwq .gt_empty_group_heading {
+#tmyeizmfmc .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -458,15 +458,15 @@ div.csl-indent {
   vertical-align: middle;
 }
 
-#qkuhpyrjwq .gt_from_md > :first-child {
+#tmyeizmfmc .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#qkuhpyrjwq .gt_from_md > :last-child {
+#tmyeizmfmc .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#qkuhpyrjwq .gt_row {
+#tmyeizmfmc .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -485,7 +485,7 @@ div.csl-indent {
   overflow-x: hidden;
 }
 
-#qkuhpyrjwq .gt_stub {
+#tmyeizmfmc .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -498,7 +498,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#qkuhpyrjwq .gt_stub_row_group {
+#tmyeizmfmc .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -512,15 +512,15 @@ div.csl-indent {
   vertical-align: top;
 }
 
-#qkuhpyrjwq .gt_row_group_first td {
+#tmyeizmfmc .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#qkuhpyrjwq .gt_row_group_first th {
+#tmyeizmfmc .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#qkuhpyrjwq .gt_summary_row {
+#tmyeizmfmc .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -530,16 +530,16 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#qkuhpyrjwq .gt_first_summary_row {
+#tmyeizmfmc .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_first_summary_row.thick {
+#tmyeizmfmc .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#qkuhpyrjwq .gt_last_summary_row {
+#tmyeizmfmc .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -549,7 +549,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_grand_summary_row {
+#tmyeizmfmc .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -559,7 +559,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#qkuhpyrjwq .gt_first_grand_summary_row {
+#tmyeizmfmc .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -569,7 +569,7 @@ div.csl-indent {
   border-top-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_last_grand_summary_row_top {
+#tmyeizmfmc .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -579,11 +579,11 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_striped {
+#tmyeizmfmc .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#qkuhpyrjwq .gt_table_body {
+#tmyeizmfmc .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -592,7 +592,7 @@ div.csl-indent {
   border-bottom-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_footnotes {
+#tmyeizmfmc .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -606,7 +606,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_footnote {
+#tmyeizmfmc .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -615,7 +615,7 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#qkuhpyrjwq .gt_sourcenotes {
+#tmyeizmfmc .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -629,7 +629,7 @@ div.csl-indent {
   border-right-color: #D3D3D3;
 }
 
-#qkuhpyrjwq .gt_sourcenote {
+#tmyeizmfmc .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -637,63 +637,63 @@ div.csl-indent {
   padding-right: 5px;
 }
 
-#qkuhpyrjwq .gt_left {
+#tmyeizmfmc .gt_left {
   text-align: left;
 }
 
-#qkuhpyrjwq .gt_center {
+#tmyeizmfmc .gt_center {
   text-align: center;
 }
 
-#qkuhpyrjwq .gt_right {
+#tmyeizmfmc .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#qkuhpyrjwq .gt_font_normal {
+#tmyeizmfmc .gt_font_normal {
   font-weight: normal;
 }
 
-#qkuhpyrjwq .gt_font_bold {
+#tmyeizmfmc .gt_font_bold {
   font-weight: bold;
 }
 
-#qkuhpyrjwq .gt_font_italic {
+#tmyeizmfmc .gt_font_italic {
   font-style: italic;
 }
 
-#qkuhpyrjwq .gt_super {
+#tmyeizmfmc .gt_super {
   font-size: 65%;
 }
 
-#qkuhpyrjwq .gt_footnote_marks {
+#tmyeizmfmc .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#qkuhpyrjwq .gt_asterisk {
+#tmyeizmfmc .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#qkuhpyrjwq .gt_indent_1 {
+#tmyeizmfmc .gt_indent_1 {
   text-indent: 5px;
 }
 
-#qkuhpyrjwq .gt_indent_2 {
+#tmyeizmfmc .gt_indent_2 {
   text-indent: 10px;
 }
 
-#qkuhpyrjwq .gt_indent_3 {
+#tmyeizmfmc .gt_indent_3 {
   text-indent: 15px;
 }
 
-#qkuhpyrjwq .gt_indent_4 {
+#tmyeizmfmc .gt_indent_4 {
   text-indent: 20px;
 }
 
-#qkuhpyrjwq .gt_indent_5 {
+#tmyeizmfmc .gt_indent_5 {
   text-indent: 25px;
 }
 </style>

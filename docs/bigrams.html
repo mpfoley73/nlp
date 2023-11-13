@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-10" />
+<meta name="date" content="2023-11-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="remove-stop-words.html"/>
-<link rel="next" href="further-reading.html"/>
+<link rel="next" href="save.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -170,7 +170,7 @@ div.csl-indent {
 <li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
@@ -221,20 +221,33 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="bigrams" class="section level2 hasAnchor" number="1.6">
 <h2><span class="header-section-number">1.6</span> Bigrams<a href="bigrams.html#bigrams" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>I don’t want bigrams where one or both tokens are stop words, but on the other hand, I don’t want to construct bigrams after removing the stop words either since they are not actually in the text. <code>token_2</code> had spell-checked and lemmatized tokens, but stop words still present. Reconstruct the reviews, then tokenize to bigrams.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="bigrams.html#cb21-1" tabindex="-1"></a>bigrams_0 <span class="ot">&lt;-</span></span>
+<p>Bigrams should not contain stop words. However, they should be adjacent words, so tokenize into bigrams, split into words an then filter out rows where one or both words is stop word.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="bigrams.html#cb21-1" tabindex="-1"></a>bigram_0 <span class="ot">&lt;-</span></span>
 <span id="cb21-2"><a href="bigrams.html#cb21-2" tabindex="-1"></a>  token_2 <span class="sc">%&gt;%</span></span>
 <span id="cb21-3"><a href="bigrams.html#cb21-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">reconstructed =</span> <span class="fu">paste</span>(word, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb21-4"><a href="bigrams.html#cb21-4" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="st">&quot;bigram&quot;</span>, reconstructed, <span class="at">token =</span> <span class="st">&quot;ngrams&quot;</span>, <span class="at">n =</span> <span class="dv">2</span>)</span>
 <span id="cb21-5"><a href="bigrams.html#cb21-5" tabindex="-1"></a></span>
 <span id="cb21-6"><a href="bigrams.html#cb21-6" tabindex="-1"></a><span class="co"># Remove the bigrams where one or both words are stop words</span></span>
-<span id="cb21-7"><a href="bigrams.html#cb21-7" tabindex="-1"></a>bigrams_1 <span class="ot">&lt;-</span> </span>
-<span id="cb21-8"><a href="bigrams.html#cb21-8" tabindex="-1"></a>  bigrams_0 <span class="sc">%&gt;%</span></span>
+<span id="cb21-7"><a href="bigrams.html#cb21-7" tabindex="-1"></a>bigram <span class="ot">&lt;-</span> </span>
+<span id="cb21-8"><a href="bigrams.html#cb21-8" tabindex="-1"></a>  bigram_0 <span class="sc">%&gt;%</span></span>
 <span id="cb21-9"><a href="bigrams.html#cb21-9" tabindex="-1"></a>  <span class="fu">separate</span>(bigram, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;word1&quot;</span>, <span class="st">&quot;word2&quot;</span>), <span class="at">sep =</span> <span class="st">&quot; &quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb21-10"><a href="bigrams.html#cb21-10" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop, <span class="at">by =</span> <span class="fu">join_by</span>(word1 <span class="sc">==</span> word)) <span class="sc">%&gt;%</span></span>
 <span id="cb21-11"><a href="bigrams.html#cb21-11" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop, <span class="at">by =</span> <span class="fu">join_by</span>(word2 <span class="sc">==</span> word)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-12"><a href="bigrams.html#cb21-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bigram =</span> <span class="fu">paste</span>(word1, word2, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb21-13"><a href="bigrams.html#cb21-13" tabindex="-1"></a>  <span class="fu">select</span>(review_id, bigram)</span></code></pre></div>
+<span id="cb21-12"><a href="bigrams.html#cb21-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bigram =</span> <span class="fu">paste</span>(word1, word2)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-13"><a href="bigrams.html#cb21-13" tabindex="-1"></a>  <span class="fu">select</span>(review_id, bigram)</span>
+<span id="cb21-14"><a href="bigrams.html#cb21-14" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="bigrams.html#cb21-15" tabindex="-1"></a><span class="co"># Example</span></span>
+<span id="cb21-16"><a href="bigrams.html#cb21-16" tabindex="-1"></a><span class="fu">bind_cols</span>(</span>
+<span id="cb21-17"><a href="bigrams.html#cb21-17" tabindex="-1"></a>  hotel <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review),</span>
+<span id="cb21-18"><a href="bigrams.html#cb21-18" tabindex="-1"></a>  bigram <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb21-19"><a href="bigrams.html#cb21-19" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">bigrams =</span> <span class="fu">paste</span>(bigram, <span class="at">collapse =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
+<span id="cb21-20"><a href="bigrams.html#cb21-20" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-21"><a href="bigrams.html#cb21-21" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-22"><a href="bigrams.html#cb21-22" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">autofit</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb21-23"><a href="bigrams.html#cb21-23" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">width</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">unit =</span> <span class="st">&quot;in&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-24"><a href="bigrams.html#cb21-24" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">width</span>(<span class="at">j =</span> <span class="dv">2</span>, <span class="at">width =</span> <span class="fl">1.5</span>, <span class="at">unit =</span> <span class="st">&quot;in&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-25"><a href="bigrams.html#cb21-25" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">valign =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-a57b814a{}.cl-a5759fdc{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a5759fe6{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-a577f0b6{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a577f0c0{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-a577fd9a{width:4.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a577fda4{width:1.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a577fda5{width:4.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a577fdae{width:1.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-a57b814a'><thead><tr style="overflow-wrap:break-word;"><th class="cl-a577fd9a"><p class="cl-a577f0b6"><span class="cl-a5759fdc">review</span></p></th><th class="cl-a577fda4"><p class="cl-a577f0b6"><span class="cl-a5759fdc">bigrams</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-a577fda5"><p class="cl-a577f0c0"><span class="cl-a5759fe6">A very lovely first visit to this iconic hotel bar! | Wonderful service, without being intrusive at all! Very delicious cocktails and just generally all round, a very indulgent experience. | Well worth visiting only for that 'once in a lifetime' experience, though do make sure you are feeling 'flush' it doesn't come cheap!</span></p></td><td class="cl-a577fdae"><p class="cl-a577f0c0"><span class="cl-a5759fe6">iconic hotel</span><br><span class="cl-a5759fe6">hotel bar</span><br><span class="cl-a5759fe6">bar wonderful</span><br><span class="cl-a5759fe6">wonderful service</span><br><span class="cl-a5759fe6">delicious cocktail</span><br><span class="cl-a5759fe6">indulgent experience</span><br><span class="cl-a5759fe6">worth visit</span><br><span class="cl-a5759fe6">lifetime experience</span><br><span class="cl-a5759fe6">feel flush</span></p></td></tr></tbody></table></div>
 </div>
             </section>
 
@@ -242,7 +255,7 @@ div.csl-indent {
         </div>
       </div>
 <a href="remove-stop-words.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="further-reading.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="save.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

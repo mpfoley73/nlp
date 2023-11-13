@@ -1,11 +1,12 @@
 # Topic Modeling {#topicmodeling}
 
-```{r include=FALSE}
+```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(stm)
 library(topicmodels)
+library(scales)
+library(glue)
 ```
-
 
 _These notes are primarily compiled from the vignette for the [STM](http://www.structuraltopicmodel.com/) package._
 
@@ -20,6 +21,11 @@ This leads to two frameworks for thinking about topics. A topic's _prevalance_ i
 ## Learning by Example
 
 I will work through the model concepts by example using the `stm::gadarian` data set. This data set has _n_ = 351 comments about immigration in an experimental setting. The test group as specifically instructred to write about what made them anxious about immigration. There is also a variable `pid_rep` for political party.
+
+```{r}
+load("input/hotel_prepped.Rdata")
+```
+
 
 ```{r}
 gadarian_dat <- stm::gadarian %>%

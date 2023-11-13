@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-10" />
+<meta name="date" content="2023-11-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -170,7 +170,7 @@ div.csl-indent {
 <li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
@@ -223,7 +223,7 @@ div.csl-indent {
 <h2><span class="header-section-number">1.2</span> Tokenize<a href="tokenize.html#tokenize" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize into unigrams first to clean and regularize.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="tokenize.html#cb10-1" tabindex="-1"></a>token_0 <span class="ot">&lt;-</span> </span>
-<span id="cb10-2"><a href="tokenize.html#cb10-2" tabindex="-1"></a>  hotel_1 <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="tokenize.html#cb10-2" tabindex="-1"></a>  hotel <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="tokenize.html#cb10-3" tabindex="-1"></a>  <span class="fu">select</span>(review_id, review) <span class="sc">%&gt;%</span></span>
 <span id="cb10-4"><a href="tokenize.html#cb10-4" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="st">&quot;word&quot;</span>, review)</span>
 <span id="cb10-5"><a href="tokenize.html#cb10-5" tabindex="-1"></a></span>
@@ -231,7 +231,7 @@ div.csl-indent {
 <span id="cb10-7"><a href="tokenize.html#cb10-7" tabindex="-1"></a>token_0 <span class="sc">%&gt;%</span> <span class="fu">count</span>(review_id) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div>
 <pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ##     1.0    55.0    92.0   129.6   158.0  5712.0</code></pre>
-<p>Some reviews are as short as three words and as long as 7,938(!) words. <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span> recommends discarding reviews with few (&lt;=50) tokens on the grounds that short reviews will not add much in terms of <em>different</em> topics <em>within</em> reviews.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. That’s about 25% of this sample. I’ll leave them in for now.</p>
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span> recommends discarding reviews with few (&lt;=50) tokens on the grounds that short reviews will not add much in terms of <em>different</em> topics <em>within</em> reviews.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. That’s about 25% of this sample. I’ll leave them in for now.</p>
 </div>
 <h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references csl-bib-body hanging-indent">

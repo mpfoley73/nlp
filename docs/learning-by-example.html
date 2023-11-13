@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-10" />
+<meta name="date" content="2023-11-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -170,7 +170,7 @@ div.csl-indent {
 <li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="further-reading.html"><a href="further-reading.html"><i class="fa fa-check"></i><b>1.7</b> Further Reading</a></li>
+<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
@@ -222,10 +222,11 @@ div.csl-indent {
 <div id="learning-by-example" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> Learning by Example<a href="learning-by-example.html#learning-by-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>I will work through the model concepts by example using the <code>stm::gadarian</code> data set. This data set has <em>n</em> = 351 comments about immigration in an experimental setting. The test group as specifically instructred to write about what made them anxious about immigration. There is also a variable <code>pid_rep</code> for political party.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="learning-by-example.html#cb22-1" tabindex="-1"></a>gadarian_dat <span class="ot">&lt;-</span> stm<span class="sc">::</span>gadarian <span class="sc">%&gt;%</span></span>
-<span id="cb22-2"><a href="learning-by-example.html#cb22-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">comment =</span> open.ended.response) <span class="sc">%&gt;%</span></span>
-<span id="cb22-3"><a href="learning-by-example.html#cb22-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>MetaID)</span>
-<span id="cb22-4"><a href="learning-by-example.html#cb22-4" tabindex="-1"></a><span class="fu">glimpse</span>(gadarian_dat) </span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="learning-by-example.html#cb24-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="learning-by-example.html#cb25-1" tabindex="-1"></a>gadarian_dat <span class="ot">&lt;-</span> stm<span class="sc">::</span>gadarian <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="learning-by-example.html#cb25-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">comment =</span> open.ended.response) <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="learning-by-example.html#cb25-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>MetaID)</span>
+<span id="cb25-4"><a href="learning-by-example.html#cb25-4" tabindex="-1"></a><span class="fu">glimpse</span>(gadarian_dat) </span></code></pre></div>
 <pre><code>## Rows: 341
 ## Columns: 3
 ## $ treatment &lt;dbl&gt; 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, …

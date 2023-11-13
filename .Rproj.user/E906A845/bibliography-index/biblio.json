@@ -22,6 +22,27 @@
             "type": "article-journal"
         },
         {
+            "URL": "https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8",
+            "author": [
+                {
+                    "family": "Nagelkerke",
+                    "given": "Jurriaan"
+                }
+            ],
+            "id": "Nagelkerke2020b",
+            "issued": {
+                "date-parts": [
+                    [
+                        2020,
+                        11
+                    ]
+                ]
+            },
+            "title": "NLP with r part 1: Topic modeling to identify topics in restaurant reviews",
+            "title-short": "NLP with r part 1",
+            "type": "article-journal"
+        },
+        {
             "URL": "https://www.tidytextmining.com",
             "author": [
                 {

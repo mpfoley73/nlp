@@ -18,6 +18,11 @@ Sentiment analysis is the extraction of the emotional intent of text. You can cl
 
 To practice with real-world data, I will use the [Customer reviews of London-based hotels](https://data.world/promptcloud/customer-of-reviews-of-london-based-hotels) data set hosted on data.world. `hotel_raw` contains reviews of the top 10 most- and least-expensive hotels in London.
 
+```{r}
+load("input/hotel_prepped.Rdata")
+```
+
+
 ```{r message=FALSE}
 hotel_raw_1 <- read_csv("https://query.data.world/s/2zsbemxf66vevuuc47jqe24n4zwl54") %>%
   mutate(`Date Of Review` = lubridate::mdy(`Date Of Review`),
