@@ -8,7 +8,7 @@ library(scales)
 library(glue)
 ```
 
-_These notes are primarily compiled from the vignette for the [STM](http://www.structuraltopicmodel.com/) package._
+Here I will continue working with the hotel data and follow the ideas from @Nagelkerke2020b and the **stm** [package vignette](http://www.structuraltopicmodel.com/) package.
 
 Topic models are unsupervised ML models that identify topics as clusters of words with an associated probability distribution, and a probability distribution of topics within each document. 
 

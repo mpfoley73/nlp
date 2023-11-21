@@ -1,6 +1,0 @@
-"0","# library(gutenbergr)"
-"0","# sawyer_raw <- gutenberg_works(title == ""The Adventures of Tom Sawyer"") %>%"
-"0","#   gutenberg_download()"
-"0","# hotel %>% filter(is.na(date_of_review))"
-"0","# min(hotel$date_of_review, na.rm = TRUE)"
-"0","# skimr::skim(sawyer_raw)"

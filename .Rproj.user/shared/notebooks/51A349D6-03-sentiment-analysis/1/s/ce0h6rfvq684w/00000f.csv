@@ -1,8 +1,0 @@
-"0","# sawyer_tidy %>%"
-"0","#   anti_join(stop_words, by = ""word"") %>%"
-"0","#   filter(!str_detect(word, ""[0-9]"")) %>%"
-"0","#   inner_join(get_sentiments(""afinn""), by = ""word"") %>%"
-"0","#   ggplot(aes(x = value)) +"
-"0","#   geom_density(fill = ggthemes::few_pal()(1), alpha = 0.6) +"
-"0","#   theme_minimal() +"
-"0","#   labs(title = ""AFINN Score Density"")"

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>1.2 Tokenize | Natural Language Processing in R</title>
   <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="1.2 Tokenize | Natural Language Processing in R" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-13" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -162,7 +162,7 @@ div.csl-indent {
 
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Intro</a></li>
-<li class="chapter" data-level="1" data-path="data-preparation.html"><a href="data-preparation.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a>
+<li class="chapter" data-level="1" data-path="data-prep.html"><a href="data-prep.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
 <li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
@@ -179,7 +179,7 @@ div.csl-indent {
 <li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
 <li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
@@ -194,13 +194,9 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
 <li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
-<li class="chapter" data-level="3.2.3" data-path="polarity-scoring.html"><a href="polarity-scoring.html#qdap"><i class="fa fa-check"></i><b>3.2.3</b> qdap</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="emotion-classification.html"><a href="emotion-classification.html"><i class="fa fa-check"></i><b>3.3</b> Emotion Classification</a></li>
-<li class="chapter" data-level="3.4" data-path="comparison-cloud.html"><a href="comparison-cloud.html"><i class="fa fa-check"></i><b>3.4</b> Comparison Cloud</a></li>
-<li class="chapter" data-level="3.5" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.5</b> Statistical Test</a></li>
+<li class="chapter" data-level="3.3" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.3</b> Statistical Test</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>4</b> Final Words</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -223,20 +219,35 @@ div.csl-indent {
 <h2><span class="header-section-number">1.2</span> Tokenize<a href="tokenize.html#tokenize" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize into unigrams first to clean and regularize.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="tokenize.html#cb10-1" tabindex="-1"></a>token_0 <span class="ot">&lt;-</span> </span>
-<span id="cb10-2"><a href="tokenize.html#cb10-2" tabindex="-1"></a>  hotel <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="tokenize.html#cb10-2" tabindex="-1"></a>  hotel_1 <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a href="tokenize.html#cb10-3" tabindex="-1"></a>  <span class="fu">select</span>(review_id, review) <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="tokenize.html#cb10-4" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="st">&quot;word&quot;</span>, review)</span>
-<span id="cb10-5"><a href="tokenize.html#cb10-5" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="tokenize.html#cb10-6" tabindex="-1"></a><span class="co"># Reviews range from 1-5,712 words.</span></span>
-<span id="cb10-7"><a href="tokenize.html#cb10-7" tabindex="-1"></a>token_0 <span class="sc">%&gt;%</span> <span class="fu">count</span>(review_id) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div>
-<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##     1.0    55.0    92.0   129.6   158.0  5712.0</code></pre>
-<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span> recommends discarding reviews with few (&lt;=50) tokens on the grounds that short reviews will not add much in terms of <em>different</em> topics <em>within</em> reviews.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. That’s about 25% of this sample. I’ll leave them in for now.</p>
+<span id="cb10-4"><a href="tokenize.html#cb10-4" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="st">&quot;word&quot;</span>, review) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="tokenize.html#cb10-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> review_id, <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="tokenize.html#cb10-6" tabindex="-1"></a>  <span class="co"># Short reviews are mostly gibberish. Require at least 10 words.</span></span>
+<span id="cb10-7"><a href="tokenize.html#cb10-7" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">10</span>)</span>
+<span id="cb10-8"><a href="tokenize.html#cb10-8" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="tokenize.html#cb10-9" tabindex="-1"></a><span class="co"># Attach word counts back to main data frame. Inner joining will remove some</span></span>
+<span id="cb10-10"><a href="tokenize.html#cb10-10" tabindex="-1"></a><span class="co"># of the bogus reviews.</span></span>
+<span id="cb10-11"><a href="tokenize.html#cb10-11" tabindex="-1"></a>hotel_2 <span class="ot">&lt;-</span> </span>
+<span id="cb10-12"><a href="tokenize.html#cb10-12" tabindex="-1"></a>  token_0 <span class="sc">%&gt;%</span> </span>
+<span id="cb10-13"><a href="tokenize.html#cb10-13" tabindex="-1"></a>  <span class="fu">count</span>(review_id, <span class="at">name =</span> <span class="st">&quot;word_cnt&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-14"><a href="tokenize.html#cb10-14" tabindex="-1"></a>  <span class="fu">inner_join</span>(hotel_1, <span class="at">by =</span> <span class="st">&quot;review_id&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="tokenize.html#cb10-15" tabindex="-1"></a>  <span class="fu">relocate</span>(word_cnt, <span class="at">.after =</span> chr_cnt)</span>
+<span id="cb10-16"><a href="tokenize.html#cb10-16" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="tokenize.html#cb10-17" tabindex="-1"></a>hotel_2 <span class="sc">%&gt;%</span> <span class="fu">select</span>(chr_cnt, word_cnt) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div>
+<pre><code>##     chr_cnt           word_cnt     
+##  Min.   :   51.0   Min.   :  10.0  
+##  1st Qu.:  314.0   1st Qu.:  56.0  
+##  Median :  520.0   Median :  93.0  
+##  Mean   :  721.1   Mean   : 130.9  
+##  3rd Qu.:  875.0   3rd Qu.: 159.0  
+##  Max.   :30498.0   Max.   :5712.0</code></pre>
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020a</a>)</span> recommends discarding reviews with few (&lt;=50) tokens on the grounds that short reviews will not add much in terms of <em>different</em> topics <em>within</em> reviews.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. That’s about 25% of this sample. I set a lower limit of 10 tokens.</p>
 </div>
 <h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Nagelkerke2020a" class="csl-entry">
-Nagelkerke, Jurriaan. 2020. <span>“NLP with r Part 0: Preparing Review Data for NLP and Predictive Modeling,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312">https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312</a>.
+Nagelkerke, Jurriaan. 2020a. <span>“NLP with r Part 0: Preparing Review Data for NLP and Predictive Modeling,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312">https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312</a>.
 </div>
 </div>
 <div class="footnotes">

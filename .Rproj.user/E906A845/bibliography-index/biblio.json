@@ -205,7 +205,7 @@
             "type": "book"
         },
         {
-            "URL": "https://CRAN.R-project.org/package=bookdown",
+            "URL": "https://github.com/rstudio/bookdown",
             "author": [
                 {
                     "family": "Xie",
@@ -220,13 +220,13 @@
                     ]
                 ]
             },
-            "note": "R package version 0.35",
+            "note": "R package version 0.36",
             "title": "Bookdown: Authoring books and technical documents with r markdown",
             "title-short": "Bookdown",
             "type": "book"
         },
         {
-            "URL": "https://CRAN.R-project.org/package=ggplot2",
+            "URL": "https://ggplot2.tidyverse.org",
             "author": [
                 {
                     "family": "Wickham",
@@ -294,13 +294,13 @@
                     ]
                 ]
             },
-            "note": "R package version 1.43",
+            "note": "R package version 1.45",
             "title": "Knitr: A general-purpose package for dynamic report generation in r",
             "title-short": "Knitr",
             "type": "book"
         },
         {
-            "URL": "https://CRAN.R-project.org/package=rmarkdown",
+            "URL": "https://github.com/rstudio/rmarkdown",
             "author": [
                 {
                     "family": "Allaire",
@@ -355,7 +355,7 @@
                     ]
                 ]
             },
-            "note": "R package version 2.24",
+            "note": "R package version 2.25",
             "title": "Rmarkdown: Dynamic documents for r",
             "title-short": "Rmarkdown",
             "type": "book"

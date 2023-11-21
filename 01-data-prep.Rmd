@@ -1,4 +1,4 @@
-# Data Preparation
+# Data Preparation {#data-prep}
 
 This section covers how to prepare a corpus for text analysis. I'll work with the [customer reviews of London-based hotels](https://data.world/promptcloud/customer-of-reviews-of-london-based-hotels) data set hosted on data.world. `hotel_raw` contains 27K reviews of the ten most- and ten least-expensive hotels in London. The csv file is located online [here](https://bhciaaablob.blob.core.windows.net/cmotionsnlpblogs/RestoReviewRawdata.csv). I saved it to my \\inputs directory.
 
@@ -28,20 +28,23 @@ glimpse(hotel_0)
 The data needs to be cleaned. I'll follow some of the techniques used by @Nagelkerke2020a. One issue is tags like *\<e9\>* and unicode characters like *<U+0440>*. [One way](https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters) to get rid of unicode characters is to convert them to ASCII tags with `iconv()` and then remove the ASCII tags with `str_remove()`. E.g., `iconv()` converts <U+0093> to <93> which you can remove with regex `"\\<[:alnum]+\\>]"`.^[More help with regex on [RStudio's cheat sheets](https://rstudio.com/resources/cheatsheets/).] There are also some reviews in other languages that I'll just drop. And some hotel names are pretty long, so I'll abbreviate them.
 
 ```{r}
-hotel <- hotel_0 %>%
+hotel_1 <- hotel_0 %>%
   mutate(
     # Create ASCII bytes
     review = iconv(review, from = "", to = "ASCII", sub = "byte"),
     # Remove <..>
     review = str_remove_all(review, "\\<[[:alnum:]]+\\>"),
     # Remove <U+....>
-    review = str_remove_all(review, "\\<U\\+[:alnum:]{4}\\>"),
+    review = str_remove_all(review, "\\<U\\+[[:alnum:]]{4}\\>"),
+    # Lots of pipes?
+    review = str_remove_all(review, "(\\|)"),
+    review = str_squish(review),
     # Shorten some of the hotel names.
     property = factor(str_remove_all(
       property, "( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)"
     )),
     # Interesting metadata
-    review_chrs = str_length(review)
+    chr_cnt = str_length(review)
   ) %>%
   # Exclude reviews written in a foreign language. One heuristic to handle this 
   # is to look for words common in other languages that do not also occur in English.
@@ -58,17 +61,21 @@ That might be enough. Let's explore the data.
 
 ```{r}
 # 90% of reviews rate the property a 4 or 5.
-hotel %>% janitor::tabyl(rating)
+hotel_1 %>% janitor::tabyl(rating)
 
 # Some reviews are as small as 16 characters, but they can get quite large.
-hotel %>% pull(review_chrs) %>% summary()
+hotel_1 %>% select(chr_cnt) %>% summary()
 
 # A few reviews
-hotel %>% sample_n(3, seed = 12345) %>% select(review_chrs, review) %>% 
-  flextable::flextable() %>% flextable::valign(j = 1, valign = "top") %>% flextable::autofit()
+hotel_1 %>% 
+  sample_n(3, seed = 12345) %>% 
+  select(chr_cnt, review) %>% 
+  flextable::flextable() %>% 
+  flextable::valign(j = 1, valign = "top") %>% 
+  flextable::autofit()
 ```
 
-@Nagelkerke2020a recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (<= 3 chars) for anything other than sentiment analysis. I'm going to keep punctuation and short reviews for now.
+@Nagelkerke2020a recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (<= 3 chars) for anything other than sentiment analysis. I'm going to keep punctuation and short reviews for now. Some of those extremely short reviews are gibberish, but tokenizing will filter out some of that.
 
 ## Tokenize
 
@@ -76,15 +83,25 @@ Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize 
 
 ```{r}
 token_0 <- 
-  hotel %>%
+  hotel_1 %>%
   select(review_id, review) %>%
-  unnest_tokens("word", review)
+  unnest_tokens("word", review) %>%
+  mutate(.by = review_id, n = n()) %>%
+  # Short reviews are mostly gibberish. Require at least 10 words.
+  filter(n >= 10)
 
-# Reviews range from 1-5,712 words.
-token_0 %>% count(review_id) %>% pull(n) %>% summary()
+# Attach word counts back to main data frame. Inner joining will remove some
+# of the bogus reviews.
+hotel_2 <- 
+  token_0 %>% 
+  count(review_id, name = "word_cnt") %>% 
+  inner_join(hotel_1, by = "review_id") %>%
+  relocate(word_cnt, .after = chr_cnt)
+
+hotel_2 %>% select(chr_cnt, word_cnt) %>% summary()
 ```
 
-@Nagelkerke2020a recommends discarding reviews with few (<=50) tokens on the grounds that short reviews will not add much in terms of _different_ topics _within_ reviews.^[TODO: what does Nagelkerke mean - why is this important?]. That's about 25% of this sample. I'll leave them in for now.
+@Nagelkerke2020a recommends discarding reviews with few (<=50) tokens on the grounds that short reviews will not add much in terms of _different_ topics _within_ reviews.^[TODO: what does Nagelkerke mean - why is this important?]. That's about 25% of this sample. I set a lower limit of 10 tokens.
 
 ## Spell-check
 
@@ -138,7 +155,7 @@ token_2 %>% semi_join(stop, by = "word") %>% count(word, sort = TRUE)
 # A typical review, before and after
 bind_cols(
   review_id = 2:4,
-  before = hotel %>% filter(review_id %in% 2:4) %>% pull(review),
+  before = hotel_2 %>% filter(review_id %in% 2:4) %>% pull(review),
   after = token %>% filter(review_id %in% 2:4) %>% 
     summarize(.by = review_id, x = paste(word, collapse = " ")) %>%
     pull(x)
@@ -169,7 +186,7 @@ bigram <-
 
 # Example
 bind_cols(
-  hotel %>% filter(review_id == 3) %>% select(review),
+  hotel_2 %>% filter(review_id == 3) %>% select(review),
   bigram %>% filter(review_id == 3) %>% 
     summarize(bigrams = paste(bigram, collapse = "\n"))
 ) %>%
@@ -185,5 +202,7 @@ bind_cols(
 Save the cleaned data for other analyses like topic modeling and sentiment analysis.
 
 ```{r}
-save(hotel, token, bigram, file = "input/hotel_prepped.Rdata")
+hotel_prep <- hotel_2
+
+save(hotel_prep, token, bigram, file = "input/hotel_prepped.Rdata")
 ```

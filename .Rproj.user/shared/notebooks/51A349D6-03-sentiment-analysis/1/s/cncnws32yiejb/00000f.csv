@@ -1,3 +1,0 @@
-"0","# sawyer[57,]"
-"0","# counts(sawyer_tm_polarity)[57,]"
-"0","# counts(sawyer_tm_polarity)[57, c(""pos.words"", ""neg.words"")] %>% unlist()"

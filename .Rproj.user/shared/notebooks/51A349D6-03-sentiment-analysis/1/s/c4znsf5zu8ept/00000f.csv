@@ -1,5 +1,0 @@
-"0","hotel_raw_2 <- hotel_raw_1 %>%"
-"0","  mutate("
-"0","    review_text = iconv(review_text, from = """", to = ""ASCII"", sub = ""byte""),"
-"0","    review_text = str_remove_all(review_text, ""\\<[[:alnum:]]+\\>"")"
-"0","  )"

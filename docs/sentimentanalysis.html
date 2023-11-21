@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 3 Sentiment Analysis | Natural Language Processing in R</title>
   <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
-  <meta name="generator" content="bookdown 0.35 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 3 Sentiment Analysis | Natural Language Processing in R" />
   <meta property="og:type" content="book" />
@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-13" />
+<meta name="date" content="2023-11-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -162,7 +162,7 @@ div.csl-indent {
 
 <ul class="summary">
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Intro</a></li>
-<li class="chapter" data-level="1" data-path="data-preparation.html"><a href="data-preparation.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a>
+<li class="chapter" data-level="1" data-path="data-prep.html"><a href="data-prep.html"><i class="fa fa-check"></i><b>1</b> Data Preparation</a>
 <ul>
 <li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
 <li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
@@ -179,7 +179,7 @@ div.csl-indent {
 <li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
 <li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
@@ -194,13 +194,9 @@ div.csl-indent {
 <ul>
 <li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
 <li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
-<li class="chapter" data-level="3.2.3" data-path="polarity-scoring.html"><a href="polarity-scoring.html#qdap"><i class="fa fa-check"></i><b>3.2.3</b> qdap</a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="emotion-classification.html"><a href="emotion-classification.html"><i class="fa fa-check"></i><b>3.3</b> Emotion Classification</a></li>
-<li class="chapter" data-level="3.4" data-path="comparison-cloud.html"><a href="comparison-cloud.html"><i class="fa fa-check"></i><b>3.4</b> Comparison Cloud</a></li>
-<li class="chapter" data-level="3.5" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.5</b> Statistical Test</a></li>
+<li class="chapter" data-level="3.3" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.3</b> Statistical Test</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="final-words.html"><a href="final-words.html"><i class="fa fa-check"></i><b>4</b> Final Words</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 </ul>
 
@@ -221,288 +217,17 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="sentimentanalysis" class="section level1 hasAnchor" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Sentiment Analysis<a href="sentimentanalysis.html#sentimentanalysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Sentiment analysis is the extraction of the emotional intent of text. You can classify the <em>polarity</em> (positive | negative) or sentiment (angry | sad | happy | …) at the document, sentence, or feature level.</p>
-<p>To practice with real-world data, I will use the <a href="https://data.world/promptcloud/customer-of-reviews-of-london-based-hotels">Customer reviews of London-based hotels</a> data set hosted on data.world. <code>hotel_raw</code> contains reviews of the top 10 most- and least-expensive hotels in London.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="sentimentanalysis.html#cb33-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="sentimentanalysis.html#cb34-1" tabindex="-1"></a>hotel_raw_1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://query.data.world/s/2zsbemxf66vevuuc47jqe24n4zwl54&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb34-2"><a href="sentimentanalysis.html#cb34-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Date Of Review</span><span class="st">`</span> <span class="ot">=</span> lubridate<span class="sc">::</span><span class="fu">mdy</span>(<span class="st">`</span><span class="at">Date Of Review</span><span class="st">`</span>),</span>
-<span id="cb34-3"><a href="sentimentanalysis.html#cb34-3" tabindex="-1"></a>         <span class="st">`</span><span class="at">Property Name</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">trimws</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;Hotel&quot;</span>)),</span>
-<span id="cb34-4"><a href="sentimentanalysis.html#cb34-4" tabindex="-1"></a>         <span class="st">`</span><span class="at">Property Name</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">trimws</span>(<span class="fu">str_remove</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;The&quot;</span>)),</span>
-<span id="cb34-5"><a href="sentimentanalysis.html#cb34-5" tabindex="-1"></a>         <span class="st">`</span><span class="at">Property Name</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">case_when</span>(</span>
-<span id="cb34-6"><a href="sentimentanalysis.html#cb34-6" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^45 Park Lane&quot;</span>) <span class="sc">~</span> <span class="st">&quot;45 Park Lane&quot;</span>,</span>
-<span id="cb34-7"><a href="sentimentanalysis.html#cb34-7" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Apex&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Apex&quot;</span>,</span>
-<span id="cb34-8"><a href="sentimentanalysis.html#cb34-8" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Bulgari&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Bulgari&quot;</span>,</span>
-<span id="cb34-9"><a href="sentimentanalysis.html#cb34-9" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Corinthia&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Corinthia&quot;</span>,</span>
-<span id="cb34-10"><a href="sentimentanalysis.html#cb34-10" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^London Guest House&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Guest House&quot;</span>,</span>
-<span id="cb34-11"><a href="sentimentanalysis.html#cb34-11" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Xenia&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Xenia&quot;</span>,</span>
-<span id="cb34-12"><a href="sentimentanalysis.html#cb34-12" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Mandarin&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Mandarin&quot;</span>,</span>
-<span id="cb34-13"><a href="sentimentanalysis.html#cb34-13" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Mondrian&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Mondrian&quot;</span>,</span>
-<span id="cb34-14"><a href="sentimentanalysis.html#cb34-14" tabindex="-1"></a>           <span class="fu">str_detect</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>, <span class="st">&quot;^Wellesley&quot;</span>) <span class="sc">~</span> <span class="st">&quot;Wellesley&quot;</span>,</span>
-<span id="cb34-15"><a href="sentimentanalysis.html#cb34-15" tabindex="-1"></a>           <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>),</span>
-<span id="cb34-16"><a href="sentimentanalysis.html#cb34-16" tabindex="-1"></a>         <span class="st">`</span><span class="at">Property Name</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">factor</span>(<span class="st">`</span><span class="at">Property Name</span><span class="st">`</span>),</span>
-<span id="cb34-17"><a href="sentimentanalysis.html#cb34-17" tabindex="-1"></a>         <span class="at">review_id =</span> <span class="fu">row_number</span>()</span>
-<span id="cb34-18"><a href="sentimentanalysis.html#cb34-18" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb34-19"><a href="sentimentanalysis.html#cb34-19" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>(<span class="at">case =</span> <span class="st">&quot;snake&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb34-20"><a href="sentimentanalysis.html#cb34-20" tabindex="-1"></a>  <span class="fu">select</span>(review_id, <span class="fu">everything</span>())</span>
-<span id="cb34-21"><a href="sentimentanalysis.html#cb34-21" tabindex="-1"></a></span>
-<span id="cb34-22"><a href="sentimentanalysis.html#cb34-22" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(hotel_raw_1)</span></code></pre></div>
-<pre><code>## Warning: There was 1 warning in `dplyr::summarize()`.
-## ℹ In argument: `dplyr::across(tidyselect::any_of(variable_names),
-##   mangled_skimmers$funs)`.
-## ℹ In group 0: .
-## Caused by warning:
-## ! There were 7010 warnings in `dplyr::summarize()`.
-## The first warning was:
-## ℹ In argument: `dplyr::across(tidyselect::any_of(variable_names),
-##   mangled_skimmers$funs)`.
-## Caused by warning in `grepl()`:
-## ! unable to translate &#39;Ottima qualit&lt;e0&gt; prezzo&#39; to a wide string
-## ℹ Run `dplyr::last_dplyr_warnings()` to see the 7009 remaining warnings.</code></pre>
-<table>
-<caption><span id="tab:unnamed-chunk-22">Table 3.1: </span>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td align="left">Name</td>
-<td align="left">hotel_raw_1</td>
-</tr>
-<tr class="even">
-<td align="left">Number of rows</td>
-<td align="left">27330</td>
-</tr>
-<tr class="odd">
-<td align="left">Number of columns</td>
-<td align="left">7</td>
-</tr>
-<tr class="even">
-<td align="left">_______________________</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">Column type frequency:</td>
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">character</td>
-<td align="left">3</td>
-</tr>
-<tr class="odd">
-<td align="left">Date</td>
-<td align="left">1</td>
-</tr>
-<tr class="even">
-<td align="left">factor</td>
-<td align="left">1</td>
-</tr>
-<tr class="odd">
-<td align="left">numeric</td>
-<td align="left">2</td>
-</tr>
-<tr class="even">
-<td align="left">________________________</td>
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">Group variables</td>
-<td align="left">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table style="width:100%;">
-<colgroup>
-<col width="29%" />
-<col width="11%" />
-<col width="16%" />
-<col width="4%" />
-<col width="7%" />
-<col width="7%" />
-<col width="10%" />
-<col width="12%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">skim_variable</th>
-<th align="right">n_missing</th>
-<th align="right">complete_rate</th>
-<th align="right">min</th>
-<th align="right">max</th>
-<th align="right">empty</th>
-<th align="right">n_unique</th>
-<th align="right">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">review_title</td>
-<td align="right">0</td>
-<td align="right">1.00</td>
-<td align="right">1</td>
-<td align="right">508</td>
-<td align="right">0</td>
-<td align="right">22323</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">review_text</td>
-<td align="right">0</td>
-<td align="right">1.00</td>
-<td align="right">16</td>
-<td align="right">32759</td>
-<td align="right">0</td>
-<td align="right">27329</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">location_of_the_reviewer</td>
-<td align="right">3953</td>
-<td align="right">0.86</td>
-<td align="right">1</td>
-<td align="right">178</td>
-<td align="right">0</td>
-<td align="right">6624</td>
-<td align="right">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: Date</strong></p>
-<table>
-<colgroup>
-<col width="18%" />
-<col width="12%" />
-<col width="17%" />
-<col width="13%" />
-<col width="13%" />
-<col width="13%" />
-<col width="11%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">skim_variable</th>
-<th align="right">n_missing</th>
-<th align="right">complete_rate</th>
-<th align="left">min</th>
-<th align="left">max</th>
-<th align="left">median</th>
-<th align="right">n_unique</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">date_of_review</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="left">2002-04-01</td>
-<td align="left">2018-10-18</td>
-<td align="left">2015-07-22</td>
-<td align="right">3870</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: factor</strong></p>
-<table>
-<colgroup>
-<col width="14%" />
-<col width="10%" />
-<col width="14%" />
-<col width="8%" />
-<col width="9%" />
-<col width="43%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">skim_variable</th>
-<th align="right">n_missing</th>
-<th align="right">complete_rate</th>
-<th align="left">ordered</th>
-<th align="right">n_unique</th>
-<th align="left">top_counts</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">property_name</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="left">FALSE</td>
-<td align="right">20</td>
-<td align="left">Sav: 5417, Mon: 4330, Rem: 3028, Cor: 2820</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table>
-<colgroup>
-<col width="14%" />
-<col width="10%" />
-<col width="14%" />
-<col width="9%" />
-<col width="8%" />
-<col width="3%" />
-<col width="8%" />
-<col width="8%" />
-<col width="9%" />
-<col width="6%" />
-<col width="6%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">skim_variable</th>
-<th align="right">n_missing</th>
-<th align="right">complete_rate</th>
-<th align="right">mean</th>
-<th align="right">sd</th>
-<th align="right">p0</th>
-<th align="right">p25</th>
-<th align="right">p50</th>
-<th align="right">p75</th>
-<th align="right">p100</th>
-<th align="left">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">review_id</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">13665.50</td>
-<td align="right">7889.64</td>
-<td align="right">1</td>
-<td align="right">6833.25</td>
-<td align="right">13665.5</td>
-<td align="right">20497.75</td>
-<td align="right">27330</td>
-<td align="left">▇▇▇▇▇</td>
-</tr>
-<tr class="even">
-<td align="left">review_rating</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4.49</td>
-<td align="right">0.89</td>
-<td align="right">1</td>
-<td align="right">4.00</td>
-<td align="right">5.0</td>
-<td align="right">5.00</td>
-<td align="right">5</td>
-<td align="left">▁▁▁▂▇</td>
-</tr>
-</tbody>
-</table>
-<p>There are 27,330 reviews of 20 hotels posted between 2002-04-01 and 2018-10-18.</p>
-<p>This raw text needs cleaned. One issue is tags like <em>&lt;e9&gt;</em> and unicode characters like <em>&lt;U+0440&gt;</em>. <a href="https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters">One way</a> to get rid of unicode characters is to convert them to ascii tags with <code>iconv()</code> and then remove the tags with <code>str_remove()</code>. For example, <code>iconv()</code> will change &lt;U+0093&gt; to ascii string “&lt;93&gt;” that you can remove with regex <code>"\\&lt;[:alnum]+\\&gt;]"</code> (more help with regex on <a href="https://rstudio.com/resources/cheatsheets/">RStudio’s cheat sheets</a>).</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="sentimentanalysis.html#cb36-1" tabindex="-1"></a>hotel_raw_2 <span class="ot">&lt;-</span> hotel_raw_1 <span class="sc">%&gt;%</span></span>
-<span id="cb36-2"><a href="sentimentanalysis.html#cb36-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb36-3"><a href="sentimentanalysis.html#cb36-3" tabindex="-1"></a>    <span class="at">review_text =</span> <span class="fu">iconv</span>(review_text, <span class="at">from =</span> <span class="st">&quot;&quot;</span>, <span class="at">to =</span> <span class="st">&quot;ASCII&quot;</span>, <span class="at">sub =</span> <span class="st">&quot;byte&quot;</span>),</span>
-<span id="cb36-4"><a href="sentimentanalysis.html#cb36-4" tabindex="-1"></a>    <span class="at">review_text =</span> <span class="fu">str_remove_all</span>(review_text, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&lt;[[:alnum:]]+</span><span class="sc">\\</span><span class="st">&gt;&quot;</span>)</span>
-<span id="cb36-5"><a href="sentimentanalysis.html#cb36-5" tabindex="-1"></a>  )</span></code></pre></div>
-<p>I also want to remove reviews written in a foreign language. One blunt force way to handle this is to look for words common in other languages that do not also occur in English.</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="sentimentanalysis.html#cb37-1" tabindex="-1"></a>hotel <span class="ot">&lt;-</span> hotel_raw_2 <span class="sc">%&gt;%</span></span>
-<span id="cb37-2"><a href="sentimentanalysis.html#cb37-2" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(review_text, <span class="st">&quot;( das )|( der )|( und )|( en )&quot;</span>)) <span class="sc">%&gt;%</span> <span class="co"># German</span></span>
-<span id="cb37-3"><a href="sentimentanalysis.html#cb37-3" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(review_text, <span class="st">&quot;( et )|( de )|( le )|( les )&quot;</span>)) <span class="sc">%&gt;%</span> <span class="co"># French</span></span>
-<span id="cb37-4"><a href="sentimentanalysis.html#cb37-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(review_text, <span class="st">&quot;( di )|( e )|( la )&quot;</span>)) <span class="sc">%&gt;%</span>          <span class="co"># Italian</span></span>
-<span id="cb37-5"><a href="sentimentanalysis.html#cb37-5" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(review_text, <span class="st">&quot;( un )|( y )&quot;</span>)) <span class="sc">%&gt;%</span>                 <span class="co"># Spanish</span></span>
-<span id="cb37-6"><a href="sentimentanalysis.html#cb37-6" tabindex="-1"></a>  <span class="fu">select</span>(review_id, <span class="fu">everything</span>())</span></code></pre></div>
-<p>That got rid of 3,557 rows. My cleansed data set <code>hotel</code> has 23,773 rows.</p>
+<p>Sentiment analysis is the extraction of the emotional intent of text. You can classify the <em>polarity</em> (positive | negative) or sentiment (angry | sad | happy | …) at the document, sentence, or feature level. This section continues with the hotel data from <a href="data-prep.html#data-prep">1</a>.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="sentimentanalysis.html#cb33-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span>
+<span id="cb33-2"><a href="sentimentanalysis.html#cb33-2" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="sentimentanalysis.html#cb33-3" tabindex="-1"></a>hotel_0 <span class="ot">&lt;-</span> hotel_prep</span>
+<span id="cb33-4"><a href="sentimentanalysis.html#cb33-4" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="sentimentanalysis.html#cb33-5" tabindex="-1"></a><span class="fu">glimpse</span>(token)</span></code></pre></div>
+<pre><code>## Rows: 1,158,125
+## Columns: 3
+## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+## $ word      &lt;chr&gt; &quot;pleasure&quot;, &quot;stay&quot;, &quot;hotel&quot;, &quot;night&quot;, &quot;recently&quot;, &quot;hotel&quot;, &quot;…
+## $ n         &lt;int&gt; 263, 263, 263, 263, 263, 263, 263, 263, 263, 263, 263, 263, …</code></pre>
 </div>
             </section>
 

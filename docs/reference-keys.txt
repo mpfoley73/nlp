@@ -1,8 +1,4 @@
-tab:unnamed-chunk-22
-tab:unnamed-chunk-25
-tab:unnamed-chunk-26
-tab:unnamed-chunk-27
-data-preparation
+data-prep
 scrub
 tokenize
 spell-check
@@ -21,8 +17,4 @@ subjectivity-lexicons
 polarity-scoring
 tidytext-1
 sentimentr
-qdap
-emotion-classification
-comparison-cloud
 statistical-test
-final-words
