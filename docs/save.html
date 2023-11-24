@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2023-11-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -174,18 +174,20 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
-<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
-<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
-<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
+<li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="2.1.1" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i><b>2.1.1</b> Data Preparation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
+<ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
@@ -217,10 +219,19 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="save" class="section level2 hasAnchor" number="1.7">
 <h2><span class="header-section-number">1.7</span> Save<a href="save.html#save" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Save the cleaned data for other analyses like topic modeling and sentiment analysis.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="save.html#cb22-1" tabindex="-1"></a>hotel_prep <span class="ot">&lt;-</span> hotel_2</span>
-<span id="cb22-2"><a href="save.html#cb22-2" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="save.html#cb22-3" tabindex="-1"></a><span class="fu">save</span>(hotel_prep, token, bigram, <span class="at">file =</span> <span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span></code></pre></div>
+<p>Combine the tokens and bigrams into cleaner reviews. Save the cleaned data for other analyses like topic modeling and sentiment analysis.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="save.html#cb22-1" tabindex="-1"></a>review_words <span class="ot">&lt;-</span> token <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="save.html#cb22-2" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">review_words =</span> <span class="fu">paste</span>(word, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>))</span>
+<span id="cb22-3"><a href="save.html#cb22-3" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="save.html#cb22-4" tabindex="-1"></a>review_bigrams <span class="ot">&lt;-</span> bigram <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="save.html#cb22-5" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">review_bigrams =</span> <span class="fu">paste</span>(bigram, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>))</span>
+<span id="cb22-6"><a href="save.html#cb22-6" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="save.html#cb22-7" tabindex="-1"></a>hotel_prep <span class="ot">&lt;-</span> </span>
+<span id="cb22-8"><a href="save.html#cb22-8" tabindex="-1"></a>  hotel_2 <span class="sc">%&gt;%</span></span>
+<span id="cb22-9"><a href="save.html#cb22-9" tabindex="-1"></a>  <span class="fu">inner_join</span>(review_words, <span class="at">by =</span> <span class="fu">join_by</span>(review_id)) <span class="sc">%&gt;%</span></span>
+<span id="cb22-10"><a href="save.html#cb22-10" tabindex="-1"></a>  <span class="fu">inner_join</span>(review_bigrams, <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span>
+<span id="cb22-11"><a href="save.html#cb22-11" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="save.html#cb22-12" tabindex="-1"></a><span class="fu">save</span>(hotel_prep, token, bigram, <span class="at">file =</span> <span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span></code></pre></div>
 
 </div>
 <!-- </div> -->
@@ -288,20 +299,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

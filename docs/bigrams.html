@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2023-11-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -174,18 +174,20 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
-<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
-<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
-<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
+<li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="2.1.1" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i><b>2.1.1</b> Data Preparation</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
+<ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
@@ -243,7 +245,7 @@ div.csl-indent {
 <span id="cb21-23"><a href="bigrams.html#cb21-23" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">width</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">unit =</span> <span class="st">&quot;in&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb21-24"><a href="bigrams.html#cb21-24" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">width</span>(<span class="at">j =</span> <span class="dv">2</span>, <span class="at">width =</span> <span class="fl">1.5</span>, <span class="at">unit =</span> <span class="st">&quot;in&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb21-25"><a href="bigrams.html#cb21-25" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">valign =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
-<div class="tabwid tabwid_left"><style>.cl-6f0b9d5a{}.cl-6f04e618{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-6f04e622{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-6f07fd3a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-6f07fd44{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-6f080b4a{width:4.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-6f080b4b{width:1.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-6f080b54{width:4.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-6f080b55{width:1.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-6f0b9d5a'><thead><tr style="overflow-wrap:break-word;"><th class="cl-6f080b4a"><p class="cl-6f07fd3a"><span class="cl-6f04e618">review</span></p></th><th class="cl-6f080b4b"><p class="cl-6f07fd3a"><span class="cl-6f04e618">bigrams</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-6f080b54"><p class="cl-6f07fd44"><span class="cl-6f04e622">A very lovely first visit to this iconic hotel bar! Wonderful service, without being intrusive at all! Very delicious cocktails and just generally all round, a very indulgent experience. Well worth visiting only for that 'once in a lifetime' experience, though do make sure you are feeling 'flush' it doesn't come cheap!</span></p></td><td class="cl-6f080b55"><p class="cl-6f07fd44"><span class="cl-6f04e622">iconic hotel</span><br><span class="cl-6f04e622">hotel bar</span><br><span class="cl-6f04e622">bar wonderful</span><br><span class="cl-6f04e622">wonderful service</span><br><span class="cl-6f04e622">delicious cocktail</span><br><span class="cl-6f04e622">indulgent experience</span><br><span class="cl-6f04e622">worth visit</span><br><span class="cl-6f04e622">lifetime experience</span><br><span class="cl-6f04e622">feel flush</span></p></td></tr></tbody></table></div>
+<div class="tabwid tabwid_left"><style>.cl-56642126{}.cl-565de694{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-565de6a8{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-566070f8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-56607102{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-56607f44{width:4.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-56607f4e{width:1.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-56607f4f{width:4.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-56607f50{width:1.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-56642126'><thead><tr style="overflow-wrap:break-word;"><th class="cl-56607f44"><p class="cl-566070f8"><span class="cl-565de694">review</span></p></th><th class="cl-56607f4e"><p class="cl-566070f8"><span class="cl-565de694">bigrams</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-56607f4f"><p class="cl-56607102"><span class="cl-565de6a8">A very lovely first visit to this iconic hotel bar! Wonderful service, without being intrusive at all! Very delicious cocktails and just generally all round, a very indulgent experience. Well worth visiting only for that 'once in a lifetime' experience, though do make sure you are feeling 'flush' it doesn't come cheap!</span></p></td><td class="cl-56607f50"><p class="cl-56607102"><span class="cl-565de6a8">iconic hotel</span><br><span class="cl-565de6a8">hotel bar</span><br><span class="cl-565de6a8">bar wonderful</span><br><span class="cl-565de6a8">wonderful service</span><br><span class="cl-565de6a8">delicious cocktail</span><br><span class="cl-565de6a8">indulgent experience</span><br><span class="cl-565de6a8">worth visit</span><br><span class="cl-565de6a8">lifetime experience</span><br><span class="cl-565de6a8">feel flush</span></p></td></tr></tbody></table></div>
 </div>
             </section>
 
@@ -309,20 +311,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2.2 LDA | Natural Language Processing in R</title>
+  <title>2.1 LDA | Natural Language Processing in R</title>
   <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
   <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2.2 LDA | Natural Language Processing in R" />
+  <meta property="og:title" content="2.1 LDA | Natural Language Processing in R" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2.2 LDA | Natural Language Processing in R" />
+  <meta name="twitter:title" content="2.1 LDA | Natural Language Processing in R" />
   
   <meta name="twitter:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
   
@@ -23,15 +23,15 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2023-11-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="learning-by-example.html"/>
-<link rel="next" href="ctm.html"/>
+<link rel="prev" href="topicmodeling.html"/>
+<link rel="next" href="stm.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -52,8 +52,6 @@
 <link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
-<link href="assets/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
-<script src="assets/tabwid-1.1.3/tabwid.js"></script>
 
 
 <style type="text/css">
@@ -174,18 +172,21 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
-<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
-<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
-<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
+<li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
+<ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
@@ -215,14 +216,14 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="lda" class="section level2 hasAnchor" number="2.2">
-<h2><span class="header-section-number">2.2</span> LDA<a href="lda.html#lda" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="lda" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> LDA<a href="lda.html#lda" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Latent Dirichlet allocation (LDA) is an instance of a general family of mixed membership models that decompose data into latent components. <em>Latent</em> refers to <em>unidentified</em> topics and <em>Dirichlet</em> refers to the type of distribution followed by the words in the the topics and by the topics in the documents.</p>
-<div id="algorithm" class="section level4 unnumbered hasAnchor">
-<h4>Algorithm<a href="lda.html#algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="algorithm" class="section level3 unnumbered hasAnchor">
+<h3>Algorithm<a href="lda.html#algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>LDA assumes each document is created by a generative process where topics are included according to probabilities and words are included in the topics according to probabilities. The LDA algorithm determines what those probabilities are. The <a href="https://www.mygreatlearning.com/blog/understanding-latent-dirichlet-allocation/">algorithm</a> is:</p>
 <ol style="list-style-type: decimal">
-<li><p>For each document <span class="math inline">\(d_i\)</span>, randomly assign each word to one of the <em>K</em> topics. Note that each <span class="math inline">\(w_j\)</span> may be assigned to a different topic in each documents.</p></li>
+<li><p>For each document <span class="math inline">\(d_i\)</span>, randomly assign each word <span class="math inline">\(w_j\)</span> to one of the <span class="math inline">\(K\)</span> topics. Note that <span class="math inline">\(w_j\)</span> may be assigned to a different topic in different documents.</p></li>
 <li><p>For each document, tabulate the number of words in each topic, a <span class="math inline">\(d \times K\)</span> matrix. For each word, tabulate the sum of occurrences across all documents, a <span class="math inline">\(w \times K\)</span> matrix.</p></li>
 <li><p>Resample a single instance of a word from the corpus and remove it from the analysis, decrementing the document’s topic count and the word’s topic count.</p></li>
 <li><p>Calculate the gamma matrix, <span class="math inline">\(\gamma\)</span>, and the beta matrix, <span class="math inline">\(\beta\)</span>.</p>
@@ -234,10 +235,153 @@ div.csl-indent {
 <li><p>Repeat steps 3-6 for all of the words in all of the documents.</p></li>
 <li><p>Repeat steps 3-7 for a pre-determined number of iterations.</p></li>
 </ol>
-<p>LDA thus has 3 hyperparameters: document-topic density factor, <span class="math inline">\(\alpha\)</span>, topic-word density factor, <span class="math inline">\(\beta\)</span>, and topic count, <span class="math inline">\(K\)</span>. <span class="math inline">\(\alpha\)</span> controls the number of topics expected per document (large <span class="math inline">\(\alpha\)</span> = more topics). <span class="math inline">\(\beta\)</span> controls the distribution of words per topic (large <span class="math inline">\(\beta\)</span> = more words). Ideally, you want a few topics per document and a few words per topics, so, <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are typically set below one. <span class="math inline">\(K\)</span> is set using a combination of domain knowledge, <em>coherence</em>, and exclusivity.</p>
+<p>LDA thus has 3 hyperparameters: the document-topic density factor, <span class="math inline">\(\alpha\)</span>, the topic-word density factor, <span class="math inline">\(\beta\)</span>, and the topic count, <span class="math inline">\(K\)</span>. <span class="math inline">\(\alpha\)</span> controls the number of topics expected per document (large <span class="math inline">\(\alpha\)</span> = more topics). <span class="math inline">\(\beta\)</span> controls the distribution of words per topic (large <span class="math inline">\(\beta\)</span> = more words). Ideally, you want a few topics per document and a few words per topic, so <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are typically set below one. <span class="math inline">\(K\)</span> is set using a combination of domain knowledge, coherence, and exclusivity.</p>
+<p>Notice that LDA is a “bag of words” method. It does not consider the order of the tokens in the text, so where tokens are located what other tokens are nearby do not factor into the output.</p>
 </div>
-<div id="evaluation" class="section level4 unnumbered hasAnchor">
-<h4>Evaluation<a href="lda.html#evaluation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="data-preparation" class="section level3 unnumbered hasAnchor">
+<h3>Data Preparation<a href="lda.html#data-preparation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In addition to the cleaned text produced in Chapter <a href="data-prep.html#data-prep">1</a>, there are a few more data preparation tasks for LDA. Create a bag of words from the union of the word and bigram reviews to get all terms. Keep only the decent sized reviews (&gt;= 25 words).</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="lda.html#cb4-1" tabindex="-1"></a>lda_dat <span class="ot">&lt;-</span></span>
+<span id="cb4-2"><a href="lda.html#cb4-2" tabindex="-1"></a>  hotel_prep <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="lda.html#cb4-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">combined =</span> <span class="fu">paste</span>(review_words, review_bigrams)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="lda.html#cb4-4" tabindex="-1"></a>  <span class="fu">select</span>(review_id, combined) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="lda.html#cb4-5" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="at">output =</span> <span class="st">&quot;word&quot;</span>, <span class="at">input =</span> combined) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="lda.html#cb4-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> review_id, <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="lda.html#cb4-7" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">25</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="lda.html#cb4-8" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>n)</span>
+<span id="cb4-9"><a href="lda.html#cb4-9" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="lda.html#cb4-10" tabindex="-1"></a>lda_dat <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code></pre></div>
+<pre><code>## Rows: 1,790,643
+## Columns: 2
+## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+## $ word      &lt;chr&gt; &quot;pleasure&quot;, &quot;stay&quot;, &quot;hotel&quot;, &quot;night&quot;, &quot;recently&quot;, &quot;hotel&quot;, &quot;…</code></pre>
+<p>The next step is optional. If this is a predictive model, create a train/test split. You might even weight the splitting by rating (if that is the outcome variable) to ensure proportional coverage.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="lda.html#cb6-1" tabindex="-1"></a>hotel_split <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(hotel_prep, <span class="at">prop =</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">strata =</span> review_id)</span>
+<span id="cb6-2"><a href="lda.html#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="lda.html#cb6-3" tabindex="-1"></a>lda_train_0 <span class="ot">&lt;-</span></span>
+<span id="cb6-4"><a href="lda.html#cb6-4" tabindex="-1"></a>  lda_dat <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="lda.html#cb6-5" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">training</span>(hotel_split) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review_id, rating), <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span>
+<span id="cb6-6"><a href="lda.html#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="lda.html#cb6-7" tabindex="-1"></a>lda_test <span class="ot">&lt;-</span></span>
+<span id="cb6-8"><a href="lda.html#cb6-8" tabindex="-1"></a>  lda_dat <span class="sc">%&gt;%</span></span>
+<span id="cb6-9"><a href="lda.html#cb6-9" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">testing</span>(hotel_split) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review_id, rating), <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span>
+<span id="cb6-10"><a href="lda.html#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="lda.html#cb6-11" tabindex="-1"></a><span class="fu">glimpse</span>(lda_train_0)</span>
+<span id="cb6-12"><a href="lda.html#cb6-12" tabindex="-1"></a><span class="do">## Rows: 1,342,642</span></span>
+<span id="cb6-13"><a href="lda.html#cb6-13" tabindex="-1"></a><span class="do">## Columns: 3</span></span>
+<span id="cb6-14"><a href="lda.html#cb6-14" tabindex="-1"></a><span class="do">## $ review_id &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, …</span></span>
+<span id="cb6-15"><a href="lda.html#cb6-15" tabindex="-1"></a><span class="do">## $ word      &lt;chr&gt; &quot;stay&quot;, &quot;rhodes&quot;, &quot;hotel&quot;, &quot;night&quot;, &quot;location&quot;, &quot;paddington&quot;…</span></span>
+<span id="cb6-16"><a href="lda.html#cb6-16" tabindex="-1"></a><span class="do">## $ rating    &lt;int&gt; 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, …</span></span>
+<span id="cb6-17"><a href="lda.html#cb6-17" tabindex="-1"></a><span class="fu">glimpse</span>(lda_test)</span>
+<span id="cb6-18"><a href="lda.html#cb6-18" tabindex="-1"></a><span class="do">## Rows: 448,001</span></span>
+<span id="cb6-19"><a href="lda.html#cb6-19" tabindex="-1"></a><span class="do">## Columns: 3</span></span>
+<span id="cb6-20"><a href="lda.html#cb6-20" tabindex="-1"></a><span class="do">## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …</span></span>
+<span id="cb6-21"><a href="lda.html#cb6-21" tabindex="-1"></a><span class="do">## $ word      &lt;chr&gt; &quot;pleasure&quot;, &quot;stay&quot;, &quot;hotel&quot;, &quot;night&quot;, &quot;recently&quot;, &quot;hotel&quot;, &quot;…</span></span>
+<span id="cb6-22"><a href="lda.html#cb6-22" tabindex="-1"></a><span class="do">## $ rating    &lt;int&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span></code></pre></div>
+<p>Low frequency tokens impact the topic model analysis. 58% of the data is composed of tokens that appear &lt;=3 times. Just use the high frequency tokens, the ones occurring at least 4 times in the training data. This is (hopefully) enough to learn topics from tokens that occur together in reviews.</p>
+<div class="rmdnote">
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020</a>)</span> explains that TF-IDF, which combines the within-document token frequency and document frequency, is not always the best way to whittle down the token set. When documents are small, which is common in online reviews, the within document frequency is low and the IDF part is over-weighted.</p>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="lda.html#cb7-1" tabindex="-1"></a>lda_train_0 <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="lda.html#cb7-2" tabindex="-1"></a>  <span class="fu">count</span>(word, <span class="at">name =</span> <span class="st">&quot;token_n&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="lda.html#cb7-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">token_n =</span> <span class="fu">if_else</span>(token_n <span class="sc">&gt;</span> <span class="dv">20</span>, <span class="dv">20</span>, token_n)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="lda.html#cb7-4" tabindex="-1"></a>  <span class="fu">count</span>(token_n) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="lda.html#cb7-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="at">cum_pct =</span> <span class="fu">cumsum</span>(pct)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="lda.html#cb7-6" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> token_n)) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="lda.html#cb7-7" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> pct)) <span class="sc">+</span></span>
+<span id="cb7-8"><a href="lda.html#cb7-8" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> cum_pct)) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="lda.html#cb7-9" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="lda.html#cb7-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Token Frequency&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Pct of Tokens&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Token Frequency&quot;</span>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="lda.html#cb8-1" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="lda.html#cb8-2" tabindex="-1"></a>lda_train <span class="ot">&lt;-</span> lda_train_0 <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="lda.html#cb8-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> word, <span class="at">corpus_token_n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="lda.html#cb8-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> <span class="fu">c</span>(review_id, word), <span class="at">review_token_n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="lda.html#cb8-5" tabindex="-1"></a>  <span class="fu">filter</span>(corpus_token_n <span class="sc">&gt;=</span> <span class="dv">4</span>)</span>
+<span id="cb8-6"><a href="lda.html#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="lda.html#cb8-7" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb8-8"><a href="lda.html#cb8-8" tabindex="-1"></a>  <span class="st">`</span><span class="at">high freq words</span><span class="st">`</span> <span class="ot">=</span> lda_train <span class="sc">%&gt;%</span> </span>
+<span id="cb8-9"><a href="lda.html#cb8-9" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">total_words =</span> <span class="fu">n</span>(), <span class="at">distinct_words =</span> <span class="fu">n_distinct</span>(word)),</span>
+<span id="cb8-10"><a href="lda.html#cb8-10" tabindex="-1"></a>  <span class="st">`</span><span class="at">low freq words</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">anti_join</span>(lda_train_0, lda_train, <span class="at">by =</span> <span class="fu">join_by</span>(review_id, word)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-11"><a href="lda.html#cb8-11" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">total_words =</span> <span class="fu">n</span>(), <span class="at">distinct_words =</span> <span class="fu">n_distinct</span>(word)),</span>
+<span id="cb8-12"><a href="lda.html#cb8-12" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&quot;partition&quot;</span></span>
+<span id="cb8-13"><a href="lda.html#cb8-13" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-14"><a href="lda.html#cb8-14" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_pct =</span> total_words <span class="sc">/</span> <span class="fu">sum</span>(total_words) <span class="sc">*</span> <span class="dv">100</span>, </span>
+<span id="cb8-15"><a href="lda.html#cb8-15" tabindex="-1"></a>         <span class="at">distinct_pct =</span> distinct_words <span class="sc">/</span> <span class="fu">sum</span>(distinct_words) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-16"><a href="lda.html#cb8-16" tabindex="-1"></a>  <span class="fu">select</span>(partition, total_words, total_pct, distinct_words, distinct_pct)</span>
+<span id="cb8-17"><a href="lda.html#cb8-17" tabindex="-1"></a><span class="do">## # A tibble: 2 × 5</span></span>
+<span id="cb8-18"><a href="lda.html#cb8-18" tabindex="-1"></a><span class="do">##   partition       total_words total_pct distinct_words distinct_pct</span></span>
+<span id="cb8-19"><a href="lda.html#cb8-19" tabindex="-1"></a><span class="do">##   &lt;chr&gt;                 &lt;int&gt;     &lt;dbl&gt;          &lt;int&gt;        &lt;dbl&gt;</span></span>
+<span id="cb8-20"><a href="lda.html#cb8-20" tabindex="-1"></a><span class="do">## 1 high freq words     1316274     98.0            9637         41.9</span></span>
+<span id="cb8-21"><a href="lda.html#cb8-21" tabindex="-1"></a><span class="do">## 2 low freq words        26368      1.96          13377         58.1</span></span></code></pre></div>
+<p>Now we can create a document term matrix (DTM).</p>
+<div class="rmdnote">
+<p>Again from <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020</a>)</span>, you might expect the document specific term frequency (<code>review_token_n</code>), however I use the overall token frequency <code>corpus_token_n</code> to give more emphasis to terms that are more frequent in general. Reviews are short compared to books or articles, so the probability of a token occurring repeatedly in a review is low.</p>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="lda.html#cb9-1" tabindex="-1"></a>lda_dtm <span class="ot">&lt;-</span> <span class="fu">cast_dtm</span>(lda_train, <span class="at">document =</span> review_id, <span class="at">term =</span> word, <span class="at">value =</span> corpus_token_n)</span>
+<span id="cb9-2"><a href="lda.html#cb9-2" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="lda.html#cb9-3" tabindex="-1"></a><span class="fu">dim</span>(lda_dtm)</span>
+<span id="cb9-4"><a href="lda.html#cb9-4" tabindex="-1"></a><span class="do">## [1] 16050  9637</span></span>
+<span id="cb9-5"><a href="lda.html#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="lda.html#cb9-6" tabindex="-1"></a><span class="co"># Average token frequency.</span></span>
+<span id="cb9-7"><a href="lda.html#cb9-7" tabindex="-1"></a><span class="fu">sum</span>(lda_dtm) <span class="sc">/</span> <span class="fu">sum</span>(lda_dtm <span class="sc">!=</span> <span class="dv">0</span>)</span>
+<span id="cb9-8"><a href="lda.html#cb9-8" tabindex="-1"></a><span class="do">## [1] 4337.798</span></span></code></pre></div>
+</div>
+<div id="fit" class="section level3 unnumbered hasAnchor">
+<h3>Fit<a href="lda.html#fit" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>There are several parameters you might tweak for the model fit. The biggest surprise is that you set the number of topics, <code>k</code>. <a href="https://knowledger.rbind.io/post/topic-modeling-using-r/">This article</a> explains the harmonic mean method for optimization, but <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020</a>)</span> suggests sticking with the art vs science method and pick your own <code>k</code>.</p>
+<div class="rmdnote">
+<p>The model fit took about 3 minutes to run. I ran it once then saved the result.</p>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="lda.html#cb10-1" tabindex="-1"></a><span class="co"># system.time(lda_fit &lt;- LDA(lda_dtm, k = 3))</span></span>
+<span id="cb10-2"><a href="lda.html#cb10-2" tabindex="-1"></a><span class="co"># saveRDS(lda_fit, file = &quot;input/lda_fit.RDS&quot;)</span></span>
+<span id="cb10-3"><a href="lda.html#cb10-3" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/lda_fit.RDS&quot;</span>)</span></code></pre></div>
+<p>The fitted object contains two matrices. The <strong>phi</strong> matrix is the distribution of tokens (cols) over topics (rows). The <strong>theta</strong> matrix is the distribution of documents (rows) over topics (cols). The row sum is 1 for each matrix (sum of topic probabilities, some of document probabilities).
+In each case, the values are probabilities that sum to 1 for each topic.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="lda.html#cb11-1" tabindex="-1"></a>lda_phi <span class="ot">&lt;-</span> <span class="fu">posterior</span>(lda_fit) <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb11-2"><a href="lda.html#cb11-2" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="lda.html#cb11-3" tabindex="-1"></a><span class="fu">dim</span>(lda_phi)</span>
+<span id="cb11-4"><a href="lda.html#cb11-4" tabindex="-1"></a><span class="do">## [1]    3 9526</span></span>
+<span id="cb11-5"><a href="lda.html#cb11-5" tabindex="-1"></a><span class="fu">sum</span>(lda_phi[<span class="dv">1</span>, ])</span>
+<span id="cb11-6"><a href="lda.html#cb11-6" tabindex="-1"></a><span class="do">## [1] 1</span></span>
+<span id="cb11-7"><a href="lda.html#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="lda.html#cb11-8" tabindex="-1"></a>lda_theta <span class="ot">&lt;-</span> <span class="fu">posterior</span>(lda_fit) <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">&quot;topics&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb11-9"><a href="lda.html#cb11-9" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="lda.html#cb11-10" tabindex="-1"></a><span class="fu">dim</span>(lda_theta)</span>
+<span id="cb11-11"><a href="lda.html#cb11-11" tabindex="-1"></a><span class="do">## [1] 16032     3</span></span>
+<span id="cb11-12"><a href="lda.html#cb11-12" tabindex="-1"></a><span class="fu">sum</span>(lda_theta[<span class="dv">1</span>, ])</span>
+<span id="cb11-13"><a href="lda.html#cb11-13" tabindex="-1"></a><span class="do">## [1] 1</span></span></code></pre></div>
+<p>The <code>tidytext::tidy()</code> function calculates the beta matrix then pivots-longer into a [topic, term, beta] data frame.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="lda.html#cb12-1" tabindex="-1"></a>lda_topics <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lda_fit)</span>
+<span id="cb12-2"><a href="lda.html#cb12-2" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="lda.html#cb12-3" tabindex="-1"></a>lda_topics <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="lda.html#cb12-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic =</span> <span class="fu">factor</span>(<span class="fu">paste</span>(<span class="st">&quot;Topic&quot;</span>, topic))) <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="lda.html#cb12-5" tabindex="-1"></a>  <span class="fu">group_by</span>(topic) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="lda.html#cb12-6" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> beta, <span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="lda.html#cb12-7" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-8"><a href="lda.html#cb12-8" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> <span class="fu">reorder_within</span>(term, <span class="at">by =</span> beta, <span class="at">within =</span> topic))) <span class="sc">+</span></span>
+<span id="cb12-9"><a href="lda.html#cb12-9" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb12-10"><a href="lda.html#cb12-10" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
+<span id="cb12-11"><a href="lda.html#cb12-11" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(topic), <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
+<span id="cb12-12"><a href="lda.html#cb12-12" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;LDA Top 10 Terms&quot;</span>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>There is a downside to this evaluation. Popular words like room appear at or near the top in all three topics. You might want to look at <em>relative</em> popularity instead: the popularity within the topic divided by overall popularity. That’s problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. <code>LDAvis::serVis()</code> can help you do that.</p>
+<div class="rmdnote">
+<p>Unfortunately, the plot from <code>LDAvis::serVis()</code> is interactive and does not render in the RMarkdown notebook html, so below is just a screenshot of the code chunk output.</p>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="lda.html#cb13-1" tabindex="-1"></a>doc_length <span class="ot">&lt;-</span> lda_train <span class="sc">%&gt;%</span> <span class="fu">count</span>(review_id) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n)</span>
+<span id="cb13-2"><a href="lda.html#cb13-2" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="lda.html#cb13-3" tabindex="-1"></a><span class="co"># vocabulary: unique tokens</span></span>
+<span id="cb13-4"><a href="lda.html#cb13-4" tabindex="-1"></a>vocab <span class="ot">&lt;-</span> <span class="fu">colnames</span>(lda_phi) </span>
+<span id="cb13-5"><a href="lda.html#cb13-5" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="lda.html#cb13-6" tabindex="-1"></a><span class="co"># overall token frequency</span></span>
+<span id="cb13-7"><a href="lda.html#cb13-7" tabindex="-1"></a>term_frequency <span class="ot">&lt;-</span> lda_train <span class="sc">%&gt;%</span> <span class="fu">count</span>(word) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(word, vocab)) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n) </span>
+<span id="cb13-8"><a href="lda.html#cb13-8" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="lda.html#cb13-9" tabindex="-1"></a><span class="co"># create JSON containing all needed elements</span></span>
+<span id="cb13-10"><a href="lda.html#cb13-10" tabindex="-1"></a>json <span class="ot">&lt;-</span> LDAvis<span class="sc">::</span><span class="fu">createJSON</span>(lda_phi, lda_theta, doc_length, vocab, term_frequency)</span>
+<span id="cb13-11"><a href="lda.html#cb13-11" tabindex="-1"></a></span>
+<span id="cb13-12"><a href="lda.html#cb13-12" tabindex="-1"></a>LDAvis<span class="sc">::</span><span class="fu">serVis</span>(json)</span></code></pre></div>
+<p><img src="images/ldavis.png" /></p>
 <div id="held-out-likelihood" class="section level5 unnumbered hasAnchor">
 <h5>Held-out Likelihood<a href="lda.html#held-out-likelihood" class="anchor-section" aria-label="Anchor link to header"></a></h5>
 <p>(discussion of hold-out probability) (Wallach et al., 2009).</p>
@@ -256,14 +400,17 @@ div.csl-indent {
 <div id="ref-10.5555/2145432.2145462" class="csl-entry">
 Mimno, David, Hanna M. Wallach, Edmund Talley, Miriam Leenders, and Andrew McCallum. 2011. <span>“Optimizing Semantic Coherence in Topic Models.”</span> In <em>Proceedings of the Conference on Empirical Methods in Natural Language Processing</em>, 262–72. EMNLP ’11. USA: Association for Computational Linguistics. <a href="https://dl.acm.org/doi/10.5555/2145432.2145462">https://dl.acm.org/doi/10.5555/2145432.2145462</a>.
 </div>
+<div id="ref-Nagelkerke2020b" class="csl-entry">
+Nagelkerke, Jurriaan. 2020. <span>“NLP with r Part 1: Topic Modeling to Identify Topics in Restaurant Reviews,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8">https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8</a>.
+</div>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="learning-by-example.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="ctm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="topicmodeling.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="stm.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

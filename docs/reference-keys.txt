@@ -18,3 +18,5 @@ polarity-scoring
 tidytext-1
 sentimentr
 statistical-test
+data-preparation
+fit

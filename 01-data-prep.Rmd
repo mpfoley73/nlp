@@ -63,7 +63,7 @@ That might be enough. Let's explore the data.
 # 90% of reviews rate the property a 4 or 5.
 hotel_1 %>% janitor::tabyl(rating)
 
-# Some reviews are as small as 16 characters, but they can get quite large.
+# Some reviews are as small as 1 character, but they can get quite large.
 hotel_1 %>% select(chr_cnt) %>% summary()
 
 # A few reviews
@@ -90,8 +90,8 @@ token_0 <-
   # Short reviews are mostly gibberish. Require at least 10 words.
   filter(n >= 10)
 
-# Attach word counts back to main data frame. Inner joining will remove some
-# of the bogus reviews.
+# Attach word counts back to main data frame. Inner join side effect is removal
+# of some bogus reviews.
 hotel_2 <- 
   token_0 %>% 
   count(review_id, name = "word_cnt") %>% 
@@ -132,7 +132,9 @@ Stemming and lemmatizing are ways to convert word variations like "staying", "st
 token_2 <- token_1 %>% mutate(word = textstem::lemmatize_words(word))
 
 # Examples.
-tibble(before = token_1$word, after = token_2$word) %>% filter(before != after) %>% head()
+tibble(before = token_1$word, after = token_2$word) %>% 
+  filter(before != after) %>% 
+  count(before, after, sort = TRUE)
 ```
 
 ## Remove Stop Words
@@ -147,10 +149,16 @@ stop <- tidytext::stop_words %>%
   # But also exclude these words.
   bind_rows(tibble(word = as.character(0:9)))
 
-token <- token_2 %>% anti_join(stop, by = "word")
+token <- 
+  token_2 %>% 
+  anti_join(stop, by = "word") %>%
+  # also exclude words that are, or contain, numbers.
+  filter(!str_detect(word, "[0-9]"))
 
 # Most frequently removed words
-token_2 %>% semi_join(stop, by = "word") %>% count(word, sort = TRUE)
+token_2 %>% 
+  anti_join(token, by = join_by(review_id, word)) %>% 
+  count(word, sort = TRUE)
 
 # A typical review, before and after
 bind_cols(
@@ -171,16 +179,18 @@ Bigrams should not contain stop words. However, they should be adjacent words, s
 
 ```{r}
 bigram_0 <-
+  # start with the tokenized data _prior_ to removing stop words.
   token_2 %>%
   summarize(.by = review_id, reconstructed = paste(word, collapse = " ")) %>%
   unnest_tokens("bigram", reconstructed, token = "ngrams", n = 2)
 
-# Remove the bigrams where one or both words are stop words
+# Remove bigrams where one or both words are stop words.
 bigram <- 
   bigram_0 %>%
   separate(bigram, into = c("word1", "word2"), sep = " ") %>%
   anti_join(stop, by = join_by(word1 == word)) %>%
   anti_join(stop, by = join_by(word2 == word)) %>%
+  filter(!str_detect(word1, "[0-9]"), !str_detect(word2, "[0-9]")) %>%
   mutate(bigram = paste(word1, word2)) %>%
   select(review_id, bigram)
 
@@ -199,10 +209,19 @@ bind_cols(
 
 ## Save
 
-Save the cleaned data for other analyses like topic modeling and sentiment analysis.
+Combine the tokens and bigrams into cleaner reviews. Save the cleaned data for other analyses like topic modeling and sentiment analysis.
 
 ```{r}
-hotel_prep <- hotel_2
+review_words <- token %>% 
+  summarize(.by = review_id, review_words = paste(word, collapse = " "))
+
+review_bigrams <- bigram %>%
+  summarize(.by = review_id, review_bigrams = paste(bigram, collapse = " "))
+
+hotel_prep <- 
+  hotel_2 %>%
+  inner_join(review_words, by = join_by(review_id)) %>%
+  inner_join(review_bigrams, by = join_by(review_id))
 
 save(hotel_prep, token, bigram, file = "input/hotel_prepped.Rdata")
 ```

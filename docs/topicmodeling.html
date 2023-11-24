@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-21" />
+<meta name="date" content="2023-11-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="save.html"/>
-<link rel="next" href="learning-by-example.html"/>
+<link rel="next" href="lda.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -52,8 +52,6 @@
 <link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
-<link href="assets/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
-<script src="assets/tabwid-1.1.3/tabwid.js"></script>
 
 
 <style type="text/css">
@@ -174,18 +172,21 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="learning-by-example.html"><a href="learning-by-example.html"><i class="fa fa-check"></i><b>2.1</b> Learning by Example</a></li>
-<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a></li>
-<li class="chapter" data-level="2.3" data-path="ctm.html"><a href="ctm.html"><i class="fa fa-check"></i><b>2.3</b> CTM</a></li>
-<li class="chapter" data-level="2.4" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.4</b> STM</a>
+<li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
+<ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.5" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.5</b> Data Formats</a></li>
+<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
@@ -217,22 +218,40 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="topicmodeling" class="section level1 hasAnchor" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Topic Modeling<a href="topicmodeling.html#topicmodeling" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="topicmodeling.html#cb23-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb23-2"><a href="topicmodeling.html#cb23-2" tabindex="-1"></a><span class="fu">library</span>(stm)</span>
-<span id="cb23-3"><a href="topicmodeling.html#cb23-3" tabindex="-1"></a><span class="fu">library</span>(topicmodels)</span>
-<span id="cb23-4"><a href="topicmodeling.html#cb23-4" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb23-5"><a href="topicmodeling.html#cb23-5" tabindex="-1"></a><span class="fu">library</span>(glue)</span></code></pre></div>
-<p>Here I will continue working with the hotel data and follow the ideas from <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020b</a>)</span> and the <strong>stm</strong> <a href="http://www.structuraltopicmodel.com/">package vignette</a> package.</p>
 <p>Topic models are unsupervised ML models that identify topics as clusters of words with an associated probability distribution, and a probability distribution of topics within each document.</p>
-<p>There are two commonly used models: LDA and STM. LDA is the simpler model and is implemented in the popular <strong>topicmodels</strong> package. STM incorporates document metadata into the model. It is implemented in the <strong>STM</strong> package. These notes also discuss CTM, also in <strong>topicmodels</strong>, that is somewhere between LDA and STM. I discuss CTM because it is a bridge from LDA to STM.</p>
-<p>All three topic models are <em>generative models of word counts</em>. That means they assume there is some process that generates text which is a mixture of topics composed of words which occur with varying probabilities. Think of the observed text document as the product of an algorithm that selected each word in two stages: 1) it sampled a topic from a probability distribution, then 2) it sampled a word from the topic’s word probability distribution. The object in topic modeling is to tune the hyperparameters that define those probability distributions. In a way, topic models do the opposite of what you might expect. They are <em>not</em> estimating the probability that each document is <em>one</em> of those topics. They assume <em>all</em> topics contribute to each document and instead estimate their relative contributions. More concisely, the models treat documents as a mixture of topics, and the topics as a mixture of words where each word has a probability of belonging to each topic. The sum of topic proportions in document is one; the sum of word probabilities in a topic is one.</p>
-<p>This leads to two frameworks for thinking about topics. A topic’s <em>prevalance</em> in a document measures the proportion of the document generated by it. The topic’s <em>content</em> is the probability distribution of words associated with it. What distinguishes the following following models is how they handle these frameworks. An STM model defines covariates associated with prevalence and content; CTM does not. <em>I don’t think LDA does either. We’re kind of at the limit of my understanding here.</em></p>
+<p>There are two commonly used models: LDA and STM. LDA, implemented in the <strong>topicmodels</strong> package, is the simpler model. STM, implemented in the <strong>stm</strong> package, incorporates document metadata into the model.</p>
+<p>Both topic models are <em>generative models of word counts</em>. That means they assume there is some process that generates text which is a mixture of topics composed of words which occur with varying probabilities. Think of the observed text document as the product of an algorithm that selected each word in two stages: 1) it sampled a topic from a probability distribution, then 2) it sampled a word from the topic’s word probability distribution. The object in topic modeling is to tune the hyperparameters that define those probability distributions. In a way, topic models do the opposite of what you might expect. They are <em>not</em> estimating the probability that each document is <em>one</em> of those topics. They assume <em>all</em> topics contribute to each document and instead estimate their relative contributions. More concisely, the models treat documents as a mixture of topics, and the topics as a mixture of words, and both the topics and topic words have probability distributions. The sum of topic proportions in document is one; the sum of word probabilities in a topic is one.</p>
+<p>This leads to two frameworks for thinking about topics. A topic’s <em>prevalance</em> measures the proportion of the document generated by it. The topic’s <em>content</em> is the probability distribution of words associated with it. LDA and STM differ only in how they handle these frameworks. STM defines covariates associated with prevalence and content while sTM does not.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>This section continues with the hotel data from Chapter <a href="data-prep.html#data-prep">1</a> and follows the ideas from <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020</a>)</span> and the <strong>stm</strong> <a href="http://www.structuraltopicmodel.com/">package vignette</a> package.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="topicmodeling.html#cb1-1" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="topicmodeling.html#cb1-2" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href="topicmodeling.html#cb1-3" tabindex="-1"></a><span class="fu">library</span>(topicmodels)</span>
+<span id="cb1-4"><a href="topicmodeling.html#cb1-4" tabindex="-1"></a><span class="fu">library</span>(tidytext)</span>
+<span id="cb1-5"><a href="topicmodeling.html#cb1-5" tabindex="-1"></a><span class="fu">library</span>(stm)</span>
+<span id="cb1-6"><a href="topicmodeling.html#cb1-6" tabindex="-1"></a><span class="co"># library(tm) # generic text mining utilities. Great for DTMs.</span></span>
+<span id="cb1-7"><a href="topicmodeling.html#cb1-7" tabindex="-1"></a><span class="co"># library(LDAvis) # visualizing LDA models</span></span>
+<span id="cb1-8"><a href="topicmodeling.html#cb1-8" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-9"><a href="topicmodeling.html#cb1-9" tabindex="-1"></a><span class="fu">library</span>(glue)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="topicmodeling.html#cb2-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span>
+<span id="cb2-2"><a href="topicmodeling.html#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="topicmodeling.html#cb2-3" tabindex="-1"></a><span class="fu">glimpse</span>(token)</span></code></pre></div>
+<pre><code>## Rows: 1,142,890
+## Columns: 3
+## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+## $ word      &lt;chr&gt; &quot;pleasure&quot;, &quot;stay&quot;, &quot;hotel&quot;, &quot;night&quot;, &quot;recently&quot;, &quot;hotel&quot;, &quot;…
+## $ n         &lt;int&gt; 263, 263, 263, 263, 263, 263, 263, 263, 263, 263, 263, 263, …</code></pre>
 </div>
 <h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Nagelkerke2020b" class="csl-entry">
-———. 2020b. <span>“NLP with r Part 1: Topic Modeling to Identify Topics in Restaurant Reviews,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8">https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8</a>.
+Nagelkerke, Jurriaan. 2020. <span>“NLP with r Part 1: Topic Modeling to Identify Topics in Restaurant Reviews,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8">https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8</a>.
 </div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>I don’t think so, anyway. We’re kind of at the limit of my understanding here.<a href="topicmodeling.html#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
 </div>
             </section>
 
@@ -240,7 +259,7 @@ div.csl-indent {
         </div>
       </div>
 <a href="save.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="learning-by-example.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="lda.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>
