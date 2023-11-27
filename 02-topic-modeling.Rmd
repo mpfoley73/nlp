@@ -17,7 +17,6 @@ library(topicmodels)
 library(tidytext)
 library(stm)
 # library(tm) # generic text mining utilities. Great for DTMs.
-# library(LDAvis) # visualizing LDA models
 library(scales)
 library(glue)
 ```
@@ -43,8 +42,8 @@ LDA assumes each document is created by a generative process where topics are in
 3) Resample a single instance of a word from the corpus and remove it from the analysis, decrementing the document's topic count and the word's topic count.
 
 4) Calculate the gamma matrix, $\gamma$, and the beta matrix, $\beta$.
-    * the gamma matrix is the probability distribution of topics for each document, $$p(t_k|d_i) = \frac{n_{ik} + \alpha}{N_i + K \alpha}$$ were $n_{ik}$ is the number of words in document $i$ for topic $k$, $N_i$ is the total number of words in $i$, and $\alpha$ is a hyperparameter. For each $d_i$, $\sum_{k \in K} \gamma_{ik} = 1$.
-    * the beta matrix is the probability distribution of words for each topic, $$p(w_j|t_k) = \frac{m_{j,k} + \beta}{\sum_{j \in V}m_{j,k} + V\beta}$$ where $m_{j,k}$ is the corpus-wide frequency count of word $w_j$ to topic $k$, $V$ is the number of distinct words in the corpus, and $\beta$ is a hyperparameter. For each $t_k$, $\sum_{j \in V} \beta_{kj} = 1$.
+    * the gamma matrix, aka the topical prevalence, is the probability distribution of topics for each document, $$p(t_k|d_i) = \frac{n_{ik} + \alpha}{N_i + K \alpha}$$ were $n_{ik}$ is the number of words in document $i$ for topic $k$, $N_i$ is the total number of words in $i$, and $\alpha$ is a hyperparameter. For each $d_i$, $\sum_{k \in K} \gamma_{ik} = 1$.
+    * the beta matrix, aka the topical content,  is the probability distribution of words for each topic, $$p(w_j|t_k) = \frac{m_{j,k} + \beta}{\sum_{j \in V}m_{j,k} + V\beta}$$ where $m_{j,k}$ is the corpus-wide frequency count of word $w_j$ to topic $k$, $V$ is the number of distinct words in the corpus, and $\beta$ is a hyperparameter. For each $t_k$, $\sum_{j \in V} \beta_{kj} = 1$.
   
 6) Perform Gibbs sampling. Calculate the joint probability distribution of words for each document and topic, $p(w_j|t_k,d_i) = p(t_k|d_i)p(w_j|t_k)$. Assign each word, $w_j$, to the topic with the maximum joint probability.
 
@@ -148,9 +147,13 @@ There are several parameters you might tweak for the model fit. The biggest surp
 The model fit took about 3 minutes to run. I ran it once then saved the result.
 :::
 
+```{r eval=FALSE}
+lda_fit <- LDA(lda_dtm, k = 3)
+
+saveRDS(lda_fit, file = "input/lda_fit.RDS")
+```
+
 ```{r}
-# system.time(lda_fit <- LDA(lda_dtm, k = 3))
-# saveRDS(lda_fit, file = "input/lda_fit.RDS")
 lda_fit <- readRDS(file = "input/lda_fit.RDS")
 ```
 
@@ -172,13 +175,16 @@ sum(lda_theta[1, ])
 The `tidytext::tidy()` function calculates the beta matrix then pivots-longer into a [topic, term, beta] data frame.
 
 ```{r}
-lda_topics <- tidy(lda_fit)
+lda_tidy <- tidy(lda_fit)
 
-lda_topics %>%
+lda_top_tokens <- 
+  lda_tidy %>%
   mutate(topic = factor(paste("Topic", topic))) %>%
   group_by(topic) %>%
   slice_max(order_by = beta, n = 10) %>%
-  ungroup() %>%
+  ungroup()
+
+lda_top_tokens %>%
   ggplot(aes(x = beta, y = reorder_within(term, by = beta, within = topic))) +
   geom_col() +
   scale_y_reordered() +
@@ -191,6 +197,8 @@ There is a downside to this evaluation. Popular words like room appear at or nea
 :::rmdnote
 Unfortunately, the plot from `LDAvis::serVis()` is interactive and does not render in the RMarkdown notebook html, so below is just a screenshot of the code chunk output.
 :::
+
+The left side shows the topic sizes (documents) and topic distances. The right side shows the most important tokens.
 
 ```{r eval=FALSE}
 doc_length <- lda_train %>% count(review_id) %>% pull(n)
@@ -209,49 +217,175 @@ LDAvis::serVis(json)
 
 ![](images/ldavis.png)
 
-##### Held-out Likelihood {-}
+Iterate through the model by tweaking `k`, excluding words that dominate and suppress more interesting subdomains, and/or changing the minimal token frequency to focus on more/less dominant tokens. You can also change the document sampling strategy to promote interesting domains, like we did when we over sampled the low hotel ratings.
 
-(discussion of hold-out probability) (Wallach et al., 2009).
+### Topic Labeling with ChatGPT {-}
 
-##### Semantic Coherence {-}
+:::rmdnote
+To OpenAI's ChatGPT API service requires an API token. I created one at https://platform.openai.com/api-keys and saved it to .Renviron. See `usethis::edit_r_environ()`. 
+:::
 
-##### Exclusivity {-}
+```{r eval=FALSE}
+library(httr2)
+library(jsonlite)
 
-Generally, the greater the number of topics in a model, the lower the quality of the smallest topics. One way around this is simply hiding the low-quality topics. The coherence measure [@10.5555/2145432.2145462] evaluates topics.
+# Create a function to send each list of topic words to Open AI as a separate request.
+get_topic_from_openai <- function(prompt) {
+  my_resp <-
+    request("https://api.openai.com/v1/chat/completions") %>%
+    req_headers(Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY"))) %>%
+    req_body_json(list(
+      model = "gpt-3.5-turbo",
+      # Temperature [0,2] controls creativity, predictable -> variable. 
+      temperature = 1,
+      messages = list(
+        # System prompt sets repeated context. It is prefixed to prompts.
+        list(
+          role = "system",
+          content = paste("You are a topic modeling assistant. You accept lists ",
+                          "of words in a topic and summarizes them into a salient ",
+                          "topic label of five words or less. How would you ",
+                          "summarize the following list? Return just the topic ",
+                          "label and nothing else.")
+        ),
+        list(
+          role = "user",
+          content = prompt
+        )
+      )
+    )) %>%
+    req_perform() %>% 
+    resp_body_json() %>%
+    pluck("choices", 1, "message", "content")
+}
+
+lda_topics <- 
+  lda_top_tokens %>%
+  nest(data = term, .by = topic) %>%
+  mutate(
+    token_str = map(data, ~paste(.$term, collapse = ", ")),
+    topic_lbl = map_chr(token_str, get_topic_from_openai),
+    topic_lbl = str_remove_all(topic_lbl, '\\"'),
+    topic_lbl = snakecase::to_any_case(topic_lbl, "title")
+  ) %>%
+  select(-data)
+
+# Save to file system to avoid regenerating.
+saveRDS(lda_topics, file = "input/lda_topics.RDS")
+```
+
+```{r}
+lda_topics <- readRDS(file = "input/lda_topics.RDS")
+```
+
+Let's see the topic summary with the newly generated labels.
+
+```{r}
+lda_top_tokens %>%
+  inner_join(lda_topics, by = join_by(topic)) %>%
+  mutate(topic_lbl = str_wrap(topic_lbl, 25)) %>%
+  ggplot(aes(x = beta, y = reorder_within(term, by = beta, within = topic_lbl))) +
+  geom_col() +
+  scale_y_reordered() +
+  facet_wrap(facets = vars(topic_lbl), scales = "free_y") +
+  labs(y = NULL, title = "LDA Top 10 Terms")
+```
+
+### TODO {-}
+
+I still need to learn more about 
+
+* Held-out Likelihood (Wallach et al., 2009).
+
+* Semantic Coherence
+
+* Exclusivity. Generally, the greater the number of topics in a model, the lower the quality of the smallest topics. One way around this is simply hiding the low-quality topics. The coherence measure evaluates topics.
 
 ## STM {#stm}
 
-STM incorporates arbitrary document metadata into the topic model. Without the inclusion of covariates, STM reduces to a logistic-normal topic model, often called the Correlated Topic Model (CTM) (chapter \@ref(ctm)). The goal of STM is to discover topics and estimate their relationship to the metadata.
+STM incorporates arbitrary document metadata into the topic model. The goal of STM is to discover topics and estimate their relationship to the metadata. If _how_ a topic is discussed depends on the metadata features, control for them in the topical content part of the model (the beta matrix). E.g., children and adults will discuss hotels differently. If _what_ topics are discussed depends on the metadata features, control for them in the topical prevalence model (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.
+
+### Algorithm {-}
+
+STM is similar to LDA in that it assumes each document is created by a generative process where topics are included according to probabilities (topical prevalence) and words are included in the topics (topical content) according to probabilities. STM adds the possibility of including topical prevalence covariates, and topical content covariates. 
 
 ### Data Preparation {-}
 
-The **stm** package represents a text corpus as an object with three components: a sparse matrix of counts by document and vocabulary word vector index, the vocabulary word vector, and document metadata.
+Chapter \@ref(data-prep) prepped the data by correcting misspellings, lemmatizing words, and removing stop words
 
-`stm::textProcessor()` is essentially a wrapper around the **tm** package. It:
-* converts words to lowercase,
-* removes stop words (including custom stop words!), numbers, and punctuation, and
-* stems words.
+The **stm** package represents a text corpus as an object with three components: a sparse matrix of counts by document and vocabulary word vector index, the vocabulary word vector, and document metadata. I used STM for my [Battle of the Bands](https://mpfoley73.github.io/battle-of-the-bands/) project.
 
-After processing, `stm::prepDocuments()` removes infrequently appearing words, and removes any documents that contain no words after processing and removing words.
+`stm::textProcessor()` is essentially a wrapper around the **tm** package. It produces a list object with three main components:
 
+* `vocab`, a named vocabulary vector, one element per distinct word.
+* `documents`, a list of matrices, one per document. Each matrix has 2 rows of integers. The first row is indices from the vocabulary vector; the second is their associated word counts. This is a concise representation of a document term matrix. The processing step sometimes removes a few documents if they are empty after removing stopwords, numbers, est.
+* `meta`, a metadata data frame, one row per document containing the feature cols.
 
-```{r}
-gadarian_dat <- stm::gadarian %>%
-  rename(comment = open.ended.response) %>%
-  select(-MetaID)
-glimpse(gadarian_dat) 
+:::rmdnote
+The model fit took about 3 minutes to run. I ran it once then saved the result.
+:::
+
+```{r eval=FALSE}
+stm_processed <-
+  stm::textProcessor(
+    documents = hotel_prep$review_words,
+    metadata = hotel_prep %>% select(rating, property),
+    lowercase = FALSE,
+    removestopwords = FALSE,
+    removenumbers = FALSE,
+    removepunctuation = FALSE,
+    stem = FALSE
+  )
+
+saveRDS(stm_processed, file = "input/stm_processed.RDS")
 ```
 
 ```{r}
-gadarian_processed <- textProcessor(gadarian_dat$comment, metadata = gadarian_dat)
+stm_processed <- readRDS(file = "input/stm_processed.RDS")
+```
+
+After processing, prepare the corpus by removing infrequently used words. `stm::prepDocuments()` removes infrequently appearing words, and removes any documents that contain no words after processing and removing words. 1% (about 230) is a conservative threshold. The plot below shows that removing even a few words will remove some documents, but you can still retain most document
+
+```{r}
+plotRemoved(stm_processed$documents, lower.thresh = seq(100, 4000, by = 100))
+```
+```{r}
+stm_prepared <-
+  stm::prepDocuments(
+    stm_processed$documents,
+    stm_processed$vocab,
+    stm_processed$meta,
+    lower.thresh = length(stm_processed$documents) * .01
+  )
+```
+
+### Fit {-}
+
+The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter `K` = 0. The resulting probability distribution of topic words (beta matrix) will be a K x `r `length(stm_prepared$vocab)` matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a `r comma(length(stm_prepared$documents), 1)` x K matrix. I expect topics to correlate with the review rating, so `rating` is a prevalence covariate, and I expect word usage to correlate with the hotel, so `property` is a topical content covariate.
+
+```{r eval=FALSE}
+set.seed(1234)
+
+stm_fitted <- stm::stm(
+  stm_prepared$documents,
+  stm_prepared$vocab,
+  K = 4,
+  prevalence = ~ rating,
+  content = ~ property,
+  data = stm_prepared$meta,
+  init.type = "Spectral",
+  verbose = FALSE
+)
+
+saveRDS(stm_fitted, file = "input/stm_fitted.RDS")
 ```
 
 ```{r}
-plotRemoved(gadarian_processed$documents, lower.thresh = seq(10, 200, by = 10))
+stm_fitted <- readRDS(file = "input/stm_fitted.RDS")
+
+summary(stm_fitted)
 ```
 
-
-### Prepare {-}
 ### Evaluate {-}
 ### Interpret {-}
 ### Visualize {-}

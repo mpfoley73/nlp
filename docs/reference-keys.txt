@@ -2,14 +2,12 @@ data-prep
 scrub
 tokenize
 spell-check
-lemmatize
 remove-stop-words
+lemmatize
 bigrams
 save
 topicmodeling
-learning-by-example
 lda
-ctm
 stm
 data-formats
 sentimentanalysis
@@ -18,5 +16,3 @@ polarity-scoring
 tidytext-1
 sentimentr
 statistical-test
-data-preparation
-fit

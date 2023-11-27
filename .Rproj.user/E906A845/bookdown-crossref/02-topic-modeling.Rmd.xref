@@ -3,12 +3,12 @@ h2:lda LDA
 h3:algorithm Algorithm
 h3:data-preparation Data Preparation
 h3:fit Fit
-h5:held-out-likelihood Held-out Likelihood
-h5:semantic-coherence Semantic Coherence
-h5:exclusivity Exclusivity
+h3:topic-labeling-with-chatgpt Topic Labeling with ChatGPT
+h3:todo TODO
 h2:stm STM
+h3:algorithm-1 Algorithm
 h3:data-preparation-1 Data Preparation
-h3:prepare Prepare
+h3:fit-1 Fit
 h3:evaluate Evaluate
 h3:interpret Interpret
 h3:visualize Visualize

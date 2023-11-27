@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-24" />
+<meta name="date" content="2023-11-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,6 +52,8 @@
 <link href="assets/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
 <link href="assets/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
 <script src="assets/anchor-sections-1.1.0/anchor-sections.js"></script>
+<link href="assets/tabwid-1.1.3/tabwid.css" rel="stylesheet" />
+<script src="assets/tabwid-1.1.3/tabwid.js"></script>
 
 
 <style type="text/css">
@@ -165,8 +167,8 @@ div.csl-indent {
 <li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
 <li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
-<li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
+<li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
+<li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
 <li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
@@ -177,11 +179,14 @@ div.csl-indent {
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
@@ -218,37 +223,185 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="stm" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> STM<a href="stm.html#stm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>STM incorporates arbitrary document metadata into the topic model. Without the inclusion of covariates, STM reduces to a logistic-normal topic model, often called the Correlated Topic Model (CTM) (chapter <a href="#ctm"><strong>??</strong></a>). The goal of STM is to discover topics and estimate their relationship to the metadata.</p>
+<p>STM incorporates arbitrary document metadata into the topic model. The goal of STM is to discover topics and estimate their relationship to the metadata. If <em>how</em> a topic is discussed depends on the metadata features, control for them in the topical content part of the model (the beta matrix). E.g., children and adults will discuss hotels differently. If <em>what</em> topics are discussed depends on the metadata features, control for them in the topical prevalence model (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.</p>
+<div id="algorithm-1" class="section level3 unnumbered hasAnchor">
+<h3>Algorithm<a href="stm.html#algorithm-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>STM is similar to LDA in that it assumes each document is created by a generative process where topics are included according to probabilities (topical prevalence) and words are included in the topics (topical content) according to probabilities. STM adds the possibility of including topical prevalence covariates, and topical content covariates.</p>
+</div>
 <div id="data-preparation-1" class="section level3 unnumbered hasAnchor">
 <h3>Data Preparation<a href="stm.html#data-preparation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The <strong>stm</strong> package represents a text corpus as an object with three components: a sparse matrix of counts by document and vocabulary word vector index, the vocabulary word vector, and document metadata.</p>
-<p><code>stm::textProcessor()</code> is essentially a wrapper around the <strong>tm</strong> package. It:
-* converts words to lowercase,
-* removes stop words (including custom stop words!), numbers, and punctuation, and
-* stems words.</p>
-<p>After processing, <code>stm::prepDocuments()</code> removes infrequently appearing words, and removes any documents that contain no words after processing and removing words.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="stm.html#cb14-1" tabindex="-1"></a>gadarian_dat <span class="ot">&lt;-</span> stm<span class="sc">::</span>gadarian <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="stm.html#cb14-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">comment =</span> open.ended.response) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="stm.html#cb14-3" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>MetaID)</span>
-<span id="cb14-4"><a href="stm.html#cb14-4" tabindex="-1"></a><span class="fu">glimpse</span>(gadarian_dat) </span></code></pre></div>
-<pre><code>## Rows: 341
-## Columns: 3
-## $ treatment &lt;dbl&gt; 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, …
-## $ pid_rep   &lt;dbl&gt; 1.00000, 1.00000, 0.33300, 0.50000, 0.66667, 0.00000, 0.8330…
-## $ comment   &lt;chr&gt; &quot;problems caused by the influx of illegal immigrants who are…</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="stm.html#cb16-1" tabindex="-1"></a>gadarian_processed <span class="ot">&lt;-</span> <span class="fu">textProcessor</span>(gadarian_dat<span class="sc">$</span>comment, <span class="at">metadata =</span> gadarian_dat)</span></code></pre></div>
-<pre><code>## Building corpus... 
-## Converting to Lower Case... 
-## Removing punctuation... 
-## Removing stopwords... 
-## Removing numbers... 
-## Stemming... 
-## Creating Output...</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="stm.html#cb18-1" tabindex="-1"></a><span class="fu">plotRemoved</span>(gadarian_processed<span class="sc">$</span>documents, <span class="at">lower.thresh =</span> <span class="fu">seq</span>(<span class="dv">10</span>, <span class="dv">200</span>, <span class="at">by =</span> <span class="dv">10</span>))</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Chapter <a href="data-prep.html#data-prep">1</a> prepped the data by correcting misspellings, lemmatizing words, and removing stop words</p>
+<p>The <strong>stm</strong> package represents a text corpus as an object with three components: a sparse matrix of counts by document and vocabulary word vector index, the vocabulary word vector, and document metadata. I used STM for my <a href="https://mpfoley73.github.io/battle-of-the-bands/">Battle of the Bands</a> project.</p>
+<p><code>stm::textProcessor()</code> is essentially a wrapper around the <strong>tm</strong> package. It produces a list object with three main components:</p>
+<ul>
+<li><code>vocab</code>, a named vocabulary vector, one element per distinct word.</li>
+<li><code>documents</code>, a list of matrices, one per document. Each matrix has 2 rows of integers. The first row is indices from the vocabulary vector; the second is their associated word counts. This is a concise representation of a document term matrix. The processing step sometimes removes a few documents if they are empty after removing stopwords, numbers, est.</li>
+<li><code>meta</code>, a metadata data frame, one row per document containing the feature cols.</li>
+</ul>
+<div class="rmdnote">
+<p>The model fit took about 3 minutes to run. I ran it once then saved the result.</p>
 </div>
-<div id="prepare" class="section level3 unnumbered hasAnchor">
-<h3>Prepare<a href="stm.html#prepare" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="stm.html#cb40-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span></span>
+<span id="cb40-2"><a href="stm.html#cb40-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">textProcessor</span>(</span>
+<span id="cb40-3"><a href="stm.html#cb40-3" tabindex="-1"></a>    <span class="at">documents =</span> hotel_prep<span class="sc">$</span>review_words,</span>
+<span id="cb40-4"><a href="stm.html#cb40-4" tabindex="-1"></a>    <span class="at">metadata =</span> hotel_prep <span class="sc">%&gt;%</span> <span class="fu">select</span>(rating, property),</span>
+<span id="cb40-5"><a href="stm.html#cb40-5" tabindex="-1"></a>    <span class="at">lowercase =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb40-6"><a href="stm.html#cb40-6" tabindex="-1"></a>    <span class="at">removestopwords =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb40-7"><a href="stm.html#cb40-7" tabindex="-1"></a>    <span class="at">removenumbers =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb40-8"><a href="stm.html#cb40-8" tabindex="-1"></a>    <span class="at">removepunctuation =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb40-9"><a href="stm.html#cb40-9" tabindex="-1"></a>    <span class="at">stem =</span> <span class="cn">FALSE</span></span>
+<span id="cb40-10"><a href="stm.html#cb40-10" tabindex="-1"></a>  )</span>
+<span id="cb40-11"><a href="stm.html#cb40-11" tabindex="-1"></a></span>
+<span id="cb40-12"><a href="stm.html#cb40-12" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_processed, <span class="at">file =</span> <span class="st">&quot;input/stm_processed.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="stm.html#cb41-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_processed.RDS&quot;</span>)</span></code></pre></div>
+<p>After processing, prepare the corpus by removing infrequently used words. <code>stm::prepDocuments()</code> removes infrequently appearing words, and removes any documents that contain no words after processing and removing words. 1% (about 230) is a conservative threshold. The plot below shows that removing even a few words will remove some documents, but you can still retain most document</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="stm.html#cb42-1" tabindex="-1"></a><span class="fu">plotRemoved</span>(stm_processed<span class="sc">$</span>documents, <span class="at">lower.thresh =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">4000</span>, <span class="at">by =</span> <span class="dv">100</span>))</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="stm.html#cb43-1" tabindex="-1"></a>stm_prepared <span class="ot">&lt;-</span></span>
+<span id="cb43-2"><a href="stm.html#cb43-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">prepDocuments</span>(</span>
+<span id="cb43-3"><a href="stm.html#cb43-3" tabindex="-1"></a>    stm_processed<span class="sc">$</span>documents,</span>
+<span id="cb43-4"><a href="stm.html#cb43-4" tabindex="-1"></a>    stm_processed<span class="sc">$</span>vocab,</span>
+<span id="cb43-5"><a href="stm.html#cb43-5" tabindex="-1"></a>    stm_processed<span class="sc">$</span>meta,</span>
+<span id="cb43-6"><a href="stm.html#cb43-6" tabindex="-1"></a>    <span class="at">lower.thresh =</span> <span class="fu">length</span>(stm_processed<span class="sc">$</span>documents) <span class="sc">*</span> .<span class="dv">01</span></span>
+<span id="cb43-7"><a href="stm.html#cb43-7" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## Removing 26136 of 26886 terms (239369 of 943763 tokens) due to frequency 
+## Removing 21 Documents with No Words 
+## Your corpus now has 23352 documents, 750 terms and 704394 tokens.</code></pre>
+</div>
+<div id="fit-1" class="section level3 unnumbered hasAnchor">
+<h3>Fit<a href="stm.html#fit-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter <code>K</code> = 0. The resulting probability distribution of topic words (beta matrix) will be a K x <code>r</code>length(stm_prepared$vocab)<code>matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a 23,352 x K matrix. I expect topics to correlate with the review rating, so</code>rating<code>is a prevalence covariate, and I expect word usage to correlate with the hotel, so</code>property` is a topical content covariate.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="stm.html#cb45-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb45-2"><a href="stm.html#cb45-2" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="stm.html#cb45-3" tabindex="-1"></a>stm_fitted <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
+<span id="cb45-4"><a href="stm.html#cb45-4" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>documents,</span>
+<span id="cb45-5"><a href="stm.html#cb45-5" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>vocab,</span>
+<span id="cb45-6"><a href="stm.html#cb45-6" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">4</span>,</span>
+<span id="cb45-7"><a href="stm.html#cb45-7" tabindex="-1"></a>  <span class="at">prevalence =</span> <span class="sc">~</span> rating,</span>
+<span id="cb45-8"><a href="stm.html#cb45-8" tabindex="-1"></a>  <span class="at">content =</span> <span class="sc">~</span> property,</span>
+<span id="cb45-9"><a href="stm.html#cb45-9" tabindex="-1"></a>  <span class="at">data =</span> stm_prepared<span class="sc">$</span>meta,</span>
+<span id="cb45-10"><a href="stm.html#cb45-10" tabindex="-1"></a>  <span class="at">init.type =</span> <span class="st">&quot;Spectral&quot;</span>,</span>
+<span id="cb45-11"><a href="stm.html#cb45-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb45-12"><a href="stm.html#cb45-12" tabindex="-1"></a>)</span>
+<span id="cb45-13"><a href="stm.html#cb45-13" tabindex="-1"></a></span>
+<span id="cb45-14"><a href="stm.html#cb45-14" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_fitted, <span class="at">file =</span> <span class="st">&quot;input/stm_fitted.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="stm.html#cb46-1" tabindex="-1"></a>stm_fitted <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_fitted.RDS&quot;</span>)</span>
+<span id="cb46-2"><a href="stm.html#cb46-2" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="stm.html#cb46-3" tabindex="-1"></a><span class="fu">summary</span>(stm_fitted)</span></code></pre></div>
+<pre><code>## A topic model with 4 topics, 23352 documents and a 750 word dictionary.</code></pre>
+<pre><code>## Topic Words:
+##  Topic 1: pleasure, home, hospitality, professional, outstanding, accommodation, impeccable 
+##  Topic 2: park, min, shop, locate, ride, train, distance 
+##  Topic 3: tea, lunch, wine, sweet, tasty, bread, delicious 
+##  Topic 4: curtain, carpet, low, window, toilet, poor, mirror 
+##  
+##  Covariate Words:
+##  Group 45 Park Lane: lane, cut, dorchester, deco, boutique, host, screen 
+##  Group A To Z: cheap, continental, transport, owner, basic, toilet, cup 
+##  Group Apex Wall: apex, district, bean, office, friday, city, balcony 
+##  Group Bulgari: swim, pool, knightsbridge, italian, dark, massage, treatment 
+##  Group City View: basic, cereal, fridge, cup, machine, roll, toilet 
+##  Group Corinthia: corinthia, sauna, courtyard, flower, massage, rain, spa 
+##  Group Dorchester: promenade, dorchester, grill, flower, famous, waiter, ritz 
+##  Group Hartley: smell, budget, smoke, carpet, sink, chair, true 
+##  Group Hotel Xenia: xenia, kensington, italian, twin, toiletry, balcony, spotlessly 
+##  Group Lanesborough: butler, piano, magnificent, lounge, garden, spa, traditional 
+##  Group London Guest House: continental, adequate, fridge, mile, clean, transport, budget 
+##  Group Mandarin Oriental: mandarin, oriental, renovation, spa, renovate, pool, junior 
+##  Group Marble Arch: executive, tasty, box, oxford, stair, sight, complain 
+##  Group Mondrian: mondrian, river, paul&#39;s, container, sea, thames, rooftop 
+##  Group Newham: girl, budget, bad, reasonable, corridor, furniture, buffet 
+##  Group Rembrandt: rembrandt, jacuzzi, swim, club, museum, harrods, pool 
+##  Group Rhodes: rhodes, paddington, jacuzzi, continental, fridge, stair, carry 
+##  Group Ridgemount: ridgemount, owner, share, basic, bus, advice, budget 
+##  Group Savoy: savoy, beaufort, thames, river, grill, american, deco 
+##  Group Wellesley: butler, roll, deco, knightsbridge, terrace, boutique, lounge 
+##  
+##  Topic-Covariate Interactions:
+##  Topic 1, Group 45 Park Lane: park, victoria, private, balcony, perfection, cut, interior 
+##  Topic 1, Group A To Z: budget, clean, accommodation 
+##  Topic 1, Group Apex Wall: wall, apex, court, district, taxi, pool, equip 
+##  Topic 1, Group Bulgari: sauna, amp, treatment, spa, word, luxury, perfection 
+##  Topic 1, Group City View:  
+##  Topic 1, Group Corinthia: gym, spa, corinthia, wait, treatment, executive, mandarin 
+##  Topic 1, Group Dorchester: theatre, christmas, talk, establishment, perfection, life, magnificent 
+##  Topic 1, Group Hartley:  
+##  Topic 1, Group Hotel Xenia: boutique, west, underground, xenia, clean, concierge, balcony 
+##  Topic 1, Group Lanesborough: renovation, renovate, refurbish, easy, garden, greet, club 
+##  Topic 1, Group London Guest House: house, guest, continental, safe, owner, breakfast, spotlessly 
+##  Topic 1, Group Mandarin Oriental: oriental, classic, mandarin, complete, property, pool, type 
+##  Topic 1, Group Marble Arch: gym 
+##  Topic 1, Group Mondrian: balcony, view, lounge, roof, cool, lane, cocktail 
+##  Topic 1, Group Newham: cheap, bad, money, family 
+##  Topic 1, Group Rembrandt: attraction, west, theater, shop, nearby, tourist, theatre 
+##  Topic 1, Group Rhodes: read, rhodes, convenient, host, owner, money, run 
+##  Topic 1, Group Ridgemount: morning, fill, phone, bus, run, locate, basic 
+##  Topic 1, Group Savoy: wed, junior, anniversary, surrounding, executive, view, history 
+##  Topic 1, Group Wellesley: slipper, marble, roll, complimentary, touch, car, perfection 
+##  
+##  Topic 2, Group 45 Park Lane: suite, butler, separate, dorchester, hyde, view, gym 
+##  Topic 2, Group A To Z: towel, wifi, noise, main, train, toilet, line 
+##  Topic 2, Group Apex Wall: moorgate, paul&#39;s, saturday, bank, surrounding, weekend, lunch 
+##  Topic 2, Group Bulgari: harrods, black, marble, oriental, mandarin, boutique, brand 
+##  Topic 2, Group City View:  
+##  Topic 2, Group Corinthia: embankment, trafalgar, square, eye, thames, river, theater 
+##  Topic 2, Group Dorchester: chair, executive, son, american, star, lane, spa 
+##  Topic 2, Group Hartley: clean, free, breakfast 
+##  Topic 2, Group Hotel Xenia: court, albert, natural, museum, history, victoria, hall 
+##  Topic 2, Group Lanesborough: piano, beautifully, gym, corner, luxurious, hyde, excellent 
+##  Topic 2, Group London Guest House: bus, budget, free, paddington, basic, line, stop 
+##  Topic 2, Group Mandarin Oriental: knightsbridge, balcony, magnificent, harrods, hyde, overlook, interior 
+##  Topic 2, Group Marble Arch: marble, oxford, street 
+##  Topic 2, Group Mondrian: blackfriars, tate, bank, eye, bridge, south, promenade 
+##  Topic 2, Group Newham: toast, bean, read, sausage, pay, cereal, iron 
+##  Topic 2, Group Rembrandt: albert, kensington, victoria, south, natural, history, directly 
+##  Topic 2, Group Rhodes: express, heathrow, money, internet, kensington, paddington, hyde 
+##  Topic 2, Group Ridgemount: british, square, court, museum, trafalgar, theater, covent 
+##  Topic 2, Group Savoy: pool, strand, embankment, covent, swim, sauna, christmas 
+##  Topic 2, Group Wellesley: waiter, complimentary, harrods, hyde, junior, heat, corner 
+##  
+##  Topic 3, Group 45 Park Lane: eye, son, amaze, guy, sunday, arrange, cocktail 
+##  Topic 3, Group A To Z: toast, coffee, type, juice, amp, breakfast, tea 
+##  Topic 3, Group Apex Wall: junior, suite, upgrade, towel, executive, card, bed 
+##  Topic 3, Group Bulgari: website, classy, bad, expectation, toilet, scone, cut 
+##  Topic 3, Group City View:  
+##  Topic 3, Group Corinthia: promenade, chair, lounge, pianist, piano, music, wow 
+##  Topic 3, Group Dorchester: pianist, piano, scone, afternoon, sandwich, surrounding, highly 
+##  Topic 3, Group Hartley:  
+##  Topic 3, Group Hotel Xenia: executive, continental, doorman, break, class, lounge, private 
+##  Topic 3, Group Lanesborough: pianist, guess, scone, sandwich, afternoon, enter, type 
+##  Topic 3, Group London Guest House: cereal, bean, toast, juice, coffee, fruit, plenty 
+##  Topic 3, Group Mandarin Oriental: swim, treatment, pool, massage, spa, suite, club 
+##  Topic 3, Group Marble Arch: menu 
+##  Topic 3, Group Mondrian: spa, treatment, massage, share, world, window, concierge 
+##  Topic 3, Group Newham: amp, egg, breakfast, bread, fruit, juice, tea 
+##  Topic 3, Group Rembrandt: gym, spa, opposite, robe, chair, cereal, cold 
+##  Topic 3, Group Rhodes: cereal, basic, toast, cheese, terrace, coffee, fruit 
+##  Topic 3, Group Ridgemount: machine, internet, bacon, cereal, sausage, bean, free 
+##  Topic 3, Group Savoy: pianist, piano, american, beaufort, scone, play, foyer 
+##  Topic 3, Group Wellesley: feature, piano, pianist, music, play, italian, theatre 
+##  
+##  Topic 4, Group 45 Park Lane: surrounding, host, wife, system, escort, executive, touch 
+##  Topic 4, Group A To Z: break, smell, refurbish, carpet, fridge, fan, curtain 
+##  Topic 4, Group Apex Wall: embankment, lounge, snack, robe, tea, iron, huge 
+##  Topic 4, Group Bulgari: jacuzzi, breakfast, product, treatment, concierge, massage, bill 
+##  Topic 4, Group City View: bad 
+##  Topic 4, Group Corinthia: jacuzzi, perfection, swim, pool, chocolate, fruit, executive 
+##  Topic 4, Group Dorchester: treatment, cup, escort, spa, airport, suit, wait 
+##  Topic 4, Group Hartley: opposite, eye, read, door, bad, bed, carpet 
+##  Topic 4, Group Hotel Xenia: classic, gym, tiny, pianist, stylish, large, terrace 
+##  Topic 4, Group Lanesborough: amp, treatment, massage, butler, executive, junior, suite 
+##  Topic 4, Group London Guest House: cheese, traffic, bank, single, twin, tiny, fit 
+##  Topic 4, Group Mandarin Oriental: express, smoke, courtyard, tire, party, internet, star 
+##  Topic 4, Group Marble Arch: upgrade, pay 
+##  Topic 4, Group Mondrian: rumpus, play, grind, selection, cocktail, mini, superior 
+##  Topic 4, Group Newham: block, flat, share, event, smell, carpet, partner 
+##  Topic 4, Group Rembrandt: executive, gym, american, renovate, location, train, sauna 
+##  Topic 4, Group Rhodes: elegant, build, single, street, interior, main, tiny 
+##  Topic 4, Group Ridgemount: garden, street, traffic, single, face, stair, grind 
+##  Topic 4, Group Savoy: butler, team, anniversary, club, treatment, attention, package 
+##  Topic 4, Group Wellesley: gym, stun, oriental, smell, smoke, lobby, luxury 
+## </code></pre>
 </div>
 <div id="evaluate" class="section level3 unnumbered hasAnchor">
 <h3>Evaluate<a href="stm.html#evaluate" class="anchor-section" aria-label="Anchor link to header"></a></h3>

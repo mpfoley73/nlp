@@ -197,7 +197,7 @@
                     ]
                 ]
             },
-            "note": "R package version 0.36",
+            "note": "R package version 0.36, https://pkgs.rstudio.com/bookdown/",
             "title": "Bookdown: Authoring books and technical documents with r markdown",
             "title-short": "Bookdown",
             "type": "book"
@@ -250,7 +250,7 @@
                     ]
                 ]
             },
-            "note": "R package version 3.4.3",
+            "note": "R package version 3.4.4, https://github.com/tidyverse/ggplot2",
             "title": "ggplot2: Create elegant data visualisations using the grammar of graphics",
             "title-short": "ggplot2",
             "type": "book"
@@ -332,7 +332,7 @@
                     ]
                 ]
             },
-            "note": "R package version 2.25",
+            "note": "R package version 2.25, https://pkgs.rstudio.com/rmarkdown/",
             "title": "Rmarkdown: Dynamic documents for r",
             "title-short": "Rmarkdown",
             "type": "book"

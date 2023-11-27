@@ -124,19 +124,6 @@ mean(token_0$word != token_1$word)
 tibble(before = token_0$word, after = token_1$word) %>% filter(before != after) %>% head()
 ```
 
-## Lemmatize
-
-Stemming and lemmatizing are ways to convert word variations like "staying", "stayed", and "stay" into a generic form: "stay". Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., "staying" becomes "stai". Lemmatize gives you the more natural "stay".
-
-```{r}
-token_2 <- token_1 %>% mutate(word = textstem::lemmatize_words(word))
-
-# Examples.
-tibble(before = token_1$word, after = token_2$word) %>% 
-  filter(before != after) %>% 
-  count(before, after, sort = TRUE)
-```
-
 ## Remove Stop Words
 
 Stop words usually add no value, but you should pay attention to what you are dropping. Be ready to add pertinent words back and perhaps drop others.
@@ -147,19 +134,34 @@ stop <- tidytext::stop_words %>%
   # Don't remove potentially useful words.
   filter(!word %in% c("appreciate", "room")) %>%
   # But also exclude these words.
-  bind_rows(tibble(word = as.character(0:9)))
+  bind_rows(tibble(word = c("hotel")))
 
-token <- 
-  token_2 %>% 
+token_2 <- 
+  token_1 %>% 
   anti_join(stop, by = "word") %>%
   # also exclude words that are, or contain, numbers.
   filter(!str_detect(word, "[0-9]"))
 
 # Most frequently removed words
-token_2 %>% 
-  anti_join(token, by = join_by(review_id, word)) %>% 
+token_1 %>% 
+  anti_join(token_2, by = join_by(review_id, word)) %>% 
   count(word, sort = TRUE)
+```
 
+## Lemmatize
+
+Stemming and lemmatizing are ways to convert word variations like "staying", "stayed", and "stay" into a generic form: "stay". Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., "staying" becomes "stai". Lemmatize gives you the more natural "stay".
+
+```{r}
+token <- token_2 %>% mutate(word = textstem::lemmatize_words(word))
+
+# Examples.
+tibble(before = token_2$word, after = token$word) %>% 
+  filter(before != after) %>% 
+  count(before, after, sort = TRUE)
+```
+
+```{r}
 # A typical review, before and after
 bind_cols(
   review_id = 2:4,

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>1.5 Remove Stop Words | Natural Language Processing in R</title>
+  <title>1.4 Remove Stop Words | Natural Language Processing in R</title>
   <meta name="description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
   <meta name="generator" content="bookdown 0.36 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="1.5 Remove Stop Words | Natural Language Processing in R" />
+  <meta property="og:title" content="1.4 Remove Stop Words | Natural Language Processing in R" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="1.5 Remove Stop Words | Natural Language Processing in R" />
+  <meta name="twitter:title" content="1.4 Remove Stop Words | Natural Language Processing in R" />
   
   <meta name="twitter:description" content="Background and tutorial on natural language processing in R (topic modeling, sentiment analysis) using R." />
   
@@ -23,15 +23,15 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-23" />
+<meta name="date" content="2023-11-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="lemmatize.html"/>
-<link rel="next" href="bigrams.html"/>
+<link rel="prev" href="spell-check.html"/>
+<link rel="next" href="lemmatize.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -167,8 +167,8 @@ div.csl-indent {
 <li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
 <li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
-<li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
+<li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
+<li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
 <li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
 <li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
 </ul></li>
@@ -177,12 +177,16 @@ div.csl-indent {
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="2.1.1" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i><b>2.1.1</b> Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#prepare"><i class="fa fa-check"></i>Prepare</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
@@ -217,63 +221,48 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="remove-stop-words" class="section level2 hasAnchor" number="1.5">
-<h2><span class="header-section-number">1.5</span> Remove Stop Words<a href="remove-stop-words.html#remove-stop-words" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="remove-stop-words" class="section level2 hasAnchor" number="1.4">
+<h2><span class="header-section-number">1.4</span> Remove Stop Words<a href="remove-stop-words.html#remove-stop-words" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Stop words usually add no value, but you should pay attention to what you are dropping. Be ready to add pertinent words back and perhaps drop others.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="remove-stop-words.html#cb18-1" tabindex="-1"></a><span class="co"># Start with a standard list.</span></span>
-<span id="cb18-2"><a href="remove-stop-words.html#cb18-2" tabindex="-1"></a>stop <span class="ot">&lt;-</span> tidytext<span class="sc">::</span>stop_words <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="remove-stop-words.html#cb18-3" tabindex="-1"></a>  <span class="co"># Don&#39;t remove potentially useful words.</span></span>
-<span id="cb18-4"><a href="remove-stop-words.html#cb18-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;appreciate&quot;</span>, <span class="st">&quot;room&quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb18-5"><a href="remove-stop-words.html#cb18-5" tabindex="-1"></a>  <span class="co"># But also exclude these words.</span></span>
-<span id="cb18-6"><a href="remove-stop-words.html#cb18-6" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(<span class="at">word =</span> <span class="fu">as.character</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">9</span>)))</span>
-<span id="cb18-7"><a href="remove-stop-words.html#cb18-7" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="remove-stop-words.html#cb18-8" tabindex="-1"></a>token <span class="ot">&lt;-</span> </span>
-<span id="cb18-9"><a href="remove-stop-words.html#cb18-9" tabindex="-1"></a>  token_2 <span class="sc">%&gt;%</span> </span>
-<span id="cb18-10"><a href="remove-stop-words.html#cb18-10" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-11"><a href="remove-stop-words.html#cb18-11" tabindex="-1"></a>  <span class="co"># also exclude words that are numbers</span></span>
-<span id="cb18-12"><a href="remove-stop-words.html#cb18-12" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(word, <span class="st">&quot;^[0-9]&quot;</span>))</span>
-<span id="cb18-13"><a href="remove-stop-words.html#cb18-13" tabindex="-1"></a></span>
-<span id="cb18-14"><a href="remove-stop-words.html#cb18-14" tabindex="-1"></a><span class="co"># Most frequently removed words</span></span>
-<span id="cb18-15"><a href="remove-stop-words.html#cb18-15" tabindex="-1"></a>token_2 <span class="sc">%&gt;%</span> <span class="fu">semi_join</span>(stop, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 523 × 2
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="remove-stop-words.html#cb16-1" tabindex="-1"></a><span class="co"># Start with a standard list.</span></span>
+<span id="cb16-2"><a href="remove-stop-words.html#cb16-2" tabindex="-1"></a>stop <span class="ot">&lt;-</span> tidytext<span class="sc">::</span>stop_words <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="remove-stop-words.html#cb16-3" tabindex="-1"></a>  <span class="co"># Don&#39;t remove potentially useful words.</span></span>
+<span id="cb16-4"><a href="remove-stop-words.html#cb16-4" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>word <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;appreciate&quot;</span>, <span class="st">&quot;room&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-5"><a href="remove-stop-words.html#cb16-5" tabindex="-1"></a>  <span class="co"># But also exclude these words.</span></span>
+<span id="cb16-6"><a href="remove-stop-words.html#cb16-6" tabindex="-1"></a>  <span class="fu">bind_rows</span>(<span class="fu">tibble</span>(<span class="at">word =</span> <span class="fu">c</span>(<span class="st">&quot;hotel&quot;</span>)))</span>
+<span id="cb16-7"><a href="remove-stop-words.html#cb16-7" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="remove-stop-words.html#cb16-8" tabindex="-1"></a>token_2 <span class="ot">&lt;-</span> </span>
+<span id="cb16-9"><a href="remove-stop-words.html#cb16-9" tabindex="-1"></a>  token_1 <span class="sc">%&gt;%</span> </span>
+<span id="cb16-10"><a href="remove-stop-words.html#cb16-10" tabindex="-1"></a>  <span class="fu">anti_join</span>(stop, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-11"><a href="remove-stop-words.html#cb16-11" tabindex="-1"></a>  <span class="co"># also exclude words that are, or contain, numbers.</span></span>
+<span id="cb16-12"><a href="remove-stop-words.html#cb16-12" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(word, <span class="st">&quot;[0-9]&quot;</span>))</span>
+<span id="cb16-13"><a href="remove-stop-words.html#cb16-13" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="remove-stop-words.html#cb16-14" tabindex="-1"></a><span class="co"># Most frequently removed words</span></span>
+<span id="cb16-15"><a href="remove-stop-words.html#cb16-15" tabindex="-1"></a>token_1 <span class="sc">%&gt;%</span> </span>
+<span id="cb16-16"><a href="remove-stop-words.html#cb16-16" tabindex="-1"></a>  <span class="fu">anti_join</span>(token_2, <span class="at">by =</span> <span class="fu">join_by</span>(review_id, word)) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-17"><a href="remove-stop-words.html#cb16-17" tabindex="-1"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 2,490 × 2
 ##    word       n
 ##    &lt;chr&gt;  &lt;int&gt;
-##  1 the   196438
-##  2 be    162698
-##  3 and   117631
-##  4 a      98224
-##  5 to     78025
+##  1 the   196439
+##  2 and   117631
+##  3 a      89194
+##  4 to     78025
+##  5 was    64152
 ##  6 in     54398
 ##  7 we     47724
 ##  8 of     44773
-##  9 i      43744
-## 10 have   40064
-## # ℹ 513 more rows</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="remove-stop-words.html#cb20-1" tabindex="-1"></a><span class="co"># A typical review, before and after</span></span>
-<span id="cb20-2"><a href="remove-stop-words.html#cb20-2" tabindex="-1"></a><span class="fu">bind_cols</span>(</span>
-<span id="cb20-3"><a href="remove-stop-words.html#cb20-3" tabindex="-1"></a>  <span class="at">review_id =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>,</span>
-<span id="cb20-4"><a href="remove-stop-words.html#cb20-4" tabindex="-1"></a>  <span class="at">before =</span> hotel_2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(review),</span>
-<span id="cb20-5"><a href="remove-stop-words.html#cb20-5" tabindex="-1"></a>  <span class="at">after =</span> token <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-6"><a href="remove-stop-words.html#cb20-6" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">x =</span> <span class="fu">paste</span>(word, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-7"><a href="remove-stop-words.html#cb20-7" tabindex="-1"></a>    <span class="fu">pull</span>(x)</span>
-<span id="cb20-8"><a href="remove-stop-words.html#cb20-8" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-9"><a href="remove-stop-words.html#cb20-9" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">valign =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">autofit</span>()</span></code></pre></div>
-<div class="tabwid tabwid_left"><style>.cl-3f13ceea{}.cl-3f0d0718{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3f0d0722{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3f0f7fb6{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3f0f7fca{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3f0f7fcb{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3f0f7fd4{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3f0f8e48{width:0.918in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e52{width:87.136in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e53{width:44.019in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e5c{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e5d{width:87.136in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e5e{width:44.019in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e5f{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e66{width:87.136in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e70{width:44.019in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e7a{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e7b{width:87.136in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f0f8e7c{width:44.019in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-3f13ceea'><thead><tr style="overflow-wrap:break-word;"><th class="cl-3f0f8e48"><p class="cl-3f0f7fb6"><span class="cl-3f0d0718">review_id</span></p></th><th class="cl-3f0f8e52"><p class="cl-3f0f7fca"><span class="cl-3f0d0718">before</span></p></th><th class="cl-3f0f8e53"><p class="cl-3f0f7fca"><span class="cl-3f0d0718">after</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-3f0f8e5c"><p class="cl-3f0f7fcb"><span class="cl-3f0d0722">2</span></p></td><td class="cl-3f0f8e5d"><p class="cl-3f0f7fd4"><span class="cl-3f0d0722">I had a pleasure of staying in this hotel for 7 nights recently. This hotel was perfect in every way. Communication with the hotel before staying was prompt, and very efficient. Checking in was a breeze. You go through the spectacular lobby with modern glass chandeliers and take the elevator to your room. My room, they gave me an upgrade to junior suite, was spectacular. We had a walk-in closet of the size where you could have put a small bed in there; it served us nicely for the seven day stay. The decor was very refined, and oh the bathroom! Carrera marble floor was heated throughout, rain shower was to die for! Location, as it turned out, was as good as it can be. We were 5 minutes walk to Trafalgar Square, but it was very quiet. Right outside was Embankment tube stop. We would walk to theater area and to numerous restaurants, and many major sites, such as London Eye or Westminster Abbey were within walking distance. We had buffet breakfast or room service every morning. It was pricy, but my rate included it. Couple of nights, we had glass of wine sitting in front of fire place in the lobby. I used the spa, which is included in the room rate, almost every night. After a windchill day of sightseeing, the steam sauna and jacuzzi would soften my weary muscles. I have stayed in many 5 star hotels around the world, but this hotel tops it. I would return here in a heartbeat next time I am in London.</span></p></td><td class="cl-3f0f8e5e"><p class="cl-3f0f7fd4"><span class="cl-3f0d0722">pleasure stay hotel night recently hotel perfect communication hotel stay prompt efficient check breeze spectacular lobby modern glass chandelier elevator room room upgrade junior suite spectacular walk closet size bed serve nicely day stay decor refine bathroom carrera marble floor heat rain shower die location minute walk trafalgar square quiet embankment tube stop walk theater numerous restaurant major site london eye westminster abbey walk distance buffet breakfast room service morning pricy rate include couple night glass wine sit front fire lobby spa include room rate night windchill day sightsee steam sauna jacuzzi soften weary muscle stay star hotel world hotel top return heartbeat time london</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f0f8e5f"><p class="cl-3f0f7fcb"><span class="cl-3f0d0722">3</span></p></td><td class="cl-3f0f8e66"><p class="cl-3f0f7fd4"><span class="cl-3f0d0722">A very lovely first visit to this iconic hotel bar! Wonderful service, without being intrusive at all! Very delicious cocktails and just generally all round, a very indulgent experience. Well worth visiting only for that 'once in a lifetime' experience, though do make sure you are feeling 'flush' it doesn't come cheap!</span></p></td><td class="cl-3f0f8e70"><p class="cl-3f0f7fd4"><span class="cl-3f0d0722">lovely visit iconic hotel bar wonderful service intrusive delicious cocktail round indulgent experience worth visit lifetime experience feel flush cheap</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f0f8e7a"><p class="cl-3f0f7fcb"><span class="cl-3f0d0722">4</span></p></td><td class="cl-3f0f8e7b"><p class="cl-3f0f7fd4"><span class="cl-3f0d0722">3 of us stayed at the Rhodes Hotel for 4 nights, its a great location for taking the Paddington Express from Heathrow. We like the location clost to the partk and in walking distance of most locations. The room and bath were small compared to American Hotels but very clean. We enjoyed the free WIFI. The owners and the staff were very friendly and helpful with taxi's and resturant recomendations. We would stay there again.</span></p></td><td class="cl-3f0f8e7c"><p class="cl-3f0f7fd4"><span class="cl-3f0d0722">stay rhodes hotel night location paddington express heathrow location clost partk walk distance location room bath compare american hotel clean enjoy free wifi owner staff friendly helpful taxi's restaurant recomendations stay</span></p></td></tr></tbody></table></div>
-<p>At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics <span class="citation">(<a href="#ref-VanGils2020">Gils 2020</a>)</span>.</p>
-</div>
-<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-VanGils2020" class="csl-entry">
-Gils, Wouter van. 2020. <span>“Natural Language Processing for Predictive Purposes with r,”</span> November. <a href="https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b">https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b</a>.
-</div>
+##  9 i      43742
+## 10 for    38260
+## # ℹ 2,480 more rows</code></pre>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="lemmatize.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="bigrams.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="spell-check.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lemmatize.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>
@@ -331,6 +320,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
