@@ -67,7 +67,7 @@ nrc %>%
 
 Two packages measure text polarity. The simpler one **tidytext**: unnest tokens, join to the Bing lexicon, and calculate the net of positive minus negative polarity counts. **sentimentr** is more sophisticated in that it takes into account *valence shifters*, surrounding words that change the intensity of a sentiment (e.g., "very") or switch its direction (e.g., "not").^[There is a third package called **qdap**, but the **sentimentr** [Read Me](https://cran.r-project.org/web/packages/sentimentr/readme/README.html) explains **sentimentr** is an improved version that better balances accuracy and speed.] 
 
-### tidytext
+### tidytext {-}
 
 The **tidytext** way to score polarity is to tag words as "positive" and "negative" using the Bing lexicon, then calculate the difference in counts. The **qdap** and **sentimentr** packages correct for text length by dividing by $\sqrt{n}$. It is useful to capture the positive and negative words back in the main data frame for explaining how the polarity score was calculated.
 
@@ -125,7 +125,7 @@ hotel_1 %>%
                       "AFINN Polarity = sentiment / sqrt(n_words)"))
 ```
 
-The two lexicons are similar. The data set includes a numeric rating `review_rating` (1-5). I'll stick with Bing going forward for convenience. The polarity score should correlate with the numeric rating.
+The two lexicons are similar. The data set includes a rating (1-5). I'll stick with Bing going forward for convenience. The polarity score should correlate with the rating.
 
 ```{r}
 hotel_1 %>% 
@@ -144,8 +144,8 @@ Sentiment increases with Likert rating, but there are many reviews with a rating
 hotel_1 %>%
   mutate(
     problematic = case_when(
-      (rating == 1 & bing_polarity > 0.5) ~ "Too Low",
-      (rating == 5 & bing_polarity < -.5) ~ "Too High",
+      (rating == "1-2" & bing_polarity > 0.5) ~ "Too Low",
+      (rating == "5" & bing_polarity < -.5) ~ "Too High",
       TRUE ~ "Other"
     )
   ) %>%
@@ -162,10 +162,10 @@ The polarity words can help explain why some hotels rated poor or excellent.
 
 ```{r}
 token %>%
-  inner_join(hotel_1 %>% filter(rating %in% c(1, 5)), by = join_by(review_id)) %>%
+  inner_join(hotel_1 %>% filter(rating %in% c("1-2", "5")), by = join_by(review_id)) %>%
   filter(!word %in% c("hotel", "stay", "night")) %>%
-  filter((rating == 5 & bing_polarity > 0) | 
-         (rating == 1 & bing_polarity < 0)) %>%
+  filter((rating == "5" & bing_polarity > 0) | 
+         (rating == "1-2" & bing_polarity < 0)) %>%
   count(rating, word) %>%
   mutate(.by = rating, pct = n / sum(n)) %>%
   group_by(rating) %>%
@@ -182,7 +182,7 @@ Word clouds are a nice way to get an overview of the data.
 
 ```{r fig.height=5}
 token %>%
-  inner_join(hotel_1 %>% filter(rating %in% c(1, 5)), by = join_by(review_id)) %>%
+  inner_join(hotel_1 %>% filter(rating %in% c("1-2", "5")), by = join_by(review_id)) %>%
   filter(!word %in% c("hotel", "stay", "night", "london"),
          !is.na(bing_polarity)) %>%
   mutate(polarity_desc = if_else(bing_polarity > 0, "Positive", "Negative")) %>%
@@ -193,7 +193,7 @@ token %>%
   wordcloud::comparison.cloud(max.words = 30, title.size = 1.5, scale = c(1, 3.5))
 ```
 
-### sentimentr
+### sentimentr {-}
 
 **sentimentr** calculates polarity at the sentence level. It improves on **tidytext** in that it takes into account the context in which the sentiment words occur by incorporating *valence shifters*. 
 
@@ -234,45 +234,55 @@ hotel_2 %>%
 You can fit an ordinal logistic regression model to predict the rating based on the review sentiment. Which performs better, **tidytext** or **sentimentr**? Start with an intercept-only model for a baseline and review of ordinal logistic regression.
 
 ```{r}
-# Limit to cases where both methods were able to score the review.
-mdl_dat <- hotel_2 %>% mutate(rating_fct = factor(rating, ordered = TRUE))
-
-fit_intercept <- ordinal::clm(rating_fct ~ 1, data = mdl_dat)
+fit_intercept <- ordinal::clm(rating ~ 1, data = hotel_2)
 
 summary(fit_intercept)
 ```
 
-The threshold coefficients in the summary table are the log-odds of the outcome variable having a level at or below vs above. Below, 10.3% of ratings were <=3 and 89.7% were >=4 for a log-odds of log(.103/.897) = `r log(0.10320745/0.8967926)`, corresponding to the `3|4` line in the regression summary.
+The threshold coefficients in the summary table are the log-odds of the outcome variable having a level at or below vs above. Below, 10.3% of ratings were <=3 and 89.7% were >3 for a log-odds of log(.103/.897) = `r log(0.10320745/0.8967926)`, corresponding to the `3|4` line in the regression summary.
 
 ```{r}
-mdl_dat %>% tabyl(rating_fct) %>% mutate(cum = cumsum(percent), `1-cum` = 1 - cum)
+hotel_2 %>% tabyl(rating) %>% mutate(cum = cumsum(percent), `1-cum` = 1 - cum)
 ```
 
-Now fit the **bing** and **sentimentr** models. The **bing** model has the lowest log-likelihood.
+Now fit the **bing** and **sentimentr** models. The **bing** model has the higher -2 * log-likelihood.
 
 ```{r}
-fit_bing <- ordinal::clm(rating_fct ~ bing_polarity, data = mdl_dat)
+fit_bing <- ordinal::clm(rating ~ bing_polarity, data = hotel_2)
 
-fit_sentimentr <- ordinal::clm(rating_fct ~ sentimentr_polarity, data = mdl_dat)
+fit_sentimentr <- ordinal::clm(rating ~ sentimentr_polarity, data = hotel_2)
 
 anova(fit_bing, fit_sentimentr, fit_intercept)
 ```
 
-How about predictive performance? They both peformed about the same.
+How about predictive performance? They performed about the same.
 
 ```{r warning=FALSE}
-(bing_conf <- 
+bing_conf <- 
   fit_bing %>% 
   augment(type = "class") %>% 
-  conf_mat(truth = rating_fct, estimate = .fitted))
+  conf_mat(truth = rating, estimate = .fitted)
 
-summary(bing_conf)
-
-(sentimentr_conf <- 
+sentimentr_conf <- 
   fit_sentimentr %>% 
   augment(type = "class") %>% 
-  conf_mat(truth = rating_fct, estimate = .fitted))
+  conf_mat(truth = rating, estimate = .fitted)
 
-summary(sentimentr_conf)
+bind_rows(
+  bing = as_tibble(bing_conf$table),
+  sentimentr = as_tibble(sentimentr_conf$table), 
+  .id = "lexicon"
+) %>%
+  pivot_wider(names_from = Truth, values_from = n) %>%
+  flextable::flextable() %>%
+  flextable::merge_v(j = 1) %>%
+  flextable::valign(j = 1, valign = "top")
+
+bind_rows(
+  bing = summary(bing_conf),
+  sentimentr = summary(sentimentr_conf),
+  .id = "lexicon"
+) %>%
+  pivot_wider(names_from = lexicon, values_from = .estimate)
 ```
 

@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-27" />
+<meta name="date" content="2023-11-28" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -125,28 +125,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
-<style type="text/css">
-/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -198,8 +176,8 @@ div.csl-indent {
 <li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
 <li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
-<li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i>tidytext</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i>sentimentr</a></li>
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.3</b> Statistical Test</a></li>
 </ul></li>
@@ -224,108 +202,89 @@ div.csl-indent {
 <div id="statistical-test" class="section level2 hasAnchor" number="3.3">
 <h2><span class="header-section-number">3.3</span> Statistical Test<a href="statistical-test.html#statistical-test" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>You can fit an ordinal logistic regression model to predict the rating based on the review sentiment. Which performs better, <strong>tidytext</strong> or <strong>sentimentr</strong>? Start with an intercept-only model for a baseline and review of ordinal logistic regression.</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="statistical-test.html#cb67-1" tabindex="-1"></a><span class="co"># Limit to cases where both methods were able to score the review.</span></span>
-<span id="cb67-2"><a href="statistical-test.html#cb67-2" tabindex="-1"></a>mdl_dat <span class="ot">&lt;-</span> hotel_2 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">rating_fct =</span> <span class="fu">factor</span>(rating, <span class="at">ordered =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb67-3"><a href="statistical-test.html#cb67-3" tabindex="-1"></a></span>
-<span id="cb67-4"><a href="statistical-test.html#cb67-4" tabindex="-1"></a>fit_intercept <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clm</span>(rating_fct <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> mdl_dat)</span>
-<span id="cb67-5"><a href="statistical-test.html#cb67-5" tabindex="-1"></a></span>
-<span id="cb67-6"><a href="statistical-test.html#cb67-6" tabindex="-1"></a><span class="fu">summary</span>(fit_intercept)</span></code></pre></div>
-<pre><code>## formula: rating_fct ~ 1
-## data:    mdl_dat
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="statistical-test.html#cb16-1" tabindex="-1"></a>fit_intercept <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clm</span>(rating <span class="sc">~</span> <span class="dv">1</span>, <span class="at">data =</span> hotel_2)</span>
+<span id="cb16-2"><a href="statistical-test.html#cb16-2" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="statistical-test.html#cb16-3" tabindex="-1"></a><span class="fu">summary</span>(fit_intercept)</span></code></pre></div>
+<pre><code>## formula: rating ~ 1
+## data:    hotel_2
 ## 
 ##  link  threshold nobs  logLik    AIC      niter max.grad cond.H 
-##  logit flexible  23373 -21405.88 42819.76 6(0)  1.79e-11 2.3e+01
+##  logit flexible  23373 -20669.84 41345.68 6(0)  1.58e-11 1.0e+01
 ## 
 ## Threshold coefficients:
-##     Estimate Std. Error z value
-## 1|2 -3.84374    0.04566  -84.19
-## 2|3 -3.04000    0.03134  -97.01
-## 3|4 -2.15898    0.02147 -100.54
-## 4|5 -0.81248    0.01418  -57.31</code></pre>
-<p>The threshold coefficients in the summary table are the log-odds of the outcome variable having a level at or below vs above. Below, 10.3% of ratings were &lt;=3 and 89.7% were &gt;=4 for a log-odds of log(.103/.897) = -2.1620836, corresponding to the <code>3|4</code> line in the regression summary.</p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="statistical-test.html#cb69-1" tabindex="-1"></a>mdl_dat <span class="sc">%&gt;%</span> <span class="fu">tabyl</span>(rating_fct) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">cum =</span> <span class="fu">cumsum</span>(percent), <span class="st">`</span><span class="at">1-cum</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> cum)</span></code></pre></div>
-<pre><code>##  rating_fct     n    percent        cum     1-cum
-##           1   490 0.02096436 0.02096436 0.9790356
-##           2   577 0.02468660 0.04565096 0.9543490
-##           3  1352 0.05784452 0.10349549 0.8965045
-##           4  4765 0.20386771 0.30736320 0.6926368
-##           5 16189 0.69263680 1.00000000 0.0000000</code></pre>
-<p>Now fit the <strong>bing</strong> and <strong>sentimentr</strong> models. The <strong>bing</strong> model has the lowest log-likelihood.</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="statistical-test.html#cb71-1" tabindex="-1"></a>fit_bing <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clm</span>(rating_fct <span class="sc">~</span> bing_polarity, <span class="at">data =</span> mdl_dat)</span>
-<span id="cb71-2"><a href="statistical-test.html#cb71-2" tabindex="-1"></a></span>
-<span id="cb71-3"><a href="statistical-test.html#cb71-3" tabindex="-1"></a>fit_sentimentr <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clm</span>(rating_fct <span class="sc">~</span> sentimentr_polarity, <span class="at">data =</span> mdl_dat)</span>
-<span id="cb71-4"><a href="statistical-test.html#cb71-4" tabindex="-1"></a></span>
-<span id="cb71-5"><a href="statistical-test.html#cb71-5" tabindex="-1"></a><span class="fu">anova</span>(fit_bing, fit_sentimentr, fit_intercept)</span></code></pre></div>
+##       Estimate Std. Error z value
+## 1-2|3 -3.04000    0.03134  -97.01
+## 3|4   -2.15898    0.02147 -100.54
+## 4|5   -0.81248    0.01418  -57.31</code></pre>
+<p>The threshold coefficients in the summary table are the log-odds of the outcome variable having a level at or below vs above. Below, 10.3% of ratings were &lt;=3 and 89.7% were &gt;3 for a log-odds of log(.103/.897) = -2.1620836, corresponding to the <code>3|4</code> line in the regression summary.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="statistical-test.html#cb18-1" tabindex="-1"></a>hotel_2 <span class="sc">%&gt;%</span> <span class="fu">tabyl</span>(rating) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">cum =</span> <span class="fu">cumsum</span>(percent), <span class="st">`</span><span class="at">1-cum</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">1</span> <span class="sc">-</span> cum)</span></code></pre></div>
+<pre><code>##  rating     n    percent        cum     1-cum
+##     1-2  1067 0.04565096 0.04565096 0.9543490
+##       3  1352 0.05784452 0.10349549 0.8965045
+##       4  4765 0.20386771 0.30736320 0.6926368
+##       5 16189 0.69263680 1.00000000 0.0000000</code></pre>
+<p>Now fit the <strong>bing</strong> and <strong>sentimentr</strong> models. The <strong>bing</strong> model has the higher -2 * log-likelihood.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="statistical-test.html#cb20-1" tabindex="-1"></a>fit_bing <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clm</span>(rating <span class="sc">~</span> bing_polarity, <span class="at">data =</span> hotel_2)</span>
+<span id="cb20-2"><a href="statistical-test.html#cb20-2" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="statistical-test.html#cb20-3" tabindex="-1"></a>fit_sentimentr <span class="ot">&lt;-</span> ordinal<span class="sc">::</span><span class="fu">clm</span>(rating <span class="sc">~</span> sentimentr_polarity, <span class="at">data =</span> hotel_2)</span>
+<span id="cb20-4"><a href="statistical-test.html#cb20-4" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="statistical-test.html#cb20-5" tabindex="-1"></a><span class="fu">anova</span>(fit_bing, fit_sentimentr, fit_intercept)</span></code></pre></div>
 <pre><code>## Likelihood ratio tests of cumulative link models:
 ##  
-##                formula:                         link: threshold:
-## fit_intercept  rating_fct ~ 1                   logit flexible  
-## fit_bing       rating_fct ~ bing_polarity       logit flexible  
-## fit_sentimentr rating_fct ~ sentimentr_polarity logit flexible  
+##                formula:                     link: threshold:
+## fit_intercept  rating ~ 1                   logit flexible  
+## fit_bing       rating ~ bing_polarity       logit flexible  
+## fit_sentimentr rating ~ sentimentr_polarity logit flexible  
 ## 
 ##                no.par   AIC logLik LR.stat df Pr(&gt;Chisq)    
-## fit_intercept       4 42820 -21406                          
-## fit_bing            5 37716 -18853  5106.0  1  &lt; 2.2e-16 ***
-## fit_sentimentr      5 38521 -19256  -805.5  0               
+## fit_intercept       3 41346 -20670                          
+## fit_bing            4 36300 -18146 5047.93  1  &lt; 2.2e-16 ***
+## fit_sentimentr      4 37080 -18536 -780.67  0               
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>How about predictive performance? They both peformed about the same.</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="statistical-test.html#cb73-1" tabindex="-1"></a>(bing_conf <span class="ot">&lt;-</span> </span>
-<span id="cb73-2"><a href="statistical-test.html#cb73-2" tabindex="-1"></a>  fit_bing <span class="sc">%&gt;%</span> </span>
-<span id="cb73-3"><a href="statistical-test.html#cb73-3" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">type =</span> <span class="st">&quot;class&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb73-4"><a href="statistical-test.html#cb73-4" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> rating_fct, <span class="at">estimate =</span> .fitted))</span></code></pre></div>
-<pre><code>##           Truth
-## Prediction     1     2     3     4     5
-##          1    71    19    11     6     2
-##          2     0     0     0     0     0
-##          3    35    29    18     8     4
-##          4   304   343   477   521   681
-##          5    80   186   846  4230 15502</code></pre>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="statistical-test.html#cb75-1" tabindex="-1"></a><span class="fu">summary</span>(bing_conf)</span></code></pre></div>
-<pre><code>## # A tibble: 13 × 3
-##    .metric              .estimator .estimate
-##    &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
-##  1 accuracy             multiclass    0.689 
-##  2 kap                  multiclass    0.141 
-##  3 sens                 macro         0.245 
-##  4 spec                 macro         0.831 
-##  5 ppv                  macro        NA     
-##  6 npv                  macro         0.885 
-##  7 mcc                  multiclass    0.168 
-##  8 j_index              macro         0.0759
-##  9 bal_accuracy         macro         0.538 
-## 10 detection_prevalence macro         0.2   
-## 11 precision            macro         0.453 
-## 12 recall               macro         0.245 
-## 13 f_meas               macro         0.312</code></pre>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="statistical-test.html#cb77-1" tabindex="-1"></a>(sentimentr_conf <span class="ot">&lt;-</span> </span>
-<span id="cb77-2"><a href="statistical-test.html#cb77-2" tabindex="-1"></a>  fit_sentimentr <span class="sc">%&gt;%</span> </span>
-<span id="cb77-3"><a href="statistical-test.html#cb77-3" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">type =</span> <span class="st">&quot;class&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb77-4"><a href="statistical-test.html#cb77-4" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> rating_fct, <span class="at">estimate =</span> .fitted))</span></code></pre></div>
-<pre><code>##           Truth
-## Prediction     1     2     3     4     5
-##          1    34    18    14     2     6
-##          2     0     0     0     0     0
-##          3    20     9     7     6     1
-##          4   362   345   485   321   330
-##          5    74   205   846  4436 15852</code></pre>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="statistical-test.html#cb79-1" tabindex="-1"></a><span class="fu">summary</span>(sentimentr_conf)</span></code></pre></div>
-<pre><code>## # A tibble: 13 × 3
-##    .metric              .estimator .estimate
-##    &lt;chr&gt;                &lt;chr&gt;          &lt;dbl&gt;
-##  1 accuracy             multiclass    0.694 
-##  2 kap                  multiclass    0.123 
-##  3 sens                 macro         0.224 
-##  4 spec                 macro         0.828 
-##  5 ppv                  macro        NA     
-##  6 npv                  macro         0.904 
-##  7 mcc                  multiclass    0.159 
-##  8 j_index              macro         0.0524
-##  9 bal_accuracy         macro         0.526 
-## 10 detection_prevalence macro         0.2   
-## 11 precision            macro         0.384 
-## 12 recall               macro         0.224 
-## 13 f_meas               macro         0.268</code></pre>
+<p>How about predictive performance? They performed about the same.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="statistical-test.html#cb22-1" tabindex="-1"></a>bing_conf <span class="ot">&lt;-</span> </span>
+<span id="cb22-2"><a href="statistical-test.html#cb22-2" tabindex="-1"></a>  fit_bing <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="statistical-test.html#cb22-3" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">type =</span> <span class="st">&quot;class&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="statistical-test.html#cb22-4" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> rating, <span class="at">estimate =</span> .fitted)</span>
+<span id="cb22-5"><a href="statistical-test.html#cb22-5" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="statistical-test.html#cb22-6" tabindex="-1"></a>sentimentr_conf <span class="ot">&lt;-</span> </span>
+<span id="cb22-7"><a href="statistical-test.html#cb22-7" tabindex="-1"></a>  fit_sentimentr <span class="sc">%&gt;%</span> </span>
+<span id="cb22-8"><a href="statistical-test.html#cb22-8" tabindex="-1"></a>  <span class="fu">augment</span>(<span class="at">type =</span> <span class="st">&quot;class&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-9"><a href="statistical-test.html#cb22-9" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> rating, <span class="at">estimate =</span> .fitted)</span>
+<span id="cb22-10"><a href="statistical-test.html#cb22-10" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="statistical-test.html#cb22-11" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb22-12"><a href="statistical-test.html#cb22-12" tabindex="-1"></a>  <span class="at">bing =</span> <span class="fu">as_tibble</span>(bing_conf<span class="sc">$</span>table),</span>
+<span id="cb22-13"><a href="statistical-test.html#cb22-13" tabindex="-1"></a>  <span class="at">sentimentr =</span> <span class="fu">as_tibble</span>(sentimentr_conf<span class="sc">$</span>table), </span>
+<span id="cb22-14"><a href="statistical-test.html#cb22-14" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&quot;lexicon&quot;</span></span>
+<span id="cb22-15"><a href="statistical-test.html#cb22-15" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-16"><a href="statistical-test.html#cb22-16" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> Truth, <span class="at">values_from =</span> n) <span class="sc">%&gt;%</span></span>
+<span id="cb22-17"><a href="statistical-test.html#cb22-17" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb22-18"><a href="statistical-test.html#cb22-18" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">merge_v</span>(<span class="at">j =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-19"><a href="statistical-test.html#cb22-19" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">valign =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
+<div class="tabwid tabwid_left"><style>.cl-dc97191e{}.cl-dc90bd62{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-dc90bd6c{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-dc933894{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dc93389e{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dc9338a8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-dc934686{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc934690{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc934691{width:0.75in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc93469a{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc93469b{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc93469c{width:0.75in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc9346a4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc9346a5{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc9346ae{width:0.75in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc9346af{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dc9346b8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-dc97191e'><thead><tr style="overflow-wrap:break-word;"><th class="cl-dc934686"><p class="cl-dc933894"><span class="cl-dc90bd62">lexicon</span></p></th><th class="cl-dc934686"><p class="cl-dc933894"><span class="cl-dc90bd62">Prediction</span></p></th><th class="cl-dc934690"><p class="cl-dc93389e"><span class="cl-dc90bd62">1-2</span></p></th><th class="cl-dc934690"><p class="cl-dc93389e"><span class="cl-dc90bd62">3</span></p></th><th class="cl-dc934690"><p class="cl-dc93389e"><span class="cl-dc90bd62">4</span></p></th><th class="cl-dc934690"><p class="cl-dc93389e"><span class="cl-dc90bd62">5</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td  rowspan="4"class="cl-dc934691"><p class="cl-dc9338a8"><span class="cl-dc90bd6c">bing</span></p></td><td class="cl-dc93469a"><p class="cl-dc933894"><span class="cl-dc90bd6c">1-2</span></p></td><td class="cl-dc93469b"><p class="cl-dc93389e"><span class="cl-dc90bd6c">217</span></p></td><td class="cl-dc93469b"><p class="cl-dc93389e"><span class="cl-dc90bd6c">55</span></p></td><td class="cl-dc93469b"><p class="cl-dc93389e"><span class="cl-dc90bd6c">27</span></p></td><td class="cl-dc93469b"><p class="cl-dc93389e"><span class="cl-dc90bd6c">15</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-dc9346a4"><p class="cl-dc933894"><span class="cl-dc90bd6c">3</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-dc9346a4"><p class="cl-dc933894"><span class="cl-dc90bd6c">4</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">582</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">449</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">508</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">672</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-dc9346a4"><p class="cl-dc933894"><span class="cl-dc90bd6c">5</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">268</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">848</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">4,230</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">15,502</span></p></td></tr><tr style="overflow-wrap:break-word;"><td  rowspan="4"class="cl-dc93469c"><p class="cl-dc9338a8"><span class="cl-dc90bd6c">sentimentr</span></p></td><td class="cl-dc9346a4"><p class="cl-dc933894"><span class="cl-dc90bd6c">1-2</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">154</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">38</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">20</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">13</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-dc9346a4"><p class="cl-dc933894"><span class="cl-dc90bd6c">3</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-dc9346a4"><p class="cl-dc933894"><span class="cl-dc90bd6c">4</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">633</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">459</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">307</span></p></td><td class="cl-dc9346a5"><p class="cl-dc93389e"><span class="cl-dc90bd6c">321</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-dc9346af"><p class="cl-dc933894"><span class="cl-dc90bd6c">5</span></p></td><td class="cl-dc9346b8"><p class="cl-dc93389e"><span class="cl-dc90bd6c">280</span></p></td><td class="cl-dc9346b8"><p class="cl-dc93389e"><span class="cl-dc90bd6c">855</span></p></td><td class="cl-dc9346b8"><p class="cl-dc93389e"><span class="cl-dc90bd6c">4,438</span></p></td><td class="cl-dc9346b8"><p class="cl-dc93389e"><span class="cl-dc90bd6c">15,855</span></p></td></tr></tbody></table></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="statistical-test.html#cb23-1" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb23-2"><a href="statistical-test.html#cb23-2" tabindex="-1"></a>  <span class="at">bing =</span> <span class="fu">summary</span>(bing_conf),</span>
+<span id="cb23-3"><a href="statistical-test.html#cb23-3" tabindex="-1"></a>  <span class="at">sentimentr =</span> <span class="fu">summary</span>(sentimentr_conf),</span>
+<span id="cb23-4"><a href="statistical-test.html#cb23-4" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&quot;lexicon&quot;</span></span>
+<span id="cb23-5"><a href="statistical-test.html#cb23-5" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-6"><a href="statistical-test.html#cb23-6" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> lexicon, <span class="at">values_from =</span> .estimate)</span></code></pre></div>
+<pre><code>## # A tibble: 13 × 4
+##    .metric              .estimator   bing sentimentr
+##    &lt;chr&gt;                &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+##  1 accuracy             multiclass  0.694     0.698 
+##  2 kap                  multiclass  0.156     0.136 
+##  3 sens                 macro       0.317     0.297 
+##  4 spec                 macro       0.790     0.786 
+##  5 ppv                  macro      NA        NA     
+##  6 npv                  macro       0.858     0.881 
+##  7 mcc                  multiclass  0.186     0.176 
+##  8 j_index              macro       0.107     0.0833
+##  9 bal_accuracy         macro       0.553     0.542 
+## 10 detection_prevalence macro       0.25      0.25  
+## 11 precision            macro       0.555     0.534 
+## 12 recall               macro       0.317     0.297 
+## 13 f_meas               macro       0.432     0.392</code></pre>
 
 </div>
 <!-- </div> -->

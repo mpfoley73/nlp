@@ -40,9 +40,15 @@ hotel_1 <- hotel_0 %>%
     review = str_remove_all(review, "(\\|)"),
     review = str_squish(review),
     # Shorten some of the hotel names.
-    property = factor(str_remove_all(
-      property, "( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)"
-    )),
+    property = str_remove_all(
+      property, 
+      "( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)"
+    ), 
+    property = factor(property, ordered = TRUE),
+    # Reducing number of hotels for modeling simplicity.
+    property = fct_lump_prop(property, prop = .05),
+    # Low ratings are so rare, lump the bottom two.
+    rating = fct_collapse(as.character(rating), `1-2` = c("1", "2")),
     # Interesting metadata
     chr_cnt = str_length(review)
   ) %>%

@@ -89,7 +89,7 @@ glimpse(lda_train_0)
 glimpse(lda_test)
 ```
 
-Low frequency tokens impact the topic model analysis. 58% of the data is composed of tokens that appear <=3 times. Just use the high frequency tokens, the ones occurring at least 4 times in the training data. This is (hopefully) enough to learn topics from tokens that occur together in reviews.
+Low frequency tokens impact the topic model analysis. 49% of the data is composed of tokens that appear <=3 times. Just use the high frequency tokens, the ones occurring at least 4 times in the training data. This is (hopefully) enough to learn topics from tokens that occur together in reviews.
 
 :::rmdnote
 @Nagelkerke2020b explains that TF-IDF, which combines the within-document token frequency and document frequency, is not always the best way to whittle down the token set. When documents are small, which is common in online reviews, the within document frequency is low and the IDF part is over-weighted.
@@ -192,7 +192,7 @@ lda_top_tokens %>%
   labs(y = NULL, title = "LDA Top 10 Terms")
 ```
 
-There is a downside to this evaluation. Popular words like room appear at or near the top in all three topics. You might want to look at _relative_ popularity instead: the popularity within the topic divided by overall popularity. That's problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. `LDAvis::serVis()` can help you do that. 
+There is a downside to this evaluation. Popular words like stay appear at or near the top in all three topics. You might want to look at _relative_ popularity instead: the popularity within the topic divided by overall popularity. That's problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. `LDAvis::serVis()` can help you do that. 
 
 :::rmdnote
 Unfortunately, the plot from `LDAvis::serVis()` is interactive and does not render in the RMarkdown notebook html, so below is just a screenshot of the code chunk output.
