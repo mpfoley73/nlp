@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-27" />
+<meta name="date" content="2023-11-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="lda.html"/>
-<link rel="next" href="data-formats.html"/>
+<link rel="next" href="sentimentanalysis.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -187,19 +187,16 @@ div.csl-indent {
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
 <li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
-<li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext"><i class="fa fa-check"></i>tidytext</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i>sentimentr</a></li>
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.3</b> Statistical Test</a></li>
 </ul></li>
@@ -223,7 +220,11 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="stm" class="section level2 hasAnchor" number="2.2">
 <h2><span class="header-section-number">2.2</span> STM<a href="stm.html#stm" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>STM incorporates arbitrary document metadata into the topic model. The goal of STM is to discover topics and estimate their relationship to the metadata. If <em>how</em> a topic is discussed depends on the metadata features, control for them in the topical content part of the model (the beta matrix). E.g., children and adults will discuss hotels differently. If <em>what</em> topics are discussed depends on the metadata features, control for them in the topical prevalence model (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.</p>
+<p>STM incorporates arbitrary document metadata into the topic model. The goal of STM is to discover topics and estimate their relationship to the metadata.</p>
+<ul>
+<li><strong>Topical prevalence</strong>. If <em>what</em> topics are discussed depends on the metadata features, control for them in the <em>prevalence</em> (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.</li>
+<li><strong>Topical content</strong>. If <em>how</em> a topic is discussed depends on metadata features, control for them in the <em>content</em> (the beta matrix). E.g., visitors from the US may discuss hotels differently than visitors from the UK.</li>
+</ul>
 <div id="algorithm-1" class="section level3 unnumbered hasAnchor">
 <h3>Algorithm<a href="stm.html#algorithm-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>STM is similar to LDA in that it assumes each document is created by a generative process where topics are included according to probabilities (topical prevalence) and words are included in the topics (topical content) according to probabilities. STM adds the possibility of including topical prevalence covariates, and topical content covariates.</p>
@@ -239,12 +240,12 @@ div.csl-indent {
 <li><code>meta</code>, a metadata data frame, one row per document containing the feature cols.</li>
 </ul>
 <div class="rmdnote">
-<p>The model fit took about 3 minutes to run. I ran it once then saved the result.</p>
+<p>This step took about 3 minutes to run, so I ran it once then saved the result.</p>
 </div>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="stm.html#cb40-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span></span>
 <span id="cb40-2"><a href="stm.html#cb40-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">textProcessor</span>(</span>
 <span id="cb40-3"><a href="stm.html#cb40-3" tabindex="-1"></a>    <span class="at">documents =</span> hotel_prep<span class="sc">$</span>review_words,</span>
-<span id="cb40-4"><a href="stm.html#cb40-4" tabindex="-1"></a>    <span class="at">metadata =</span> hotel_prep <span class="sc">%&gt;%</span> <span class="fu">select</span>(rating, property),</span>
+<span id="cb40-4"><a href="stm.html#cb40-4" tabindex="-1"></a>    <span class="at">metadata =</span> hotel_prep <span class="sc">%&gt;%</span> <span class="fu">select</span>(rating, reviewer_loc, review),</span>
 <span id="cb40-5"><a href="stm.html#cb40-5" tabindex="-1"></a>    <span class="at">lowercase =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb40-6"><a href="stm.html#cb40-6" tabindex="-1"></a>    <span class="at">removestopwords =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb40-7"><a href="stm.html#cb40-7" tabindex="-1"></a>    <span class="at">removenumbers =</span> <span class="cn">FALSE</span>,</span>
@@ -270,156 +271,171 @@ div.csl-indent {
 </div>
 <div id="fit-1" class="section level3 unnumbered hasAnchor">
 <h3>Fit<a href="stm.html#fit-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter <code>K</code> = 0. The resulting probability distribution of topic words (beta matrix) will be a K x <code>r</code>length(stm_prepared$vocab)<code>matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a 23,352 x K matrix. I expect topics to correlate with the review rating, so</code>rating<code>is a prevalence covariate, and I expect word usage to correlate with the hotel, so</code>property` is a topical content covariate.</p>
+<p>The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter <code>K</code> = 0. The resulting probability distribution of topic words (beta matrix) will be a K x <code>r</code>length(stm_prepared$vocab)<code>matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a 23,352 x K matrix. I expect topics to correlate with the review rating, so</code>rating<code>is a prevalence covariate, and I expect word usage to correlate with the reviewer location, so</code>reviewer_loc` is a topical content covariate.</p>
+<div class="rmdnote">
+<p>Running the model with K = 3 threw an error.
+<code>Error: chol(): decomposition failed</code>
+I set it to K = 4 and it worked. It took a couple minutes to run, so I ran it once then saved the result.</p>
+</div>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="stm.html#cb45-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb45-2"><a href="stm.html#cb45-2" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="stm.html#cb45-3" tabindex="-1"></a>stm_fitted <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
+<span id="cb45-3"><a href="stm.html#cb45-3" tabindex="-1"></a>stm_fit <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
 <span id="cb45-4"><a href="stm.html#cb45-4" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>documents,</span>
 <span id="cb45-5"><a href="stm.html#cb45-5" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>vocab,</span>
 <span id="cb45-6"><a href="stm.html#cb45-6" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">4</span>,</span>
 <span id="cb45-7"><a href="stm.html#cb45-7" tabindex="-1"></a>  <span class="at">prevalence =</span> <span class="sc">~</span> rating,</span>
-<span id="cb45-8"><a href="stm.html#cb45-8" tabindex="-1"></a>  <span class="at">content =</span> <span class="sc">~</span> property,</span>
+<span id="cb45-8"><a href="stm.html#cb45-8" tabindex="-1"></a>  <span class="at">content =</span> <span class="sc">~</span> reviewer_loc,</span>
 <span id="cb45-9"><a href="stm.html#cb45-9" tabindex="-1"></a>  <span class="at">data =</span> stm_prepared<span class="sc">$</span>meta,</span>
 <span id="cb45-10"><a href="stm.html#cb45-10" tabindex="-1"></a>  <span class="at">init.type =</span> <span class="st">&quot;Spectral&quot;</span>,</span>
 <span id="cb45-11"><a href="stm.html#cb45-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
 <span id="cb45-12"><a href="stm.html#cb45-12" tabindex="-1"></a>)</span>
 <span id="cb45-13"><a href="stm.html#cb45-13" tabindex="-1"></a></span>
-<span id="cb45-14"><a href="stm.html#cb45-14" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_fitted, <span class="at">file =</span> <span class="st">&quot;input/stm_fitted.RDS&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="stm.html#cb46-1" tabindex="-1"></a>stm_fitted <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_fitted.RDS&quot;</span>)</span>
-<span id="cb46-2"><a href="stm.html#cb46-2" tabindex="-1"></a></span>
-<span id="cb46-3"><a href="stm.html#cb46-3" tabindex="-1"></a><span class="fu">summary</span>(stm_fitted)</span></code></pre></div>
-<pre><code>## A topic model with 4 topics, 23352 documents and a 750 word dictionary.</code></pre>
-<pre><code>## Topic Words:
-##  Topic 1: pleasure, home, hospitality, professional, outstanding, accommodation, impeccable 
-##  Topic 2: park, min, shop, locate, ride, train, distance 
-##  Topic 3: tea, lunch, wine, sweet, tasty, bread, delicious 
-##  Topic 4: curtain, carpet, low, window, toilet, poor, mirror 
-##  
-##  Covariate Words:
-##  Group 45 Park Lane: lane, cut, dorchester, deco, boutique, host, screen 
-##  Group A To Z: cheap, continental, transport, owner, basic, toilet, cup 
-##  Group Apex Wall: apex, district, bean, office, friday, city, balcony 
-##  Group Bulgari: swim, pool, knightsbridge, italian, dark, massage, treatment 
-##  Group City View: basic, cereal, fridge, cup, machine, roll, toilet 
-##  Group Corinthia: corinthia, sauna, courtyard, flower, massage, rain, spa 
-##  Group Dorchester: promenade, dorchester, grill, flower, famous, waiter, ritz 
-##  Group Hartley: smell, budget, smoke, carpet, sink, chair, true 
-##  Group Hotel Xenia: xenia, kensington, italian, twin, toiletry, balcony, spotlessly 
-##  Group Lanesborough: butler, piano, magnificent, lounge, garden, spa, traditional 
-##  Group London Guest House: continental, adequate, fridge, mile, clean, transport, budget 
-##  Group Mandarin Oriental: mandarin, oriental, renovation, spa, renovate, pool, junior 
-##  Group Marble Arch: executive, tasty, box, oxford, stair, sight, complain 
-##  Group Mondrian: mondrian, river, paul&#39;s, container, sea, thames, rooftop 
-##  Group Newham: girl, budget, bad, reasonable, corridor, furniture, buffet 
-##  Group Rembrandt: rembrandt, jacuzzi, swim, club, museum, harrods, pool 
-##  Group Rhodes: rhodes, paddington, jacuzzi, continental, fridge, stair, carry 
-##  Group Ridgemount: ridgemount, owner, share, basic, bus, advice, budget 
-##  Group Savoy: savoy, beaufort, thames, river, grill, american, deco 
-##  Group Wellesley: butler, roll, deco, knightsbridge, terrace, boutique, lounge 
-##  
-##  Topic-Covariate Interactions:
-##  Topic 1, Group 45 Park Lane: park, victoria, private, balcony, perfection, cut, interior 
-##  Topic 1, Group A To Z: budget, clean, accommodation 
-##  Topic 1, Group Apex Wall: wall, apex, court, district, taxi, pool, equip 
-##  Topic 1, Group Bulgari: sauna, amp, treatment, spa, word, luxury, perfection 
-##  Topic 1, Group City View:  
-##  Topic 1, Group Corinthia: gym, spa, corinthia, wait, treatment, executive, mandarin 
-##  Topic 1, Group Dorchester: theatre, christmas, talk, establishment, perfection, life, magnificent 
-##  Topic 1, Group Hartley:  
-##  Topic 1, Group Hotel Xenia: boutique, west, underground, xenia, clean, concierge, balcony 
-##  Topic 1, Group Lanesborough: renovation, renovate, refurbish, easy, garden, greet, club 
-##  Topic 1, Group London Guest House: house, guest, continental, safe, owner, breakfast, spotlessly 
-##  Topic 1, Group Mandarin Oriental: oriental, classic, mandarin, complete, property, pool, type 
-##  Topic 1, Group Marble Arch: gym 
-##  Topic 1, Group Mondrian: balcony, view, lounge, roof, cool, lane, cocktail 
-##  Topic 1, Group Newham: cheap, bad, money, family 
-##  Topic 1, Group Rembrandt: attraction, west, theater, shop, nearby, tourist, theatre 
-##  Topic 1, Group Rhodes: read, rhodes, convenient, host, owner, money, run 
-##  Topic 1, Group Ridgemount: morning, fill, phone, bus, run, locate, basic 
-##  Topic 1, Group Savoy: wed, junior, anniversary, surrounding, executive, view, history 
-##  Topic 1, Group Wellesley: slipper, marble, roll, complimentary, touch, car, perfection 
-##  
-##  Topic 2, Group 45 Park Lane: suite, butler, separate, dorchester, hyde, view, gym 
-##  Topic 2, Group A To Z: towel, wifi, noise, main, train, toilet, line 
-##  Topic 2, Group Apex Wall: moorgate, paul&#39;s, saturday, bank, surrounding, weekend, lunch 
-##  Topic 2, Group Bulgari: harrods, black, marble, oriental, mandarin, boutique, brand 
-##  Topic 2, Group City View:  
-##  Topic 2, Group Corinthia: embankment, trafalgar, square, eye, thames, river, theater 
-##  Topic 2, Group Dorchester: chair, executive, son, american, star, lane, spa 
-##  Topic 2, Group Hartley: clean, free, breakfast 
-##  Topic 2, Group Hotel Xenia: court, albert, natural, museum, history, victoria, hall 
-##  Topic 2, Group Lanesborough: piano, beautifully, gym, corner, luxurious, hyde, excellent 
-##  Topic 2, Group London Guest House: bus, budget, free, paddington, basic, line, stop 
-##  Topic 2, Group Mandarin Oriental: knightsbridge, balcony, magnificent, harrods, hyde, overlook, interior 
-##  Topic 2, Group Marble Arch: marble, oxford, street 
-##  Topic 2, Group Mondrian: blackfriars, tate, bank, eye, bridge, south, promenade 
-##  Topic 2, Group Newham: toast, bean, read, sausage, pay, cereal, iron 
-##  Topic 2, Group Rembrandt: albert, kensington, victoria, south, natural, history, directly 
-##  Topic 2, Group Rhodes: express, heathrow, money, internet, kensington, paddington, hyde 
-##  Topic 2, Group Ridgemount: british, square, court, museum, trafalgar, theater, covent 
-##  Topic 2, Group Savoy: pool, strand, embankment, covent, swim, sauna, christmas 
-##  Topic 2, Group Wellesley: waiter, complimentary, harrods, hyde, junior, heat, corner 
-##  
-##  Topic 3, Group 45 Park Lane: eye, son, amaze, guy, sunday, arrange, cocktail 
-##  Topic 3, Group A To Z: toast, coffee, type, juice, amp, breakfast, tea 
-##  Topic 3, Group Apex Wall: junior, suite, upgrade, towel, executive, card, bed 
-##  Topic 3, Group Bulgari: website, classy, bad, expectation, toilet, scone, cut 
-##  Topic 3, Group City View:  
-##  Topic 3, Group Corinthia: promenade, chair, lounge, pianist, piano, music, wow 
-##  Topic 3, Group Dorchester: pianist, piano, scone, afternoon, sandwich, surrounding, highly 
-##  Topic 3, Group Hartley:  
-##  Topic 3, Group Hotel Xenia: executive, continental, doorman, break, class, lounge, private 
-##  Topic 3, Group Lanesborough: pianist, guess, scone, sandwich, afternoon, enter, type 
-##  Topic 3, Group London Guest House: cereal, bean, toast, juice, coffee, fruit, plenty 
-##  Topic 3, Group Mandarin Oriental: swim, treatment, pool, massage, spa, suite, club 
-##  Topic 3, Group Marble Arch: menu 
-##  Topic 3, Group Mondrian: spa, treatment, massage, share, world, window, concierge 
-##  Topic 3, Group Newham: amp, egg, breakfast, bread, fruit, juice, tea 
-##  Topic 3, Group Rembrandt: gym, spa, opposite, robe, chair, cereal, cold 
-##  Topic 3, Group Rhodes: cereal, basic, toast, cheese, terrace, coffee, fruit 
-##  Topic 3, Group Ridgemount: machine, internet, bacon, cereal, sausage, bean, free 
-##  Topic 3, Group Savoy: pianist, piano, american, beaufort, scone, play, foyer 
-##  Topic 3, Group Wellesley: feature, piano, pianist, music, play, italian, theatre 
-##  
-##  Topic 4, Group 45 Park Lane: surrounding, host, wife, system, escort, executive, touch 
-##  Topic 4, Group A To Z: break, smell, refurbish, carpet, fridge, fan, curtain 
-##  Topic 4, Group Apex Wall: embankment, lounge, snack, robe, tea, iron, huge 
-##  Topic 4, Group Bulgari: jacuzzi, breakfast, product, treatment, concierge, massage, bill 
-##  Topic 4, Group City View: bad 
-##  Topic 4, Group Corinthia: jacuzzi, perfection, swim, pool, chocolate, fruit, executive 
-##  Topic 4, Group Dorchester: treatment, cup, escort, spa, airport, suit, wait 
-##  Topic 4, Group Hartley: opposite, eye, read, door, bad, bed, carpet 
-##  Topic 4, Group Hotel Xenia: classic, gym, tiny, pianist, stylish, large, terrace 
-##  Topic 4, Group Lanesborough: amp, treatment, massage, butler, executive, junior, suite 
-##  Topic 4, Group London Guest House: cheese, traffic, bank, single, twin, tiny, fit 
-##  Topic 4, Group Mandarin Oriental: express, smoke, courtyard, tire, party, internet, star 
-##  Topic 4, Group Marble Arch: upgrade, pay 
-##  Topic 4, Group Mondrian: rumpus, play, grind, selection, cocktail, mini, superior 
-##  Topic 4, Group Newham: block, flat, share, event, smell, carpet, partner 
-##  Topic 4, Group Rembrandt: executive, gym, american, renovate, location, train, sauna 
-##  Topic 4, Group Rhodes: elegant, build, single, street, interior, main, tiny 
-##  Topic 4, Group Ridgemount: garden, street, traffic, single, face, stair, grind 
-##  Topic 4, Group Savoy: butler, team, anniversary, club, treatment, attention, package 
-##  Topic 4, Group Wellesley: gym, stun, oriental, smell, smoke, lobby, luxury 
-## </code></pre>
-</div>
-<div id="evaluate" class="section level3 unnumbered hasAnchor">
-<h3>Evaluate<a href="stm.html#evaluate" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<span id="cb45-14"><a href="stm.html#cb45-14" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_fit, <span class="at">file =</span> <span class="st">&quot;input/stm_fit.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="stm.html#cb46-1" tabindex="-1"></a>stm_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_fit.RDS&quot;</span>)</span></code></pre></div>
 </div>
 <div id="interpret" class="section level3 unnumbered hasAnchor">
 <h3>Interpret<a href="stm.html#interpret" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The fit summary has three sections showing the tops words. The first section shows the prevalence model; the second shows the topical content model; and the third shows their interaction.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="stm.html#cb47-1" tabindex="-1"></a><span class="fu">summary</span>(stm_fit)</span></code></pre></div>
+<pre><code>## A topic model with 4 topics, 23352 documents and a 750 word dictionary.</code></pre>
+<pre><code>## Topic Words:
+##  Topic 1: favorite, notch, corinthia, awesome, property, exceed, mandarin 
+##  Topic 2: neighborhood, convenient, victoria, heathrow, ride, underground, rembrandt 
+##  Topic 3: promenade, beaufort, celebration, celebrate, savoy, surrounding, american 
+##  Topic 4: closet, clothe, move, desk, smell, light, tub 
+##  
+##  Covariate Words:
+##  Group Other: renovation, smile, renovate, direct, miss, europe, directly 
+##  Group United Kingdom: partner, whilst, saturday, sunday, party, fab, round 
+##  Group United States: hotel&#39;s, spectacular, elegant, accommodate, perfection, tate, renovation 
+##  
+##  Topic-Covariate Interactions:
+##  Topic 1, Group Other: bridge, theater, boutique, blackfriars, lane, modern, pool 
+##  Topic 1, Group United Kingdom: wed, fault, trouble, anniversary, brilliant, penny, faultless 
+##  Topic 1, Group United States: exquisite, club, square, trafalgar, city, gorgeous, tate 
+##  
+##  Topic 2, Group Other: british, share, block, host, store, ridgemount, advice 
+##  Topic 2, Group United Kingdom: apex, appoint, comfy, blackfriars, toiletry, spacious, club 
+##  Topic 2, Group United States: theater, phone, wonderful, tour, bridge, express, block 
+##  
+##  Topic 3, Group Other: wed, anniversary, fab, attend, partner, wow, round 
+##  Topic 3, Group United Kingdom: daughter, cake, rush, pianist, ritz, birthday, pass 
+##  Topic 3, Group United States: classic, housekeeping, amenity, kid, speak, miss, level 
+##  
+##  Topic 4, Group Other: club, pillow, executive, cold, fall, type, fan 
+##  Topic 4, Group United Kingdom: lift, downstairs, miss, rumpus, bottle, car, complimentary 
+##  Topic 4, Group United States: stylish, feature, renovation, black, elevator, boutique, smoke 
+## </code></pre>
+<p>If this was just a regular topic model, or a prevalence or content model, we’d see top words by 4 metrics: highest probability, FREX, lift, and score.</p>
+<ul>
+<li><strong>Highest probability</strong> weights words by their overall frequency.</li>
+<li><strong>FREX</strong> weights words by their overall frequency and how exclusive they are to the topic.</li>
+<li><strong>Lift</strong> weights words by dividing by their frequency in other topics, therefore giving higher weight to words that appear less frequently in other topics.</li>
+<li><strong>Score</strong> divides the log frequency of the word in the topic by the log frequency of the word in other topics.</li>
+</ul>
+<p>Let’s fit a new model just to show that.</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="stm.html#cb50-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb50-2"><a href="stm.html#cb50-2" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="stm.html#cb50-3" tabindex="-1"></a>stm_fit_simple <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
+<span id="cb50-4"><a href="stm.html#cb50-4" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>documents,</span>
+<span id="cb50-5"><a href="stm.html#cb50-5" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>vocab,</span>
+<span id="cb50-6"><a href="stm.html#cb50-6" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">4</span>,</span>
+<span id="cb50-7"><a href="stm.html#cb50-7" tabindex="-1"></a>  <span class="co"># prevalence = ~ rating,</span></span>
+<span id="cb50-8"><a href="stm.html#cb50-8" tabindex="-1"></a>  <span class="co"># content = ~ reviewer_loc,</span></span>
+<span id="cb50-9"><a href="stm.html#cb50-9" tabindex="-1"></a>  <span class="at">data =</span> stm_prepared<span class="sc">$</span>meta,</span>
+<span id="cb50-10"><a href="stm.html#cb50-10" tabindex="-1"></a>  <span class="at">init.type =</span> <span class="st">&quot;Spectral&quot;</span>,</span>
+<span id="cb50-11"><a href="stm.html#cb50-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb50-12"><a href="stm.html#cb50-12" tabindex="-1"></a>)</span>
+<span id="cb50-13"><a href="stm.html#cb50-13" tabindex="-1"></a></span>
+<span id="cb50-14"><a href="stm.html#cb50-14" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_fit_simple, <span class="at">file =</span> <span class="st">&quot;input/stm_fit_simple.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="stm.html#cb51-1" tabindex="-1"></a>stm_fit_simple <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_fit_simple.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="stm.html#cb52-1" tabindex="-1"></a>stm<span class="sc">::</span><span class="fu">labelTopics</span>(stm_fit_simple)</span></code></pre></div>
+<pre><code>## Topic 1 Top Words:
+##       Highest Prob: stay, london, staff, service, excellent, restaurant, location 
+##       FREX: spa, corinthia, concierge, luxury, mondrian, love, pool 
+##       Lift: personal, oriental, mandarin, notch, corinthia, pleasure, property 
+##       Score: personal, london, service, stay, spa, corinthia, location 
+## Topic 2 Top Words:
+##       Highest Prob: breakfast, walk, room, stay, location, clean, london 
+##       FREX: tube, station, museum, hyde, street, bus, walk 
+##       Lift: hyde, paddington, albert, ridgemount, bus, kensington, rhodes 
+##       Score: hyde, tube, station, museum, bus, walk, clean 
+## Topic 3 Top Words:
+##       Highest Prob: savoy, bar, tea, lovely, staff, special, birthday 
+##       FREX: afternoon, birthday, savoy, cocktail, cake, american, treat 
+##       Lift: scone, pianist, cake, piano, beaufort, afternoon, sandwich 
+##       Score: scone, savoy, afternoon, birthday, tea, cake, cocktail 
+## Topic 4 Top Words:
+##       Highest Prob: room, night, check, stay, bed, book, bathroom 
+##       FREX: check, charge, bath, call, floor, pay, issue 
+##       Lift: rumpus, robe, mirror, wake, smell, curtain, corridor 
+##       Score: rumpus, room, check, shower, bed, bathroom, floor</code></pre>
+<p>It is interesting that the top terms for UK did not include “restaurant” or “location”. The top terms for the US did not include “excellent” or “amaze”, but did include “love”.</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="stm.html#cb54-1" tabindex="-1"></a>stm_tidy <span class="ot">&lt;-</span> <span class="fu">tidy</span>(stm_fit)</span>
+<span id="cb54-2"><a href="stm.html#cb54-2" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="stm.html#cb54-3" tabindex="-1"></a>stm_top_tokens <span class="ot">&lt;-</span> </span>
+<span id="cb54-4"><a href="stm.html#cb54-4" tabindex="-1"></a>  stm_tidy <span class="sc">%&gt;%</span></span>
+<span id="cb54-5"><a href="stm.html#cb54-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic =</span> <span class="fu">factor</span>(<span class="fu">paste</span>(<span class="st">&quot;Topic&quot;</span>, topic))) <span class="sc">%&gt;%</span></span>
+<span id="cb54-6"><a href="stm.html#cb54-6" tabindex="-1"></a>  <span class="fu">group_by</span>(topic, y.level) <span class="sc">%&gt;%</span></span>
+<span id="cb54-7"><a href="stm.html#cb54-7" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> beta, <span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-8"><a href="stm.html#cb54-8" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb54-9"><a href="stm.html#cb54-9" tabindex="-1"></a></span>
+<span id="cb54-10"><a href="stm.html#cb54-10" tabindex="-1"></a>stm_top_tokens <span class="sc">%&gt;%</span></span>
+<span id="cb54-11"><a href="stm.html#cb54-11" tabindex="-1"></a>  <span class="fu">filter</span>(topic <span class="sc">==</span> <span class="st">&quot;Topic 1&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-12"><a href="stm.html#cb54-12" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> <span class="fu">reorder_within</span>(term, <span class="at">by =</span> beta, <span class="at">within =</span> topic))) <span class="sc">+</span></span>
+<span id="cb54-13"><a href="stm.html#cb54-13" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb54-14"><a href="stm.html#cb54-14" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
+<span id="cb54-15"><a href="stm.html#cb54-15" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(y.level), <span class="at">scales =</span> <span class="st">&quot;free_x&quot;</span>, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb54-16"><a href="stm.html#cb54-16" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;STM Top 10 Terms for Topic 1&quot;</span>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p>As we did with the LDA model, we can assign topic labels with Open AI.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="stm.html#cb55-1" tabindex="-1"></a>stm_topics <span class="ot">&lt;-</span> </span>
+<span id="cb55-2"><a href="stm.html#cb55-2" tabindex="-1"></a>  stm_top_tokens <span class="sc">%&gt;%</span></span>
+<span id="cb55-3"><a href="stm.html#cb55-3" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> term, <span class="at">.by =</span> topic) <span class="sc">%&gt;%</span></span>
+<span id="cb55-4"><a href="stm.html#cb55-4" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb55-5"><a href="stm.html#cb55-5" tabindex="-1"></a>    <span class="at">token_str =</span> <span class="fu">map</span>(data, <span class="sc">~</span><span class="fu">paste</span>(.<span class="sc">$</span>term, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>)),</span>
+<span id="cb55-6"><a href="stm.html#cb55-6" tabindex="-1"></a>    <span class="at">topic_lbl =</span> <span class="fu">map_chr</span>(token_str, get_topic_from_openai),</span>
+<span id="cb55-7"><a href="stm.html#cb55-7" tabindex="-1"></a>    <span class="at">topic_lbl =</span> <span class="fu">str_remove_all</span>(topic_lbl, <span class="st">&#39;</span><span class="sc">\\</span><span class="st">&quot;&#39;</span>),</span>
+<span id="cb55-8"><a href="stm.html#cb55-8" tabindex="-1"></a>    <span class="at">topic_lbl =</span> snakecase<span class="sc">::</span><span class="fu">to_any_case</span>(topic_lbl, <span class="st">&quot;title&quot;</span>)</span>
+<span id="cb55-9"><a href="stm.html#cb55-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb55-10"><a href="stm.html#cb55-10" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>data)</span>
+<span id="cb55-11"><a href="stm.html#cb55-11" tabindex="-1"></a></span>
+<span id="cb55-12"><a href="stm.html#cb55-12" tabindex="-1"></a><span class="co"># Save to file system to avoid regenerating.</span></span>
+<span id="cb55-13"><a href="stm.html#cb55-13" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_topics, <span class="at">file =</span> <span class="st">&quot;input/stm_topics.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="stm.html#cb56-1" tabindex="-1"></a>stm_topics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_topics.RDS&quot;</span>)</span>
+<span id="cb56-2"><a href="stm.html#cb56-2" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="stm.html#cb56-3" tabindex="-1"></a>stm_topics</span></code></pre></div>
+<pre><code>## # A tibble: 4 × 3
+##   topic   token_str topic_lbl                   
+##   &lt;fct&gt;   &lt;list&gt;    &lt;chr&gt;                       
+## 1 Topic 1 &lt;chr [1]&gt; Luxury Stay in London       
+## 2 Topic 2 &lt;chr [1]&gt; Comfortable Stay Near London
+## 3 Topic 3 &lt;chr [1]&gt; Afternoon Tea at the Savoy  
+## 4 Topic 4 &lt;chr [1]&gt; Hotel Stay</code></pre>
+<p>Another way to evaluate the model is to print reviews that are most representative of the topic. Topic 1</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="stm.html#cb58-1" tabindex="-1"></a>stm<span class="sc">::</span><span class="fu">findThoughts</span>(</span>
+<span id="cb58-2"><a href="stm.html#cb58-2" tabindex="-1"></a>  stm_fit, </span>
+<span id="cb58-3"><a href="stm.html#cb58-3" tabindex="-1"></a>  <span class="at">n =</span> <span class="dv">3</span>, </span>
+<span id="cb58-4"><a href="stm.html#cb58-4" tabindex="-1"></a>  <span class="at">texts =</span> stm_prepared<span class="sc">$</span>meta<span class="sc">$</span>review, </span>
+<span id="cb58-5"><a href="stm.html#cb58-5" tabindex="-1"></a>  <span class="at">topics =</span> <span class="dv">1</span>, </span>
+<span id="cb58-6"><a href="stm.html#cb58-6" tabindex="-1"></a>  <span class="at">meta =</span> stm_prepared<span class="sc">$</span>meta</span>
+<span id="cb58-7"><a href="stm.html#cb58-7" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## 
+##  Topic 1: 
+##       To those who have stayed here in the past and have said anything negative of this hotel and services are foolish beyond belief. This hotel receives a five star plus recognition in my book of first class travels. It is one on my top ten list of first class hotel experiences. In fact I would confidently say that this hotel and it&#39;s staff ranks as the top three luxury hotel experiences that I have had so far. First and foremost I must say that the Fine Hotels and Resorts Pkg. is well worth it at this hotel. They truly went above and beyond to recognize our patronage. Second, this hotel went above and beyond to recognize our anniversary. Third, this hotel boasts the most superior, thoughtful and careful staff service that I have ever experienced in a first class hotel. While the hotel itself has an old world charm to it, it never underestimates the luxury offerings for it&#39;s guests. There is absolutely nothing that I can find fault during our week stay at is hotel. I would highly recommend this hotel for anyone looking for luxury and service. If in London again, I would seriously consider staying here again. I must be honest when I say that two years ago I tried the Mandarin hotel chain for my very first time in NYC and was disappointed. Since then I have tried the Mandarin Las Vegas and now London and both times I have been very impressed. I am confident to say that Mandarin Oriental Hotels is now my new favorite first class hotel chain. If you like first class hotels and luxury this hotel is for you. Enjoy it as much that I did. Bravo to the entire management team at the Mandarin Hyde Park London for maintaining such an impeccable property and focus on customer satisfaction. Every staff member at this hotel must receive a huge appreciation and thanks on behalf of our entire family for giving us a ver memorable and stellar holiday stay. Thank you!
+##      This was our third trip, the Corinthia London is a perfect 5 star and could be rated higher, the service is impeccable which is sometimes difficult to find in London, the food is fantastic and all the hotel has to offer is top notch with an a beautiful Spa in a prime location, it actually has everything you could want, the rooms and suites are beautifully appointed and very comfortable, it is currently our favourite hotel in central London and we will back and recommend to all, it&#39;s also very family friendly as well as being an ideal romantic stay or a luxurious base to experience the city, world class!
+##      I stayed at the Corinthia for three nights during a business trip and REALLY liked this hotel. I&#39;ve stayed at a number of other luxury 5-star properties in London and this is by far my favorite. The rooms are beautiful and well appointed and the spa is just amazing. More importantly, the service is outstanding and it feels like everyone really cares and is genuinely concerned about making sure you are enjoying your visit. Highly recommend staying here.</code></pre>
+
 </div>
-<div id="visualize" class="section level3 unnumbered hasAnchor">
-<h3>Visualize<a href="stm.html#visualize" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 </div>
-</div>
+<!-- </div> -->
             </section>
 
           </div>
         </div>
       </div>
 <a href="lda.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="data-formats.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="sentimentanalysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

@@ -19,6 +19,8 @@ library(stm)
 # library(tm) # generic text mining utilities. Great for DTMs.
 library(scales)
 library(glue)
+library(httr2)
+library(jsonlite)
 ```
 
 ```{r}
@@ -192,7 +194,7 @@ lda_top_tokens %>%
   labs(y = NULL, title = "LDA Top 10 Terms")
 ```
 
-There is a downside to this evaluation. Popular words like stay appear at or near the top in all three topics. You might want to look at _relative_ popularity instead: the popularity within the topic divided by overall popularity. That's problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. `LDAvis::serVis()` can help you do that. 
+There is a downside to this evaluation. Popular words like "stay" appear at or near the top in all three topics. You might want to look at _relative_ popularity instead: the popularity within the topic divided by overall popularity. That's problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. `LDAvis::serVis()` can help you do that. 
 
 :::rmdnote
 Unfortunately, the plot from `LDAvis::serVis()` is interactive and does not render in the RMarkdown notebook html, so below is just a screenshot of the code chunk output.
@@ -226,9 +228,6 @@ To OpenAI's ChatGPT API service requires an API token. I created one at https://
 :::
 
 ```{r eval=FALSE}
-library(httr2)
-library(jsonlite)
-
 # Create a function to send each list of topic words to Open AI as a separate request.
 get_topic_from_openai <- function(prompt) {
   my_resp <-
@@ -245,8 +244,10 @@ get_topic_from_openai <- function(prompt) {
           content = paste("You are a topic modeling assistant. You accept lists ",
                           "of words in a topic and summarizes them into a salient ",
                           "topic label of five words or less. How would you ",
-                          "summarize the following list? Return just the topic ",
-                          "label and nothing else.")
+                          "summarize the following list? The list is in descending ",
+                          "order of importance, so the first term in the list is most ",
+                          "strongly tied to the topic. Return just the topic label and ",
+                          "nothing else.")
         ),
         list(
           role = "user",
@@ -296,14 +297,15 @@ lda_top_tokens %>%
 I still need to learn more about 
 
 * Held-out Likelihood (Wallach et al., 2009).
-
 * Semantic Coherence
-
 * Exclusivity. Generally, the greater the number of topics in a model, the lower the quality of the smallest topics. One way around this is simply hiding the low-quality topics. The coherence measure evaluates topics.
 
 ## STM {#stm}
 
-STM incorporates arbitrary document metadata into the topic model. The goal of STM is to discover topics and estimate their relationship to the metadata. If _how_ a topic is discussed depends on the metadata features, control for them in the topical content part of the model (the beta matrix). E.g., children and adults will discuss hotels differently. If _what_ topics are discussed depends on the metadata features, control for them in the topical prevalence model (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.
+STM incorporates arbitrary document metadata into the topic model. The goal of STM is to discover topics and estimate their relationship to the metadata. 
+
+* **Topical prevalence**. If _what_ topics are discussed depends on the metadata features, control for them in the *prevalence* (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.
+* **Topical content**. If _how_ a topic is discussed depends on metadata features, control for them in the *content* (the beta matrix). E.g., visitors from the US may discuss hotels differently than visitors from the UK. 
 
 ### Algorithm {-}
 
@@ -322,14 +324,14 @@ The **stm** package represents a text corpus as an object with three components:
 * `meta`, a metadata data frame, one row per document containing the feature cols.
 
 :::rmdnote
-The model fit took about 3 minutes to run. I ran it once then saved the result.
+This step took about 3 minutes to run, so I ran it once then saved the result.
 :::
 
 ```{r eval=FALSE}
 stm_processed <-
   stm::textProcessor(
     documents = hotel_prep$review_words,
-    metadata = hotel_prep %>% select(rating, property),
+    metadata = hotel_prep %>% select(rating, reviewer_loc, review),
     lowercase = FALSE,
     removestopwords = FALSE,
     removenumbers = FALSE,
@@ -361,90 +363,131 @@ stm_prepared <-
 
 ### Fit {-}
 
-The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter `K` = 0. The resulting probability distribution of topic words (beta matrix) will be a K x `r `length(stm_prepared$vocab)` matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a `r comma(length(stm_prepared$documents), 1)` x K matrix. I expect topics to correlate with the review rating, so `rating` is a prevalence covariate, and I expect word usage to correlate with the hotel, so `property` is a topical content covariate.
+The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter `K` = 0. The resulting probability distribution of topic words (beta matrix) will be a K x `r `length(stm_prepared$vocab)` matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a `r comma(length(stm_prepared$documents), 1)` x K matrix. I expect topics to correlate with the review rating, so `rating` is a prevalence covariate, and I expect word usage to correlate with the reviewer location, so `reviewer_loc` is a topical content covariate.
+
+:::rmdnote
+Running the model with K = 3 threw an error.
+`Error: chol(): decomposition failed`
+I set it to K = 4 and it worked. It took a couple minutes to run, so I ran it once then saved the result.
+:::
 
 ```{r eval=FALSE}
 set.seed(1234)
 
-stm_fitted <- stm::stm(
+stm_fit <- stm::stm(
   stm_prepared$documents,
   stm_prepared$vocab,
   K = 4,
   prevalence = ~ rating,
-  content = ~ property,
+  content = ~ reviewer_loc,
   data = stm_prepared$meta,
   init.type = "Spectral",
   verbose = FALSE
 )
 
-saveRDS(stm_fitted, file = "input/stm_fitted.RDS")
+saveRDS(stm_fit, file = "input/stm_fit.RDS")
 ```
 
 ```{r}
-stm_fitted <- readRDS(file = "input/stm_fitted.RDS")
-
-summary(stm_fitted)
+stm_fit <- readRDS(file = "input/stm_fit.RDS")
 ```
 
-### Evaluate {-}
 ### Interpret {-}
-### Visualize {-}
 
-## Data Formats
-
-There are five common text mining packages, each with their own format requirements. Whichever package you work in, there is a decent chance you will want to use a function from one of the others, so you need some fluency in them all.
-
-* **tm** works with Corpus objects (raw text with document and corpus metadata). Many **tm** algorithms work with a document-term matrix (DTM), a sparse matrix with one row per document, one column per term, and values equaling the word count or tf-idf. 
-
-* **quanteda** also works with Corpus objects, but has its own implementation. Many **quanteda** algorithms work with a document-feature matrix (DFM), again similar to **tm**'s DTM.
-
-* **tidytext** works with tibbles. Many **tidytext** algorithms work with tibbles with one row per token (usually a word, but possibly a large item of text), a frequency count column, and possibly other metadata columns.
-
-* **qdap** works with text fields in a data frame, so it does not require any particular data structure.
-
-* **sentimentr** is similar to **qdap**.
-
-Let's take the `sawyer_raw` data frame and pre-process it for all three packages.
-
-#### tm {-}
-
-Turn the character vector `sawyer_raw$text` into a text source with `VectorSource()`, then turn the text source into a corpus with `vCorpus()`. Clean the corpus with a series of utility functions. One particularly important function, `removeWords()`, removes stop words, plus any custom stop words. I would normally add "tom" because it is so ubiquitous throughout the text. However, in this case I won't because `stopwords` includes valence shifting words like "very" which are used in polarity scoring. I can remove them later for other exercises.
+The fit summary has three sections showing the tops words. The first section shows the prevalence model; the second shows the topical content model; and the third shows their interaction.
 
 ```{r}
-# (sawyer_tm <- VCorpus(VectorSource(sawyer$text)) %>%
-#   tm_map(content_transformer(replace_abbreviation)) %>%
-#   tm_map(removePunctuation) %>%
-#   tm_map(removeNumbers) %>%
-#   tm_map(content_transformer(tolower)) %>%
-#   tm_map(removeWords, c(stopwords("en"), "tom")) %>%
-#   tm_map(stripWhitespace))
+summary(stm_fit)
 ```
 
-Each document in the `sawyer_tm` VCorpus is a line of text. Use `DocumentTermMaterix()` to convert the vCorpus into **tm**'s bag-of-words format, DTM.
+If this was just a regular topic model, or a prevalence or content model, we'd see top words by 4 metrics: highest probability, FREX, lift, and score.
+
+- **Highest probability** weights words by their overall frequency.
+- **FREX** weights words by their overall frequency and how exclusive they are to the topic.
+- **Lift** weights words by dividing by their frequency in other topics, therefore giving higher weight to words that appear less frequently in other topics.
+- **Score** divides the log frequency of the word in the topic by the log frequency of the word in other topics.
+
+Let's fit a new model just to show that.
+
+```{r eval=FALSE}
+set.seed(1234)
+
+stm_fit_simple <- stm::stm(
+  stm_prepared$documents,
+  stm_prepared$vocab,
+  K = 4,
+  # prevalence = ~ rating,
+  # content = ~ reviewer_loc,
+  data = stm_prepared$meta,
+  init.type = "Spectral",
+  verbose = FALSE
+)
+
+saveRDS(stm_fit_simple, file = "input/stm_fit_simple.RDS")
+```
 
 ```{r}
-# (sawyer_tm_dtm <- DocumentTermMatrix(sawyer_tm))
+stm_fit_simple <- readRDS(file = "input/stm_fit_simple.RDS")
 ```
-
-This is a very sparse (nearly 100% sparse) matrix documents as rows and distinct words as columns.
 
 ```{r}
-#   group_by(chapter) %>%
-#   mutate(text = paste(text, collapse = " ")) %>%
-#   slice_head(n = 1) %>%
-#   select(chapter, text)
-# 
-# sawyer_sent <- sawyer %>%
-#   sentSplit("text")
-# 
-# skimr::skim(sawyer)
+stm::labelTopics(stm_fit_simple)
 ```
 
-#### quanteda {-}
-dafdafd
+It is interesting that the top terms for UK did not include "restaurant" or "location". The top terms for the US did not include "excellent" or "amaze", but did include "love".
 
-#### tidytext {-}
-dafdafd
+```{r}
+stm_tidy <- tidy(stm_fit)
+
+stm_top_tokens <- 
+  stm_tidy %>%
+  mutate(topic = factor(paste("Topic", topic))) %>%
+  group_by(topic, y.level) %>%
+  slice_max(order_by = beta, n = 10) %>%
+  ungroup()
+
+stm_top_tokens %>%
+  filter(topic == "Topic 1") %>%
+  ggplot(aes(x = beta, y = reorder_within(term, by = beta, within = topic))) +
+  geom_col() +
+  scale_y_reordered() +
+  facet_wrap(facets = vars(y.level), scales = "free_x", ncol = 3) +
+  labs(y = NULL, title = "STM Top 10 Terms for Topic 1")
+```
 
 
+As we did with the LDA model, we can assign topic labels with Open AI.
 
+```{r eval=FALSE}
+stm_topics <- 
+  stm_top_tokens %>%
+  nest(data = term, .by = topic) %>%
+  mutate(
+    token_str = map(data, ~paste(.$term, collapse = ", ")),
+    topic_lbl = map_chr(token_str, get_topic_from_openai),
+    topic_lbl = str_remove_all(topic_lbl, '\\"'),
+    topic_lbl = snakecase::to_any_case(topic_lbl, "title")
+  ) %>%
+  select(-data)
+
+# Save to file system to avoid regenerating.
+saveRDS(stm_topics, file = "input/stm_topics.RDS")
+```
+
+```{r}
+stm_topics <- readRDS(file = "input/stm_topics.RDS")
+
+stm_topics
+```
+
+Another way to evaluate the model is to print reviews that are most representative of the topic. Topic 1 
+
+```{r}
+stm::findThoughts(
+  stm_fit, 
+  n = 3, 
+  texts = stm_prepared$meta$review, 
+  topics = 1, 
+  meta = stm_prepared$meta
+)
+```

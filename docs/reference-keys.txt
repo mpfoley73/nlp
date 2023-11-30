@@ -9,10 +9,7 @@ save
 topicmodeling
 lda
 stm
-data-formats
 sentimentanalysis
 subjectivity-lexicons
 polarity-scoring
-tidytext-1
-sentimentr
 statistical-test

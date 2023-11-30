@@ -47,6 +47,12 @@ hotel_1 <- hotel_0 %>%
     property = factor(property, ordered = TRUE),
     # Reducing number of hotels for modeling simplicity.
     property = fct_lump_prop(property, prop = .05),
+    # Bin common locations,
+    reviewer_loc = factor(case_when(
+      str_detect(reviewer_loc, "(London)|(United Kingdom)|(UK)") ~ "United Kingdom",
+      str_detect(reviewer_loc, "(New York)|(California)") ~ "United States",
+      TRUE ~ "Other"
+    )),
     # Low ratings are so rare, lump the bottom two.
     rating = fct_collapse(as.character(rating), `1-2` = c("1", "2")),
     # Interesting metadata

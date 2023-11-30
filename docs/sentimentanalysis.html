@@ -23,14 +23,14 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-28" />
+<meta name="date" content="2023-11-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="data-formats.html"/>
+<link rel="prev" href="stm.html"/>
 <link rel="next" href="subjectivity-lexicons.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -125,6 +125,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 </style>
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -165,18 +187,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
 <li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a>
 <ul>
-<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i>tidytext</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext"><i class="fa fa-check"></i>tidytext</a></li>
 <li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i>sentimentr</a></li>
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.3</b> Statistical Test</a></li>
@@ -202,11 +221,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="sentimentanalysis" class="section level1 hasAnchor" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Sentiment Analysis<a href="sentimentanalysis.html#sentimentanalysis" class="anchor-section" aria-label="Anchor link to header"></a></h1>
 <p>Sentiment analysis is the extraction of the emotional intent of text. You can classify the <em>polarity</em> (positive | negative) or sentiment (angry | sad | happy | …) at the document, sentence, or feature level. This section continues with the hotel data from <a href="data-prep.html#data-prep">1</a>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="sentimentanalysis.html#cb1-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span>
-<span id="cb1-2"><a href="sentimentanalysis.html#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="sentimentanalysis.html#cb1-3" tabindex="-1"></a>hotel_0 <span class="ot">&lt;-</span> hotel_prep</span>
-<span id="cb1-4"><a href="sentimentanalysis.html#cb1-4" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="sentimentanalysis.html#cb1-5" tabindex="-1"></a><span class="fu">glimpse</span>(token)</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="sentimentanalysis.html#cb60-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span>
+<span id="cb60-2"><a href="sentimentanalysis.html#cb60-2" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="sentimentanalysis.html#cb60-3" tabindex="-1"></a>hotel_0 <span class="ot">&lt;-</span> hotel_prep</span>
+<span id="cb60-4"><a href="sentimentanalysis.html#cb60-4" tabindex="-1"></a></span>
+<span id="cb60-5"><a href="sentimentanalysis.html#cb60-5" tabindex="-1"></a><span class="fu">glimpse</span>(token)</span></code></pre></div>
 <pre><code>## Rows: 1,112,307
 ## Columns: 3
 ## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
@@ -218,7 +237,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="data-formats.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="stm.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 <a href="subjectivity-lexicons.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>

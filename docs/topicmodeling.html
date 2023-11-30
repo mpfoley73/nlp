@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-27" />
+<meta name="date" content="2023-11-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -187,19 +187,16 @@ div.csl-indent {
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#evaluate"><i class="fa fa-check"></i>Evaluate</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="data-formats.html"><a href="data-formats.html"><i class="fa fa-check"></i><b>2.3</b> Data Formats</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="subjectivity-lexicons.html"><a href="subjectivity-lexicons.html"><i class="fa fa-check"></i><b>3.1</b> Subjectivity Lexicons</a></li>
 <li class="chapter" data-level="3.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html"><i class="fa fa-check"></i><b>3.2</b> Polarity Scoring</a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext-1"><i class="fa fa-check"></i><b>3.2.1</b> tidytext</a></li>
-<li class="chapter" data-level="3.2.2" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i><b>3.2.2</b> sentimentr</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#tidytext"><i class="fa fa-check"></i>tidytext</a></li>
+<li class="chapter" data-level="" data-path="polarity-scoring.html"><a href="polarity-scoring.html#sentimentr"><i class="fa fa-check"></i>sentimentr</a></li>
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="statistical-test.html"><a href="statistical-test.html"><i class="fa fa-check"></i><b>3.3</b> Statistical Test</a></li>
 </ul></li>
@@ -235,7 +232,9 @@ div.csl-indent {
 <span id="cb23-5"><a href="topicmodeling.html#cb23-5" tabindex="-1"></a><span class="fu">library</span>(stm)</span>
 <span id="cb23-6"><a href="topicmodeling.html#cb23-6" tabindex="-1"></a><span class="co"># library(tm) # generic text mining utilities. Great for DTMs.</span></span>
 <span id="cb23-7"><a href="topicmodeling.html#cb23-7" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
-<span id="cb23-8"><a href="topicmodeling.html#cb23-8" tabindex="-1"></a><span class="fu">library</span>(glue)</span></code></pre></div>
+<span id="cb23-8"><a href="topicmodeling.html#cb23-8" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
+<span id="cb23-9"><a href="topicmodeling.html#cb23-9" tabindex="-1"></a><span class="fu">library</span>(httr2)</span>
+<span id="cb23-10"><a href="topicmodeling.html#cb23-10" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code></pre></div>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="topicmodeling.html#cb24-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;input/hotel_prepped.Rdata&quot;</span>)</span>
 <span id="cb24-2"><a href="topicmodeling.html#cb24-2" tabindex="-1"></a></span>
 <span id="cb24-3"><a href="topicmodeling.html#cb24-3" tabindex="-1"></a><span class="fu">glimpse</span>(token)</span></code></pre></div>
