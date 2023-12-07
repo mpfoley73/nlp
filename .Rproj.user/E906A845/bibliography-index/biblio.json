@@ -68,6 +68,31 @@
             "type": "book"
         },
         {
+            "DOI": "10.2196/40102",
+            "URL": "https://doi.org/10.2196/40102",
+            "author": [
+                {
+                    "family": "Meaney",
+                    "given": "Escobar",
+                    "suffix": "C."
+                }
+            ],
+            "container-title": "JMIR medical informatics",
+            "id": "Meaney2022",
+            "issued": {
+                "date-parts": [
+                    [
+                        2022
+                    ]
+                ]
+            },
+            "page": "e40102",
+            "title": "Comparison of methods for estimating temporal topic models from primary care clinical text data: Retrospective closed cohort study.",
+            "title-short": "Comparison of methods for estimating temporal topic models from primary care clinical text data",
+            "type": "article-journal",
+            "volume": "10"
+        },
+        {
             "URL": "https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b",
             "author": [
                 {

@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-30" />
+<meta name="date" content="2023-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="remove-stop-words.html"/>
-<link rel="next" href="bigrams.html"/>
+<link rel="next" href="prepped-data.html"/>
 <script src="assets/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="assets/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -169,23 +169,23 @@ div.csl-indent {
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
 <li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
+<li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
+<li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
+<li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
@@ -220,44 +220,26 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="lemmatize" class="section level2 hasAnchor" number="1.5">
 <h2><span class="header-section-number">1.5</span> Lemmatize<a href="lemmatize.html#lemmatize" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Stemming and lemmatizing are ways to convert word variations like “staying”, “stayed”, and “stay” into a generic form: “stay”. Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., “staying” becomes “stai”. Lemmatize gives you the more natural “stay”.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="lemmatize.html#cb18-1" tabindex="-1"></a>token <span class="ot">&lt;-</span> token_2 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">word =</span> textstem<span class="sc">::</span><span class="fu">lemmatize_words</span>(word))</span>
-<span id="cb18-2"><a href="lemmatize.html#cb18-2" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="lemmatize.html#cb18-3" tabindex="-1"></a><span class="co"># Examples.</span></span>
-<span id="cb18-4"><a href="lemmatize.html#cb18-4" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">before =</span> token_2<span class="sc">$</span>word, <span class="at">after =</span> token<span class="sc">$</span>word) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-5"><a href="lemmatize.html#cb18-5" tabindex="-1"></a>  <span class="fu">filter</span>(before <span class="sc">!=</span> after) <span class="sc">%&gt;%</span> </span>
-<span id="cb18-6"><a href="lemmatize.html#cb18-6" tabindex="-1"></a>  <span class="fu">count</span>(before, after, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<pre><code>## # A tibble: 8,054 × 3
+<p>Stemming and lemmatizing convert word variations like “staying”, “stayed”, and “stay” into a generic form: “stay”. Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., “staying” becomes “stai”. Lemmatize gives you the more natural “stay”.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="lemmatize.html#cb14-1" tabindex="-1"></a>token <span class="ot">&lt;-</span> token_2 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">word =</span> textstem<span class="sc">::</span><span class="fu">lemmatize_words</span>(word))</span>
+<span id="cb14-2"><a href="lemmatize.html#cb14-2" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="lemmatize.html#cb14-3" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">before =</span> token_2<span class="sc">$</span>word, <span class="at">after =</span> token<span class="sc">$</span>word) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-4"><a href="lemmatize.html#cb14-4" tabindex="-1"></a>  <span class="fu">filter</span>(before <span class="sc">!=</span> after) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="lemmatize.html#cb14-5" tabindex="-1"></a>  <span class="fu">count</span>(before, after, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 8,030 × 3
 ##    before      after          n
 ##    &lt;chr&gt;       &lt;chr&gt;      &lt;int&gt;
-##  1 stayed      stay        8785
-##  2 hotels      hotel       4169
-##  3 amazing     amaze       4017
-##  4 booked      book        3041
-##  5 nights      night       2948
-##  6 arrived     arrive      2517
-##  7 bit         bite        2473
-##  8 restaurants restaurant  2398
-##  9 staying     stay        2313
-## 10 minutes     minute      2180
-## # ℹ 8,044 more rows</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="lemmatize.html#cb20-1" tabindex="-1"></a><span class="co"># A typical review, before and after</span></span>
-<span id="cb20-2"><a href="lemmatize.html#cb20-2" tabindex="-1"></a><span class="fu">bind_cols</span>(</span>
-<span id="cb20-3"><a href="lemmatize.html#cb20-3" tabindex="-1"></a>  <span class="at">review_id =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>,</span>
-<span id="cb20-4"><a href="lemmatize.html#cb20-4" tabindex="-1"></a>  <span class="at">before =</span> hotel_2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(review),</span>
-<span id="cb20-5"><a href="lemmatize.html#cb20-5" tabindex="-1"></a>  <span class="at">after =</span> token <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb20-6"><a href="lemmatize.html#cb20-6" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">x =</span> <span class="fu">paste</span>(word, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-7"><a href="lemmatize.html#cb20-7" tabindex="-1"></a>    <span class="fu">pull</span>(x)</span>
-<span id="cb20-8"><a href="lemmatize.html#cb20-8" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-9"><a href="lemmatize.html#cb20-9" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">valign =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">%&gt;%</span> flextable<span class="sc">::</span><span class="fu">autofit</span>()</span></code></pre></div>
-<div class="tabwid tabwid_left"><style>.cl-83bbbc6c{}.cl-83b1d076{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-83b1d0b2{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-83b75190{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-83b7519a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-83b751a4{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-83b751a5{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-83b76180{width:0.918in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b7618a{width:87.136in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b76194{width:42.66in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b7619e{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b7619f{width:87.136in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761a8{width:42.66in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761b2{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761b3{width:87.136in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761bc{width:42.66in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761bd{width:0.918in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761be{width:87.136in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-83b761bf{width:42.66in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-83bbbc6c'><thead><tr style="overflow-wrap:break-word;"><th class="cl-83b76180"><p class="cl-83b75190"><span class="cl-83b1d076">review_id</span></p></th><th class="cl-83b7618a"><p class="cl-83b7519a"><span class="cl-83b1d076">before</span></p></th><th class="cl-83b76194"><p class="cl-83b7519a"><span class="cl-83b1d076">after</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-83b7619e"><p class="cl-83b751a4"><span class="cl-83b1d0b2">2</span></p></td><td class="cl-83b7619f"><p class="cl-83b751a5"><span class="cl-83b1d0b2">I had a pleasure of staying in this hotel for 7 nights recently. This hotel was perfect in every way. Communication with the hotel before staying was prompt, and very efficient. Checking in was a breeze. You go through the spectacular lobby with modern glass chandeliers and take the elevator to your room. My room, they gave me an upgrade to junior suite, was spectacular. We had a walk-in closet of the size where you could have put a small bed in there; it served us nicely for the seven day stay. The decor was very refined, and oh the bathroom! Carrera marble floor was heated throughout, rain shower was to die for! Location, as it turned out, was as good as it can be. We were 5 minutes walk to Trafalgar Square, but it was very quiet. Right outside was Embankment tube stop. We would walk to theater area and to numerous restaurants, and many major sites, such as London Eye or Westminster Abbey were within walking distance. We had buffet breakfast or room service every morning. It was pricy, but my rate included it. Couple of nights, we had glass of wine sitting in front of fire place in the lobby. I used the spa, which is included in the room rate, almost every night. After a windchill day of sightseeing, the steam sauna and jacuzzi would soften my weary muscles. I have stayed in many 5 star hotels around the world, but this hotel tops it. I would return here in a heartbeat next time I am in London.</span></p></td><td class="cl-83b761a8"><p class="cl-83b751a5"><span class="cl-83b1d0b2">pleasure stay night recently perfect communication stay prompt efficient check breeze spectacular lobby modern glass chandelier elevator room room upgrade junior suite spectacular walk closet size bed serve nicely day stay decor refine bathroom carrera marble floor heat rain shower die location minute walk trafalgar square quiet embankment tube stop walk theater numerous restaurant major site london eye westminster abbey walk distance buffet breakfast room service morning pricy rate include couple night glass wine sit front fire lobby spa include room rate night windchill day sightsee steam sauna jacuzzi soften weary muscle stay star hotel world top return heartbeat time london</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-83b761b2"><p class="cl-83b751a4"><span class="cl-83b1d0b2">3</span></p></td><td class="cl-83b761b3"><p class="cl-83b751a5"><span class="cl-83b1d0b2">A very lovely first visit to this iconic hotel bar! Wonderful service, without being intrusive at all! Very delicious cocktails and just generally all round, a very indulgent experience. Well worth visiting only for that 'once in a lifetime' experience, though do make sure you are feeling 'flush' it doesn't come cheap!</span></p></td><td class="cl-83b761bc"><p class="cl-83b751a5"><span class="cl-83b1d0b2">lovely visit iconic bar wonderful service intrusive delicious cocktail round indulgent experience worth visit lifetime experience feel flush cheap</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-83b761bd"><p class="cl-83b751a4"><span class="cl-83b1d0b2">4</span></p></td><td class="cl-83b761be"><p class="cl-83b751a5"><span class="cl-83b1d0b2">3 of us stayed at the Rhodes Hotel for 4 nights, its a great location for taking the Paddington Express from Heathrow. We like the location clost to the partk and in walking distance of most locations. The room and bath were small compared to American Hotels but very clean. We enjoyed the free WIFI. The owners and the staff were very friendly and helpful with taxi's and resturant recomendations. We would stay there again.</span></p></td><td class="cl-83b761bf"><p class="cl-83b751a5"><span class="cl-83b1d0b2">stay rhodes night location take paddington express heathrow location clost partk walk distance location room bath compare american hotel clean enjoy free wifi owner staff friendly helpful taxi's restaurant recomendations stay</span></p></td></tr></tbody></table></div>
-<p>At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics <span class="citation">(<a href="#ref-VanGils2020">Gils 2020</a>)</span>.</p>
-</div>
-<h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-VanGils2020" class="csl-entry">
-Gils, Wouter van. 2020. <span>“Natural Language Processing for Predictive Purposes with r,”</span> November. <a href="https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b">https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b</a>.
-</div>
+##  1 stayed      stay        8770
+##  2 hotels      hotel       4135
+##  3 amazing     amaze       3969
+##  4 booked      book        3013
+##  5 nights      night       2923
+##  6 arrived     arrive      2510
+##  7 bit         bite        2470
+##  8 restaurants restaurant  2343
+##  9 staying     stay        2311
+## 10 minutes     minute      2168
+## # ℹ 8,020 more rows</code></pre>
 </div>
             </section>
 
@@ -265,7 +247,7 @@ Gils, Wouter van. 2020. <span>“Natural Language Processing for Predictive Purp
         </div>
       </div>
 <a href="remove-stop-words.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="bigrams.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="prepped-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="assets/gitbook-2.6.7/js/app.min.js"></script>

@@ -5,6 +5,7 @@ This section covers how to prepare a corpus for text analysis. I'll work with th
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(tidytext)
+library(janitor)
 library(scales)
 library(glue)
 ```
@@ -14,11 +15,11 @@ hotel_0 <-
   read_csv(
     "input/london_hotel_reviews.csv", 
     col_types = "cicccc",
-    col_names = c("property", "rating", "title", "review", "reviewer_loc", "review_dt"),
+    col_names = c("hotel", "rating", "title", "review", "reviewer_loc", "review_dt"),
     skip = 1
   ) %>%
   mutate(review_id = row_number()) %>%
-  select(review_id, everything())
+  select(review_id, everything(), -c(title, review_dt))
 
 glimpse(hotel_0)
 ```
@@ -36,17 +37,17 @@ hotel_1 <- hotel_0 %>%
     review = str_remove_all(review, "\\<[[:alnum:]]+\\>"),
     # Remove <U+....>
     review = str_remove_all(review, "\\<U\\+[[:alnum:]]{4}\\>"),
-    # Lots of pipes?
-    review = str_remove_all(review, "(\\|)"),
+    # Only keep letters, numbers, and apostrophes.
+    review = str_remove_all(review, "[^[:alnum:][\\s][\\']]"),
     review = str_squish(review),
     # Shorten some of the hotel names.
-    property = str_remove_all(
-      property, 
+    hotel = str_remove_all(
+      hotel, 
       "( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)"
     ), 
-    property = factor(property, ordered = TRUE),
+    hotel = factor(hotel, ordered = TRUE),
     # Reducing number of hotels for modeling simplicity.
-    property = fct_lump_prop(property, prop = .05),
+    hotel = fct_lump_prop(hotel, prop = .05),
     # Bin common locations,
     reviewer_loc = factor(case_when(
       str_detect(reviewer_loc, "(London)|(United Kingdom)|(UK)") ~ "United Kingdom",
@@ -56,7 +57,7 @@ hotel_1 <- hotel_0 %>%
     # Low ratings are so rare, lump the bottom two.
     rating = fct_collapse(as.character(rating), `1-2` = c("1", "2")),
     # Interesting metadata
-    chr_cnt = str_length(review)
+    raw_chrcnt = str_length(review)
   ) %>%
   # Exclude reviews written in a foreign language. One heuristic to handle this 
   # is to look for words common in other languages that do not also occur in English.
@@ -65,59 +66,39 @@ hotel_1 <- hotel_0 %>%
     !str_detect(review, "( et )|( de )|( le )|( les )"),   # French
     !str_detect(review, "( di )|( e )|( la )"),            # Italian
     !str_detect(review, "( un )|( y )"),                   # Spanish
-    str_length(review) > 0
+    raw_chrcnt > 0
   ) 
 ```
 
-That might be enough. Let's explore the data.
+That might be enough. Let's explore the data. We have 9 hotels. Reviewers are binned into 3 locations. 90% of reviews rate the property a 4 or 5. Some reviews are as small as 1 character, but they can get quite large.
 
 ```{r}
-# 90% of reviews rate the property a 4 or 5.
-hotel_1 %>% janitor::tabyl(rating)
-
-# Some reviews are as small as 1 character, but they can get quite large.
-hotel_1 %>% select(chr_cnt) %>% summary()
-
-# A few reviews
-hotel_1 %>% 
-  sample_n(3, seed = 12345) %>% 
-  select(chr_cnt, review) %>% 
-  flextable::flextable() %>% 
-  flextable::valign(j = 1, valign = "top") %>% 
-  flextable::autofit()
+skimr::skim(hotel_1)
 ```
 
-@Nagelkerke2020a recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (<= 3 chars) for anything other than sentiment analysis. I'm going to keep punctuation and short reviews for now. Some of those extremely short reviews are gibberish, but tokenizing will filter out some of that.
+@Nagelkerke2020a recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (<= 3 chars) for anything other than sentiment analysis. I'm going to keep punctuation and short reviews for now even though some of those extremely short reviews are gibberish.
 
 ## Tokenize
 
-Tokenize the reviews. Even if you want bigrams, it is often helpful to tokenize into unigrams first to clean and regularize.
+Most models are based on tokenized text. Even if you are interested in working with bigrams, tokenize into words to clean and regularize the data first.
 
 ```{r}
 token_0 <- 
   hotel_1 %>%
   select(review_id, review) %>%
-  unnest_tokens("word", review) %>%
-  mutate(.by = review_id, n = n()) %>%
-  # Short reviews are mostly gibberish. Require at least 10 words.
-  filter(n >= 10)
+  unnest_tokens("word", review)
 
-# Attach word counts back to main data frame. Inner join side effect is removal
-# of some bogus reviews.
-hotel_2 <- 
-  token_0 %>% 
-  count(review_id, name = "word_cnt") %>% 
-  inner_join(hotel_1, by = "review_id") %>%
-  relocate(word_cnt, .after = chr_cnt)
+# Attach word counts back to main data frame, just to aid understanding.
+hotel_2 <-
+  hotel_1 %>%
+  inner_join(count(token_0, review_id, name = "raw_wordcnt"), by = join_by(review_id))
 
-hotel_2 %>% select(chr_cnt, word_cnt) %>% summary()
+hotel_2 %>% select(raw_chrcnt, raw_wordcnt) %>% summary()
 ```
-
-@Nagelkerke2020a recommends discarding reviews with few (<=50) tokens on the grounds that short reviews will not add much in terms of _different_ topics _within_ reviews.^[TODO: what does Nagelkerke mean - why is this important?]. That's about 25% of this sample. I set a lower limit of 10 tokens.
 
 ## Spell-check
 
-Run a spell-check to regularize the data. Its possible to land on the wrong correction, but there is probably more to gain than lose. Only a very small fraction of the tokens were misspellings.
+Run a spell-check to regularize the data. It's possible to land on the wrong correction, but there is probably more to gain than lose. Only a very small fraction of these tokens were misspellings.
 
 ```{r}
 # There are multiple possible right spellings, so just choose one.
@@ -133,7 +114,8 @@ token_1 <-
 mean(token_0$word != token_1$word)
 
 # Examples.
-tibble(before = token_0$word, after = token_1$word) %>% filter(before != after) %>% head()
+tibble(before = token_0$word, after = token_1$word) %>% filter(before != after) %>% 
+  count(before, after, sort = TRUE)
 ```
 
 ## Remove Stop Words
@@ -143,16 +125,12 @@ Stop words usually add no value, but you should pay attention to what you are dr
 ```{r}
 # Start with a standard list.
 stop <- tidytext::stop_words %>%
-  # Don't remove potentially useful words.
-  filter(!word %in% c("appreciate", "room")) %>%
-  # But also exclude these words.
+  # Remove potentially useful words from stop list.
+  filter(!word %in% c("appreciate", "room", "first")) %>%
+  # Add custom stop words.
   bind_rows(tibble(word = c("hotel")))
 
-token_2 <- 
-  token_1 %>% 
-  anti_join(stop, by = "word") %>%
-  # also exclude words that are, or contain, numbers.
-  filter(!str_detect(word, "[0-9]"))
+token_2 <- anti_join(token_1, stop, by = "word")
 
 # Most frequently removed words
 token_1 %>% 
@@ -162,39 +140,47 @@ token_1 %>%
 
 ## Lemmatize
 
-Stemming and lemmatizing are ways to convert word variations like "staying", "stayed", and "stay" into a generic form: "stay". Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., "staying" becomes "stai". Lemmatize gives you the more natural "stay".
+Stemming and lemmatizing convert word variations like "staying", "stayed", and "stay" into a generic form: "stay". Stemming tends to chop off endings to create a root word, but the stem is often not a word itself. E.g., "staying" becomes "stai". Lemmatize gives you the more natural "stay".
 
 ```{r}
 token <- token_2 %>% mutate(word = textstem::lemmatize_words(word))
 
-# Examples.
 tibble(before = token_2$word, after = token$word) %>% 
   filter(before != after) %>% 
   count(before, after, sort = TRUE)
 ```
 
-```{r}
-# A typical review, before and after
-bind_cols(
-  review_id = 2:4,
-  before = hotel_2 %>% filter(review_id %in% 2:4) %>% pull(review),
-  after = token %>% filter(review_id %in% 2:4) %>% 
-    summarize(.by = review_id, x = paste(word, collapse = " ")) %>%
-    pull(x)
-) %>%
-  flextable::flextable() %>% flextable::valign(valign = "top") %>% flextable::autofit()
-```
+## Prepped Data
 
-At this point, you might decide to throw out smaller reviews because they are unlikely to identify multiple topics [@VanGils2020]. 
+Now that the data is prepped, created a stylized review text.
+
+```{r}
+prepped_hotel <-
+  token %>%
+  summarize(
+    .by = review_id, 
+    prepped_review = paste(word, collapse = " "),
+    prepped_wrdcnt = n()
+  ) %>%
+  inner_join(hotel_2, by = join_by(review_id)) %>%
+  relocate(prepped_review, prepped_wrdcnt, .after = last_col())
+
+prepped_hotel %>% 
+  select(review_id, review, prepped_review) %>% 
+  filter(review_id == 3) %>%
+  flextable::flextable() %>% 
+  flextable::valign(valign = "top") %>% 
+  flextable::autofit()
+```
 
 ## Bigrams
 
-Bigrams should not contain stop words. However, they should be adjacent words, so tokenize into bigrams, split into words an then filter out rows where one or both words is stop word.
+If you intend to present bigrams, don't simply tokenize the raw or prepped text into bigrams because you don't want stop words in bigram, nor do you want words that aren't actually adjacent because you've removed stop words. Instead, tokenize into bigrams, split the bigrams into words, and filter out rows where one or both words is stop word.
 
 ```{r}
+# Reassemble token_1 into text and re-tokenize so you get the spalling corrections.
 bigram_0 <-
-  # start with the tokenized data _prior_ to removing stop words.
-  token_2 %>%
+  token_1 %>%
   summarize(.by = review_id, reconstructed = paste(word, collapse = " ")) %>%
   unnest_tokens("bigram", reconstructed, token = "ngrams", n = 2)
 
@@ -204,7 +190,6 @@ bigram <-
   separate(bigram, into = c("word1", "word2"), sep = " ") %>%
   anti_join(stop, by = join_by(word1 == word)) %>%
   anti_join(stop, by = join_by(word2 == word)) %>%
-  filter(!str_detect(word1, "[0-9]"), !str_detect(word2, "[0-9]")) %>%
   mutate(bigram = paste(word1, word2)) %>%
   select(review_id, bigram)
 
@@ -223,19 +208,8 @@ bind_cols(
 
 ## Save
 
-Combine the tokens and bigrams into cleaner reviews. Save the cleaned data for other analyses like topic modeling and sentiment analysis.
+Save the cleaned data for other analyses like topic modeling and sentiment analysis.
 
 ```{r}
-review_words <- token %>% 
-  summarize(.by = review_id, review_words = paste(word, collapse = " "))
-
-review_bigrams <- bigram %>%
-  summarize(.by = review_id, review_bigrams = paste(bigram, collapse = " "))
-
-hotel_prep <- 
-  hotel_2 %>%
-  inner_join(review_words, by = join_by(review_id)) %>%
-  inner_join(review_bigrams, by = join_by(review_id))
-
-save(hotel_prep, token, bigram, file = "input/hotel_prepped.Rdata")
+save(prepped_hotel, token, bigram, file = "input/hotel_prepped.Rdata")
 ```

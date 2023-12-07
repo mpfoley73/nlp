@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-30" />
+<meta name="date" content="2023-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,23 +169,23 @@ div.csl-indent {
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
 <li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
+<li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
+<li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
+<li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
@@ -220,30 +220,36 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="spell-check" class="section level2 hasAnchor" number="1.3">
 <h2><span class="header-section-number">1.3</span> Spell-check<a href="spell-check.html#spell-check" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Run a spell-check to regularize the data. Its possible to land on the wrong correction, but there is probably more to gain than lose. Only a very small fraction of the tokens were misspellings.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="spell-check.html#cb12-1" tabindex="-1"></a><span class="co"># There are multiple possible right spellings, so just choose one.</span></span>
-<span id="cb12-2"><a href="spell-check.html#cb12-2" tabindex="-1"></a>spell_check <span class="ot">&lt;-</span> fuzzyjoin<span class="sc">::</span>misspellings <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(misspelling, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb12-3"><a href="spell-check.html#cb12-3" tabindex="-1"></a></span>
-<span id="cb12-4"><a href="spell-check.html#cb12-4" tabindex="-1"></a>token_1 <span class="ot">&lt;-</span></span>
-<span id="cb12-5"><a href="spell-check.html#cb12-5" tabindex="-1"></a>  token_0 <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="spell-check.html#cb12-6" tabindex="-1"></a>  <span class="fu">left_join</span>(spell_check, <span class="at">by =</span> <span class="fu">join_by</span>(word <span class="sc">==</span> misspelling)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-7"><a href="spell-check.html#cb12-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">coalesce</span>(correct, word)) <span class="sc">%&gt;%</span></span>
-<span id="cb12-8"><a href="spell-check.html#cb12-8" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>correct)</span>
-<span id="cb12-9"><a href="spell-check.html#cb12-9" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="spell-check.html#cb12-10" tabindex="-1"></a><span class="co"># Only .09% of words were misspelled.</span></span>
-<span id="cb12-11"><a href="spell-check.html#cb12-11" tabindex="-1"></a><span class="fu">mean</span>(token_0<span class="sc">$</span>word <span class="sc">!=</span> token_1<span class="sc">$</span>word)</span></code></pre></div>
-<pre><code>## [1] 0.0009311988</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="spell-check.html#cb14-1" tabindex="-1"></a><span class="co"># Examples.</span></span>
-<span id="cb14-2"><a href="spell-check.html#cb14-2" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">before =</span> token_0<span class="sc">$</span>word, <span class="at">after =</span> token_1<span class="sc">$</span>word) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(before <span class="sc">!=</span> after) <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code></pre></div>
-<pre><code>## # A tibble: 6 × 2
-##   before       after        
-##   &lt;chr&gt;        &lt;chr&gt;        
-## 1 resturant    restaurant   
-## 2 excellance   excellence   
-## 3 reccomend    recommend    
-## 4 reccommend   recommend    
-## 5 accomodating accommodating
-## 6 ther         there</code></pre>
+<p>Run a spell-check to regularize the data. It’s possible to land on the wrong correction, but there is probably more to gain than lose. Only a very small fraction of these tokens were misspellings.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="spell-check.html#cb8-1" tabindex="-1"></a><span class="co"># There are multiple possible right spellings, so just choose one.</span></span>
+<span id="cb8-2"><a href="spell-check.html#cb8-2" tabindex="-1"></a>spell_check <span class="ot">&lt;-</span> fuzzyjoin<span class="sc">::</span>misspellings <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(misspelling, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="spell-check.html#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="spell-check.html#cb8-4" tabindex="-1"></a>token_1 <span class="ot">&lt;-</span></span>
+<span id="cb8-5"><a href="spell-check.html#cb8-5" tabindex="-1"></a>  token_0 <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="spell-check.html#cb8-6" tabindex="-1"></a>  <span class="fu">left_join</span>(spell_check, <span class="at">by =</span> <span class="fu">join_by</span>(word <span class="sc">==</span> misspelling)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="spell-check.html#cb8-7" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">word =</span> <span class="fu">coalesce</span>(correct, word)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-8"><a href="spell-check.html#cb8-8" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>correct)</span>
+<span id="cb8-9"><a href="spell-check.html#cb8-9" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="spell-check.html#cb8-10" tabindex="-1"></a><span class="co"># Only .09% of words were misspelled.</span></span>
+<span id="cb8-11"><a href="spell-check.html#cb8-11" tabindex="-1"></a><span class="fu">mean</span>(token_0<span class="sc">$</span>word <span class="sc">!=</span> token_1<span class="sc">$</span>word)</span></code></pre></div>
+<pre><code>## [1] 0.0009456979</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="spell-check.html#cb10-1" tabindex="-1"></a><span class="co"># Examples.</span></span>
+<span id="cb10-2"><a href="spell-check.html#cb10-2" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">before =</span> token_0<span class="sc">$</span>word, <span class="at">after =</span> token_1<span class="sc">$</span>word) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(before <span class="sc">!=</span> after) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-3"><a href="spell-check.html#cb10-3" tabindex="-1"></a>  <span class="fu">count</span>(before, after, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 435 × 3
+##    before       after             n
+##    &lt;chr&gt;        &lt;chr&gt;         &lt;int&gt;
+##  1 didnt        didn&#39;t          481
+##  2 wasnt        wasn&#39;t          183
+##  3 definately   definitely      180
+##  4 helpfull     helpful          97
+##  5 accomodating accommodating    59
+##  6 doesnt       doesn&#39;t          54
+##  7 isnt         isn&#39;t            54
+##  8 seperate     separate         52
+##  9 alot         a lot            50
+## 10 accomodation accommodation    44
+## # ℹ 425 more rows</code></pre>
 </div>
             </section>
 

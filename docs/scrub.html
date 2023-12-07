@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-30" />
+<meta name="date" content="2023-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,23 +169,23 @@ div.csl-indent {
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
 <li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
+<li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
+<li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
+<li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
@@ -229,17 +229,17 @@ div.csl-indent {
 <span id="cb4-6"><a href="scrub.html#cb4-6" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_remove_all</span>(review, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&lt;[[:alnum:]]+</span><span class="sc">\\</span><span class="st">&gt;&quot;</span>),</span>
 <span id="cb4-7"><a href="scrub.html#cb4-7" tabindex="-1"></a>    <span class="co"># Remove &lt;U+....&gt;</span></span>
 <span id="cb4-8"><a href="scrub.html#cb4-8" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_remove_all</span>(review, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&lt;U</span><span class="sc">\\</span><span class="st">+[[:alnum:]]{4}</span><span class="sc">\\</span><span class="st">&gt;&quot;</span>),</span>
-<span id="cb4-9"><a href="scrub.html#cb4-9" tabindex="-1"></a>    <span class="co"># Lots of pipes?</span></span>
-<span id="cb4-10"><a href="scrub.html#cb4-10" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_remove_all</span>(review, <span class="st">&quot;(</span><span class="sc">\\</span><span class="st">|)&quot;</span>),</span>
+<span id="cb4-9"><a href="scrub.html#cb4-9" tabindex="-1"></a>    <span class="co"># Only keep letters, numbers, and apostrophes.</span></span>
+<span id="cb4-10"><a href="scrub.html#cb4-10" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_remove_all</span>(review, <span class="st">&quot;[^[:alnum:][</span><span class="sc">\\</span><span class="st">s][</span><span class="sc">\\</span><span class="st">&#39;]]&quot;</span>),</span>
 <span id="cb4-11"><a href="scrub.html#cb4-11" tabindex="-1"></a>    <span class="at">review =</span> <span class="fu">str_squish</span>(review),</span>
 <span id="cb4-12"><a href="scrub.html#cb4-12" tabindex="-1"></a>    <span class="co"># Shorten some of the hotel names.</span></span>
-<span id="cb4-13"><a href="scrub.html#cb4-13" tabindex="-1"></a>    <span class="at">property =</span> <span class="fu">str_remove_all</span>(</span>
-<span id="cb4-14"><a href="scrub.html#cb4-14" tabindex="-1"></a>      property, </span>
+<span id="cb4-13"><a href="scrub.html#cb4-13" tabindex="-1"></a>    <span class="at">hotel =</span> <span class="fu">str_remove_all</span>(</span>
+<span id="cb4-14"><a href="scrub.html#cb4-14" tabindex="-1"></a>      hotel, </span>
 <span id="cb4-15"><a href="scrub.html#cb4-15" tabindex="-1"></a>      <span class="st">&quot;( - .*)|(, .*)|( Hotel)|( London)|(The )|( at .*)|( Hyde .*)|( Knights.*)&quot;</span></span>
 <span id="cb4-16"><a href="scrub.html#cb4-16" tabindex="-1"></a>    ), </span>
-<span id="cb4-17"><a href="scrub.html#cb4-17" tabindex="-1"></a>    <span class="at">property =</span> <span class="fu">factor</span>(property, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb4-17"><a href="scrub.html#cb4-17" tabindex="-1"></a>    <span class="at">hotel =</span> <span class="fu">factor</span>(hotel, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb4-18"><a href="scrub.html#cb4-18" tabindex="-1"></a>    <span class="co"># Reducing number of hotels for modeling simplicity.</span></span>
-<span id="cb4-19"><a href="scrub.html#cb4-19" tabindex="-1"></a>    <span class="at">property =</span> <span class="fu">fct_lump_prop</span>(property, <span class="at">prop =</span> .<span class="dv">05</span>),</span>
+<span id="cb4-19"><a href="scrub.html#cb4-19" tabindex="-1"></a>    <span class="at">hotel =</span> <span class="fu">fct_lump_prop</span>(hotel, <span class="at">prop =</span> .<span class="dv">05</span>),</span>
 <span id="cb4-20"><a href="scrub.html#cb4-20" tabindex="-1"></a>    <span class="co"># Bin common locations,</span></span>
 <span id="cb4-21"><a href="scrub.html#cb4-21" tabindex="-1"></a>    <span class="at">reviewer_loc =</span> <span class="fu">factor</span>(<span class="fu">case_when</span>(</span>
 <span id="cb4-22"><a href="scrub.html#cb4-22" tabindex="-1"></a>      <span class="fu">str_detect</span>(reviewer_loc, <span class="st">&quot;(London)|(United Kingdom)|(UK)&quot;</span>) <span class="sc">~</span> <span class="st">&quot;United Kingdom&quot;</span>,</span>
@@ -249,7 +249,7 @@ div.csl-indent {
 <span id="cb4-26"><a href="scrub.html#cb4-26" tabindex="-1"></a>    <span class="co"># Low ratings are so rare, lump the bottom two.</span></span>
 <span id="cb4-27"><a href="scrub.html#cb4-27" tabindex="-1"></a>    <span class="at">rating =</span> <span class="fu">fct_collapse</span>(<span class="fu">as.character</span>(rating), <span class="st">`</span><span class="at">1-2</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>)),</span>
 <span id="cb4-28"><a href="scrub.html#cb4-28" tabindex="-1"></a>    <span class="co"># Interesting metadata</span></span>
-<span id="cb4-29"><a href="scrub.html#cb4-29" tabindex="-1"></a>    <span class="at">chr_cnt =</span> <span class="fu">str_length</span>(review)</span>
+<span id="cb4-29"><a href="scrub.html#cb4-29" tabindex="-1"></a>    <span class="at">raw_chrcnt =</span> <span class="fu">str_length</span>(review)</span>
 <span id="cb4-30"><a href="scrub.html#cb4-30" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb4-31"><a href="scrub.html#cb4-31" tabindex="-1"></a>  <span class="co"># Exclude reviews written in a foreign language. One heuristic to handle this </span></span>
 <span id="cb4-32"><a href="scrub.html#cb4-32" tabindex="-1"></a>  <span class="co"># is to look for words common in other languages that do not also occur in English.</span></span>
@@ -258,34 +258,199 @@ div.csl-indent {
 <span id="cb4-35"><a href="scrub.html#cb4-35" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( et )|( de )|( le )|( les )&quot;</span>),   <span class="co"># French</span></span>
 <span id="cb4-36"><a href="scrub.html#cb4-36" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( di )|( e )|( la )&quot;</span>),            <span class="co"># Italian</span></span>
 <span id="cb4-37"><a href="scrub.html#cb4-37" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">str_detect</span>(review, <span class="st">&quot;( un )|( y )&quot;</span>),                   <span class="co"># Spanish</span></span>
-<span id="cb4-38"><a href="scrub.html#cb4-38" tabindex="-1"></a>    <span class="fu">str_length</span>(review) <span class="sc">&gt;</span> <span class="dv">0</span></span>
+<span id="cb4-38"><a href="scrub.html#cb4-38" tabindex="-1"></a>    raw_chrcnt <span class="sc">&gt;</span> <span class="dv">0</span></span>
 <span id="cb4-39"><a href="scrub.html#cb4-39" tabindex="-1"></a>  ) </span></code></pre></div>
-<p>That might be enough. Let’s explore the data.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="scrub.html#cb5-1" tabindex="-1"></a><span class="co"># 90% of reviews rate the property a 4 or 5.</span></span>
-<span id="cb5-2"><a href="scrub.html#cb5-2" tabindex="-1"></a>hotel_1 <span class="sc">%&gt;%</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(rating)</span></code></pre></div>
-<pre><code>##  rating     n    percent
-##     1-2  1085 0.04570923
-##       3  1378 0.05805283
-##       4  4852 0.20440662
-##       5 16422 0.69183132</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="scrub.html#cb7-1" tabindex="-1"></a><span class="co"># Some reviews are as small as 1 character, but they can get quite large.</span></span>
-<span id="cb7-2"><a href="scrub.html#cb7-2" tabindex="-1"></a>hotel_1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(chr_cnt) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span></code></pre></div>
-<pre><code>##     chr_cnt       
-##  Min.   :    1.0  
-##  1st Qu.:  306.0  
-##  Median :  512.0  
-##  Mean   :  710.6  
-##  3rd Qu.:  866.0  
-##  Max.   :30498.0</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="scrub.html#cb9-1" tabindex="-1"></a><span class="co"># A few reviews</span></span>
-<span id="cb9-2"><a href="scrub.html#cb9-2" tabindex="-1"></a>hotel_1 <span class="sc">%&gt;%</span> </span>
-<span id="cb9-3"><a href="scrub.html#cb9-3" tabindex="-1"></a>  <span class="fu">sample_n</span>(<span class="dv">3</span>, <span class="at">seed =</span> <span class="dv">12345</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-4"><a href="scrub.html#cb9-4" tabindex="-1"></a>  <span class="fu">select</span>(chr_cnt, review) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-5"><a href="scrub.html#cb9-5" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb9-6"><a href="scrub.html#cb9-6" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">valign =</span> <span class="st">&quot;top&quot;</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-7"><a href="scrub.html#cb9-7" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">autofit</span>()</span></code></pre></div>
-<div class="tabwid tabwid_left"><style>.cl-801bfe28{}.cl-80151950{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-80151964{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-8017e1ee{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8017e1f8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8017e1f9{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-8017f404{width:0.787in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f405{width:87.872in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f40e{width:0.787in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f418{width:87.872in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f419{width:0.787in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f422{width:87.872in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f423{width:0.787in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-8017f424{width:87.872in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-801bfe28'><thead><tr style="overflow-wrap:break-word;"><th class="cl-8017f404"><p class="cl-8017e1ee"><span class="cl-80151950">chr_cnt</span></p></th><th class="cl-8017f405"><p class="cl-8017e1f8"><span class="cl-80151950">review</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-8017f40e"><p class="cl-8017e1f9"><span class="cl-80151964">421</span></p></td><td class="cl-8017f418"><p class="cl-8017e1f8"><span class="cl-80151964">Very stylish hotel with lovely rooms, great decor! Hotel is fitted out beautifully. Service was ok - not a differentiator (it often isn't in London hotels). Location great though and was perfect for taking in the iconic views of the Thames. This side of the river has so much to offer! Bar was v popular ( couldn't get a seat) seemed to cater for non guests more than guests. Really pleasant stay if a little over priced.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8017f419"><p class="cl-8017e1f9"><span class="cl-80151964">338</span></p></td><td class="cl-8017f422"><p class="cl-8017e1f8"><span class="cl-80151964">We stayed in a twin room for three nights and had a great stay. Front desk gentleman was very helpful with our bags and very nice with all questions. Room was a little small but worked fine. Bathroom is small but the shower was great. Breakfast is good and the room guy is very friendly and nice. The location is great for getting around.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-8017f423"><p class="cl-8017e1f9"><span class="cl-80151964">1,457</span></p></td><td class="cl-8017f424"><p class="cl-8017e1f8"><span class="cl-80151964">I stayed at the Corinthia for Valentine weekend in February. It is a true 5 stars hotel with minor things that could be changed for a perfect experience. The inside is marvelous, high ceiling, spotless tea area, excellent staff. One of the best hotel breakfast I ever had, in 2 beautiful massive rooms and with some original Asian suggestions for the more adventurous! Although the hotel is big, it always fell intimate. Our room was great with a warm atmosphere u didn't expect. I adored the heated bathroom floor. The bathroom curtain and blinds were broken though, and needed serious repair which fell strange for this level of hotel. Corinthia is very well located. Outside are your typical grand and classic London buildings, close to the river. But of course we went for the famous spa. It does get busy so be careful with the moment u pick to go (can't imagine what it's like on a Saturday). In an outstanding dark setting, incredible sauna, massive jacuzzi pool, perfect hammam, lovely sleeping pods. But its low point is its visible popularity. Some parts could get an update, a couple of broken elements, lots of towels everywhere. Could do with more staff inside to tell people to keep quiet also! But it is very impressive. We also tried the room service which was pricey and a bit slow but good. So I would definitely recommend the Corinthia for a romantic getaway. They could do with a little refurbishment but it definitely is a 5 star hotel!</span></p></td></tr></tbody></table></div>
-<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020a</a>)</span> recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (&lt;= 3 chars) for anything other than sentiment analysis. I’m going to keep punctuation and short reviews for now. Some of those extremely short reviews are gibberish, but tokenizing will filter out some of that.</p>
+<p>That might be enough. Let’s explore the data. We have 9 hotels. Reviewers are binned into 3 locations. 90% of reviews rate the property a 4 or 5. Some reviews are as small as 1 character, but they can get quite large.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="scrub.html#cb5-1" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(hotel_1)</span></code></pre></div>
+<table>
+<caption><span id="tab:unnamed-chunk-5">Table 1.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">hotel_1</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">23611</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">6</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">factor</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="13%" />
+<col width="18%" />
+<col width="5%" />
+<col width="8%" />
+<col width="8%" />
+<col width="12%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">review</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">29798</td>
+<td align="right">0</td>
+<td align="right">23572</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="10%" />
+<col width="14%" />
+<col width="8%" />
+<col width="9%" />
+<col width="43%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">ordered</th>
+<th align="right">n_unique</th>
+<th align="left">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">hotel</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="right">9</td>
+<td align="left">Sav: 5054, Mon: 3933, Oth: 3770, Rem: 2553</td>
+</tr>
+<tr class="even">
+<td align="left">rating</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">4</td>
+<td align="left">5: 16333, 4: 4827, 3: 1368, 1-2: 1083</td>
+</tr>
+<tr class="odd">
+<td align="left">reviewer_loc</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">3</td>
+<td align="left">Oth: 13958, Uni: 8552, Uni: 1101</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="15%" />
+<col width="11%" />
+<col width="15%" />
+<col width="8%" />
+<col width="8%" />
+<col width="3%" />
+<col width="7%" />
+<col width="6%" />
+<col width="8%" />
+<col width="6%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">review_id</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">13655.3</td>
+<td align="right">7875.48</td>
+<td align="right">2</td>
+<td align="right">6830.5</td>
+<td align="right">13666</td>
+<td align="right">20464.5</td>
+<td align="right">27330</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">raw_chrcnt</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">696.4</td>
+<td align="right">676.68</td>
+<td align="right">1</td>
+<td align="right">301.0</td>
+<td align="right">502</td>
+<td align="right">848.0</td>
+<td align="right">29798</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020a</a>)</span> recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (&lt;= 3 chars) for anything other than sentiment analysis. I’m going to keep punctuation and short reviews for now even though some of those extremely short reviews are gibberish.</p>
 </div>
 <h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references csl-bib-body hanging-indent">

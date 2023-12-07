@@ -4,6 +4,7 @@ h2:tokenize Tokenize
 h2:spell-check Spell-check
 h2:remove-stop-words Remove Stop Words
 h2:lemmatize Lemmatize
+h2:prepped-data Prepped Data
 h2:bigrams Bigrams
 h2:save Save
 

@@ -1,9 +1,11 @@
+tab:unnamed-chunk-5
 data-prep
 scrub
 tokenize
 spell-check
 remove-stop-words
 lemmatize
+prepped-data
 bigrams
 save
 topicmodeling

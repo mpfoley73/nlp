@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-30" />
+<meta name="date" content="2023-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,23 +169,23 @@ div.csl-indent {
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
 <li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
+<li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
+<li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
+<li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
@@ -223,7 +223,7 @@ div.csl-indent {
 
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div class="csl-entry">
-Gils, Wouter van. 2020. <span>“Natural Language Processing for Predictive Purposes with r,”</span> November. <a href="https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b">https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b</a>.
+Meaney, Escobar, C. 2022. <span>“Comparison of Methods for Estimating Temporal Topic Models from Primary Care Clinical Text Data: Retrospective Closed Cohort Study.”</span> <em>JMIR Medical Informatics</em> 10: e40102. <a href="https://doi.org/10.2196/40102">https://doi.org/10.2196/40102</a>.
 </div>
 <div class="csl-entry">
 Nagelkerke, Jurriaan. 2020a. <span>“NLP with r Part 0: Preparing Review Data for NLP and Predictive Modeling,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312">https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312</a>.
@@ -231,13 +231,8 @@ Nagelkerke, Jurriaan. 2020a. <span>“NLP with r Part 0: Preparing Review Data f
 <div class="csl-entry">
 ———. 2020b. <span>“NLP with r Part 1: Topic Modeling to Identify Topics in Restaurant Reviews,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8">https://medium.com/cmotions/nlp-with-r-part-1-topic-modeling-to-identify-topics-in-restaurant-reviews-3ee870e6cd8</a>.
 </div>
-<div class="csl-entry">
-Silge, Julia, and David Robinson. 2017. <em>Text Mining with r</em>. O’Reilly Media. <a href="https://www.tidytextmining.com">https://www.tidytextmining.com</a>.
 </div>
 </div>
-</div>
-
-
 
 
 

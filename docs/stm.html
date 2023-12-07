@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-30" />
+<meta name="date" content="2023-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,23 +169,23 @@ div.csl-indent {
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
 <li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
+<li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
+<li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
+<li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
@@ -225,12 +225,12 @@ div.csl-indent {
 <li><strong>Topical prevalence</strong>. If <em>what</em> topics are discussed depends on the metadata features, control for them in the <em>prevalence</em> (the gamma matrix). E.g., negative hotel reviews might focus on different topics than positive reviews.</li>
 <li><strong>Topical content</strong>. If <em>how</em> a topic is discussed depends on metadata features, control for them in the <em>content</em> (the beta matrix). E.g., visitors from the US may discuss hotels differently than visitors from the UK.</li>
 </ul>
-<div id="algorithm-1" class="section level3 unnumbered hasAnchor">
-<h3>Algorithm<a href="stm.html#algorithm-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="algorithm" class="section level3 unnumbered hasAnchor">
+<h3>Algorithm<a href="stm.html#algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>STM is similar to LDA in that it assumes each document is created by a generative process where topics are included according to probabilities (topical prevalence) and words are included in the topics (topical content) according to probabilities. STM adds the possibility of including topical prevalence covariates, and topical content covariates.</p>
 </div>
-<div id="data-preparation-1" class="section level3 unnumbered hasAnchor">
-<h3>Data Preparation<a href="stm.html#data-preparation-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div id="data-preparation" class="section level3 unnumbered hasAnchor">
+<h3>Data Preparation<a href="stm.html#data-preparation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Chapter <a href="data-prep.html#data-prep">1</a> prepped the data by correcting misspellings, lemmatizing words, and removing stop words</p>
 <p>The <strong>stm</strong> package represents a text corpus as an object with three components: a sparse matrix of counts by document and vocabulary word vector index, the vocabulary word vector, and document metadata. I used STM for my <a href="https://mpfoley73.github.io/battle-of-the-bands/">Battle of the Bands</a> project.</p>
 <p><code>stm::textProcessor()</code> is essentially a wrapper around the <strong>tm</strong> package. It produces a list object with three main components:</p>
@@ -242,29 +242,29 @@ div.csl-indent {
 <div class="rmdnote">
 <p>This step took about 3 minutes to run, so I ran it once then saved the result.</p>
 </div>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="stm.html#cb40-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span></span>
-<span id="cb40-2"><a href="stm.html#cb40-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">textProcessor</span>(</span>
-<span id="cb40-3"><a href="stm.html#cb40-3" tabindex="-1"></a>    <span class="at">documents =</span> hotel_prep<span class="sc">$</span>review_words,</span>
-<span id="cb40-4"><a href="stm.html#cb40-4" tabindex="-1"></a>    <span class="at">metadata =</span> hotel_prep <span class="sc">%&gt;%</span> <span class="fu">select</span>(rating, reviewer_loc, review),</span>
-<span id="cb40-5"><a href="stm.html#cb40-5" tabindex="-1"></a>    <span class="at">lowercase =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb40-6"><a href="stm.html#cb40-6" tabindex="-1"></a>    <span class="at">removestopwords =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb40-7"><a href="stm.html#cb40-7" tabindex="-1"></a>    <span class="at">removenumbers =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb40-8"><a href="stm.html#cb40-8" tabindex="-1"></a>    <span class="at">removepunctuation =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb40-9"><a href="stm.html#cb40-9" tabindex="-1"></a>    <span class="at">stem =</span> <span class="cn">FALSE</span></span>
-<span id="cb40-10"><a href="stm.html#cb40-10" tabindex="-1"></a>  )</span>
-<span id="cb40-11"><a href="stm.html#cb40-11" tabindex="-1"></a></span>
-<span id="cb40-12"><a href="stm.html#cb40-12" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_processed, <span class="at">file =</span> <span class="st">&quot;input/stm_processed.RDS&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="stm.html#cb41-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_processed.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="stm.html#cb39-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span></span>
+<span id="cb39-2"><a href="stm.html#cb39-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">textProcessor</span>(</span>
+<span id="cb39-3"><a href="stm.html#cb39-3" tabindex="-1"></a>    <span class="at">documents =</span> prepped_hotel<span class="sc">$</span>review_words,</span>
+<span id="cb39-4"><a href="stm.html#cb39-4" tabindex="-1"></a>    <span class="at">metadata =</span> prepped_hotel <span class="sc">%&gt;%</span> <span class="fu">select</span>(rating, reviewer_loc, review),</span>
+<span id="cb39-5"><a href="stm.html#cb39-5" tabindex="-1"></a>    <span class="at">lowercase =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-6"><a href="stm.html#cb39-6" tabindex="-1"></a>    <span class="at">removestopwords =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-7"><a href="stm.html#cb39-7" tabindex="-1"></a>    <span class="at">removenumbers =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-8"><a href="stm.html#cb39-8" tabindex="-1"></a>    <span class="at">removepunctuation =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-9"><a href="stm.html#cb39-9" tabindex="-1"></a>    <span class="at">stem =</span> <span class="cn">FALSE</span></span>
+<span id="cb39-10"><a href="stm.html#cb39-10" tabindex="-1"></a>  )</span>
+<span id="cb39-11"><a href="stm.html#cb39-11" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="stm.html#cb39-12" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_processed, <span class="at">file =</span> <span class="st">&quot;input/stm_processed.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="stm.html#cb40-1" tabindex="-1"></a>stm_processed <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_processed.RDS&quot;</span>)</span></code></pre></div>
 <p>After processing, prepare the corpus by removing infrequently used words. <code>stm::prepDocuments()</code> removes infrequently appearing words, and removes any documents that contain no words after processing and removing words. 1% (about 230) is a conservative threshold. The plot below shows that removing even a few words will remove some documents, but you can still retain most document</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="stm.html#cb42-1" tabindex="-1"></a><span class="fu">plotRemoved</span>(stm_processed<span class="sc">$</span>documents, <span class="at">lower.thresh =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">4000</span>, <span class="at">by =</span> <span class="dv">100</span>))</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="stm.html#cb43-1" tabindex="-1"></a>stm_prepared <span class="ot">&lt;-</span></span>
-<span id="cb43-2"><a href="stm.html#cb43-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">prepDocuments</span>(</span>
-<span id="cb43-3"><a href="stm.html#cb43-3" tabindex="-1"></a>    stm_processed<span class="sc">$</span>documents,</span>
-<span id="cb43-4"><a href="stm.html#cb43-4" tabindex="-1"></a>    stm_processed<span class="sc">$</span>vocab,</span>
-<span id="cb43-5"><a href="stm.html#cb43-5" tabindex="-1"></a>    stm_processed<span class="sc">$</span>meta,</span>
-<span id="cb43-6"><a href="stm.html#cb43-6" tabindex="-1"></a>    <span class="at">lower.thresh =</span> <span class="fu">length</span>(stm_processed<span class="sc">$</span>documents) <span class="sc">*</span> .<span class="dv">01</span></span>
-<span id="cb43-7"><a href="stm.html#cb43-7" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="stm.html#cb41-1" tabindex="-1"></a><span class="fu">plotRemoved</span>(stm_processed<span class="sc">$</span>documents, <span class="at">lower.thresh =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">4000</span>, <span class="at">by =</span> <span class="dv">100</span>))</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="stm.html#cb42-1" tabindex="-1"></a>stm_prepared <span class="ot">&lt;-</span></span>
+<span id="cb42-2"><a href="stm.html#cb42-2" tabindex="-1"></a>  stm<span class="sc">::</span><span class="fu">prepDocuments</span>(</span>
+<span id="cb42-3"><a href="stm.html#cb42-3" tabindex="-1"></a>    stm_processed<span class="sc">$</span>documents,</span>
+<span id="cb42-4"><a href="stm.html#cb42-4" tabindex="-1"></a>    stm_processed<span class="sc">$</span>vocab,</span>
+<span id="cb42-5"><a href="stm.html#cb42-5" tabindex="-1"></a>    stm_processed<span class="sc">$</span>meta,</span>
+<span id="cb42-6"><a href="stm.html#cb42-6" tabindex="-1"></a>    <span class="at">lower.thresh =</span> <span class="fu">length</span>(stm_processed<span class="sc">$</span>documents) <span class="sc">*</span> .<span class="dv">01</span></span>
+<span id="cb42-7"><a href="stm.html#cb42-7" tabindex="-1"></a>  )</span></code></pre></div>
 <pre><code>## Removing 26136 of 26886 terms (239369 of 943763 tokens) due to frequency 
 ## Removing 21 Documents with No Words 
 ## Your corpus now has 23352 documents, 750 terms and 704394 tokens.</code></pre>
@@ -273,25 +273,40 @@ div.csl-indent {
 <h3>Fit<a href="stm.html#fit-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The stm package allows you to either specify the number of topics (K) to identify, or it can choose an optimal number by setting parameter <code>K</code> = 0. The resulting probability distribution of topic words (beta matrix) will be a K x <code>r</code>length(stm_prepared$vocab)<code>matrix. The probability distribution of topics (gamma matrix, theta in the stm package) will be a 23,352 x K matrix. I expect topics to correlate with the review rating, so</code>rating<code>is a prevalence covariate, and I expect word usage to correlate with the reviewer location, so</code>reviewer_loc` is a topical content covariate.</p>
 <div class="rmdnote">
-<p>Running the model with K = 3 threw an error.
+<p>Running the model with K = 3 threw an error!
 <code>Error: chol(): decomposition failed</code>
 I set it to K = 4 and it worked. It took a couple minutes to run, so I ran it once then saved the result.</p>
 </div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="stm.html#cb45-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb45-2"><a href="stm.html#cb45-2" tabindex="-1"></a></span>
-<span id="cb45-3"><a href="stm.html#cb45-3" tabindex="-1"></a>stm_fit <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
-<span id="cb45-4"><a href="stm.html#cb45-4" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>documents,</span>
-<span id="cb45-5"><a href="stm.html#cb45-5" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>vocab,</span>
-<span id="cb45-6"><a href="stm.html#cb45-6" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">4</span>,</span>
-<span id="cb45-7"><a href="stm.html#cb45-7" tabindex="-1"></a>  <span class="at">prevalence =</span> <span class="sc">~</span> rating,</span>
-<span id="cb45-8"><a href="stm.html#cb45-8" tabindex="-1"></a>  <span class="at">content =</span> <span class="sc">~</span> reviewer_loc,</span>
-<span id="cb45-9"><a href="stm.html#cb45-9" tabindex="-1"></a>  <span class="at">data =</span> stm_prepared<span class="sc">$</span>meta,</span>
-<span id="cb45-10"><a href="stm.html#cb45-10" tabindex="-1"></a>  <span class="at">init.type =</span> <span class="st">&quot;Spectral&quot;</span>,</span>
-<span id="cb45-11"><a href="stm.html#cb45-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb45-12"><a href="stm.html#cb45-12" tabindex="-1"></a>)</span>
-<span id="cb45-13"><a href="stm.html#cb45-13" tabindex="-1"></a></span>
-<span id="cb45-14"><a href="stm.html#cb45-14" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_fit, <span class="at">file =</span> <span class="st">&quot;input/stm_fit.RDS&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="stm.html#cb46-1" tabindex="-1"></a>stm_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_fit.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="stm.html#cb44-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb44-2"><a href="stm.html#cb44-2" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="stm.html#cb44-3" tabindex="-1"></a>stm_fit <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
+<span id="cb44-4"><a href="stm.html#cb44-4" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>documents,</span>
+<span id="cb44-5"><a href="stm.html#cb44-5" tabindex="-1"></a>  stm_prepared<span class="sc">$</span>vocab,</span>
+<span id="cb44-6"><a href="stm.html#cb44-6" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">4</span>,</span>
+<span id="cb44-7"><a href="stm.html#cb44-7" tabindex="-1"></a>  <span class="at">prevalence =</span> <span class="sc">~</span> rating,</span>
+<span id="cb44-8"><a href="stm.html#cb44-8" tabindex="-1"></a>  <span class="at">content =</span> <span class="sc">~</span> reviewer_loc,</span>
+<span id="cb44-9"><a href="stm.html#cb44-9" tabindex="-1"></a>  <span class="at">data =</span> stm_prepared<span class="sc">$</span>meta,</span>
+<span id="cb44-10"><a href="stm.html#cb44-10" tabindex="-1"></a>  <span class="at">init.type =</span> <span class="st">&quot;Spectral&quot;</span>,</span>
+<span id="cb44-11"><a href="stm.html#cb44-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb44-12"><a href="stm.html#cb44-12" tabindex="-1"></a>)</span>
+<span id="cb44-13"><a href="stm.html#cb44-13" tabindex="-1"></a></span>
+<span id="cb44-14"><a href="stm.html#cb44-14" tabindex="-1"></a><span class="fu">saveRDS</span>(stm_fit, <span class="at">file =</span> <span class="st">&quot;input/stm_fit.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="stm.html#cb45-1" tabindex="-1"></a>stm_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/stm_fit.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="stm.html#cb46-1" tabindex="-1"></a>stm_heldout <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">make.heldout</span>(stm_prepared<span class="sc">$</span>documents, <span class="at">vocab =</span> stm_prepared<span class="sc">$</span>vocab)</span>
+<span id="cb46-2"><a href="stm.html#cb46-2" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="stm.html#cb46-3" tabindex="-1"></a>stm_fit2 <span class="ot">&lt;-</span> stm<span class="sc">::</span><span class="fu">stm</span>(</span>
+<span id="cb46-4"><a href="stm.html#cb46-4" tabindex="-1"></a>  stm_heldout<span class="sc">$</span>documents,</span>
+<span id="cb46-5"><a href="stm.html#cb46-5" tabindex="-1"></a>  stm_heldout<span class="sc">$</span>vocab,</span>
+<span id="cb46-6"><a href="stm.html#cb46-6" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">4</span>,</span>
+<span id="cb46-7"><a href="stm.html#cb46-7" tabindex="-1"></a>  <span class="at">prevalence =</span> <span class="sc">~</span> rating,</span>
+<span id="cb46-8"><a href="stm.html#cb46-8" tabindex="-1"></a>  <span class="at">content =</span> <span class="sc">~</span> reviewer_loc,</span>
+<span id="cb46-9"><a href="stm.html#cb46-9" tabindex="-1"></a>  <span class="at">data =</span> stm_prepared<span class="sc">$</span>meta,</span>
+<span id="cb46-10"><a href="stm.html#cb46-10" tabindex="-1"></a>  <span class="at">init.type =</span> <span class="st">&quot;Spectral&quot;</span>,</span>
+<span id="cb46-11"><a href="stm.html#cb46-11" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb46-12"><a href="stm.html#cb46-12" tabindex="-1"></a>)</span>
+<span id="cb46-13"><a href="stm.html#cb46-13" tabindex="-1"></a></span>
+<span id="cb46-14"><a href="stm.html#cb46-14" tabindex="-1"></a><span class="co"># stm_fit2 %&gt;% stm::exclusivity()</span></span>
+<span id="cb46-15"><a href="stm.html#cb46-15" tabindex="-1"></a><span class="co"># stm_fit2 %&gt;% stm::semanticCoherence(documents = stm_heldout$documents)</span></span></code></pre></div>
 </div>
 <div id="interpret" class="section level3 unnumbered hasAnchor">
 <h3>Interpret<a href="stm.html#interpret" class="anchor-section" aria-label="Anchor link to header"></a></h3>
@@ -387,7 +402,7 @@ I set it to K = 4 and it worked. It took a couple minutes to run, so I ran it on
 <span id="cb54-14"><a href="stm.html#cb54-14" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
 <span id="cb54-15"><a href="stm.html#cb54-15" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(y.level), <span class="at">scales =</span> <span class="st">&quot;free_x&quot;</span>, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
 <span id="cb54-16"><a href="stm.html#cb54-16" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;STM Top 10 Terms for Topic 1&quot;</span>)</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-37-1.png" width="672" /></p>
+<p><img src="nlp_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
 <p>As we did with the LDA model, we can assign topic labels with Open AI.</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="stm.html#cb55-1" tabindex="-1"></a>stm_topics <span class="ot">&lt;-</span> </span>
 <span id="cb55-2"><a href="stm.html#cb55-2" tabindex="-1"></a>  stm_top_tokens <span class="sc">%&gt;%</span></span>

@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-11-30" />
+<meta name="date" content="2023-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,23 +169,23 @@ div.csl-indent {
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
 <li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
-<li class="chapter" data-level="1.6" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.6</b> Bigrams</a></li>
-<li class="chapter" data-level="1.7" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.7</b> Save</a></li>
+<li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
+<li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
+<li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm-1"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation-1"><i class="fa fa-check"></i>Data Preparation</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
+<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
@@ -220,246 +220,303 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="lda" class="section level2 hasAnchor" number="2.1">
 <h2><span class="header-section-number">2.1</span> LDA<a href="lda.html#lda" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Latent Dirichlet allocation (LDA) is an instance of a general family of mixed membership models that decompose data into latent components. <em>Latent</em> refers to <em>unidentified</em> topics and <em>Dirichlet</em> refers to the type of distribution followed by the words in the the topics and by the topics in the documents.</p>
-<div id="algorithm" class="section level3 unnumbered hasAnchor">
-<h3>Algorithm<a href="lda.html#algorithm" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>LDA assumes each document is created by a generative process where topics are included according to probabilities and words are included in the topics according to probabilities. The LDA algorithm determines what those probabilities are. The <a href="https://www.mygreatlearning.com/blog/understanding-latent-dirichlet-allocation/">algorithm</a> is:</p>
+<p>Latent Dirichlet allocation (LDA) is one of a family of mixed membership models that decompose data into latent components. <em>Latent</em> means <em>unidentified</em> topics and <em>Dirichlet</em> is the distribution followed by the words in topics and by topics in documents.</p>
+<p>LDA presumes each document is created by a generative process in which topics are selected from a probability distribution and then words from that topic are selected from another distribution. LDA is an optimization algorithm to estimate those distributions by performing a random search through the parameter space to find the model with the largest log-likelihood. There are multiple search algorithms, but the preferred one appears to be Gibbs sampling, a type of Monte Carlo Markov Chain (MCMC) algorithm. The <a href="https://www.mygreatlearning.com/blog/understanding-latent-dirichlet-allocation/">algorithm</a> is:</p>
 <ol style="list-style-type: decimal">
-<li><p>For each document <span class="math inline">\(d_i\)</span>, randomly assign each word <span class="math inline">\(w_j\)</span> to one of the <span class="math inline">\(K\)</span> topics. Note that <span class="math inline">\(w_j\)</span> may be assigned to a different topic in different documents.</p></li>
-<li><p>For each document, tabulate the number of words in each topic, a <span class="math inline">\(d \times K\)</span> matrix. For each word, tabulate the sum of occurrences across all documents, a <span class="math inline">\(w \times K\)</span> matrix.</p></li>
-<li><p>Resample a single instance of a word from the corpus and remove it from the analysis, decrementing the document’s topic count and the word’s topic count.</p></li>
+<li><p>For each document <span class="math inline">\(d = 1 \ldots D\)</span>, randomly assign each word <span class="math inline">\(w = 1 \ldots W\)</span> to one of <span class="math inline">\(k = 1\ldots K\)</span> topics.</p></li>
+<li><p>Tabulate the number of words in each document and topic, a <span class="math inline">\(D \times K\)</span> matrix, and tabulate the number of occurrences of each word in each document, a <span class="math inline">\(W \times D\)</span> matrix.</p></li>
+<li><p>Resample to remove a single instance of a word from the corpus, decrementing the document’s topic count and the word’s topic count.</p></li>
 <li><p>Calculate the gamma matrix, <span class="math inline">\(\gamma\)</span>, and the beta matrix, <span class="math inline">\(\beta\)</span>.</p>
 <ul>
-<li>the gamma matrix, aka the topical prevalence, is the probability distribution of topics for each document, <span class="math display">\[p(t_k|d_i) = \frac{n_{ik} + \alpha}{N_i + K \alpha}\]</span> were <span class="math inline">\(n_{ik}\)</span> is the number of words in document <span class="math inline">\(i\)</span> for topic <span class="math inline">\(k\)</span>, <span class="math inline">\(N_i\)</span> is the total number of words in <span class="math inline">\(i\)</span>, and <span class="math inline">\(\alpha\)</span> is a hyperparameter. For each <span class="math inline">\(d_i\)</span>, <span class="math inline">\(\sum_{k \in K} \gamma_{ik} = 1\)</span>.</li>
-<li>the beta matrix, aka the topical content, is the probability distribution of words for each topic, <span class="math display">\[p(w_j|t_k) = \frac{m_{j,k} + \beta}{\sum_{j \in V}m_{j,k} + V\beta}\]</span> where <span class="math inline">\(m_{j,k}\)</span> is the corpus-wide frequency count of word <span class="math inline">\(w_j\)</span> to topic <span class="math inline">\(k\)</span>, <span class="math inline">\(V\)</span> is the number of distinct words in the corpus, and <span class="math inline">\(\beta\)</span> is a hyperparameter. For each <span class="math inline">\(t_k\)</span>, <span class="math inline">\(\sum_{j \in V} \beta_{kj} = 1\)</span>.</li>
+<li>the gamma matrix (aka theta) is the topical prevalence, the probability distribution of topics for each document, <span class="math display">\[p(k|d) = \frac{n_{dk} + \alpha}{N_i + K \alpha}\]</span> were <span class="math inline">\(n_{dk}\)</span> is the number of words in document <span class="math inline">\(d\)</span> for topic <span class="math inline">\(k\)</span>, <span class="math inline">\(N_d\)</span> is the total number of words in <span class="math inline">\(d\)</span>, and <span class="math inline">\(\alpha\)</span> is a hyperparameter. For each <span class="math inline">\(d\)</span>, <span class="math inline">\(\sum_{k \in K} \gamma_{dk} = 1\)</span>.</li>
+<li>the beta matrix (aka phi), is the topical content, the probability distribution of words for each topic, <span class="math display">\[p(w|k) = \frac{m_{w,k} + \beta}{\sum_{w \in W}m_{d,k} + W\beta}\]</span> where <span class="math inline">\(m_{w,k}\)</span> is the corpus-wide frequency count of word <span class="math inline">\(w\)</span> to topic <span class="math inline">\(k\)</span>, <span class="math inline">\(W\)</span> is the number of distinct words in the corpus, and <span class="math inline">\(\beta\)</span> is a hyperparameter. For each <span class="math inline">\(k\)</span>, <span class="math inline">\(\sum_{w \in W} \beta_{kw} = 1\)</span>.</li>
 </ul></li>
-<li><p>Perform Gibbs sampling. Calculate the joint probability distribution of words for each document and topic, <span class="math inline">\(p(w_j|t_k,d_i) = p(t_k|d_i)p(w_j|t_k)\)</span>. Assign each word, <span class="math inline">\(w_j\)</span>, to the topic with the maximum joint probability.</p></li>
+<li><p>Calculate the joint probability distribution of words for each document and topic, <span class="math inline">\(p(w|k,d) = p(k|d)p(w|k)\)</span>. Assign each word, <span class="math inline">\(w\)</span>, to the topic with the maximum joint probability.</p></li>
 <li><p>Repeat steps 3-6 for all of the words in all of the documents.</p></li>
 <li><p>Repeat steps 3-7 for a pre-determined number of iterations.</p></li>
 </ol>
 <p>LDA thus has 3 hyperparameters: the document-topic density factor, <span class="math inline">\(\alpha\)</span>, the topic-word density factor, <span class="math inline">\(\beta\)</span>, and the topic count, <span class="math inline">\(K\)</span>. <span class="math inline">\(\alpha\)</span> controls the number of topics expected per document (large <span class="math inline">\(\alpha\)</span> = more topics). <span class="math inline">\(\beta\)</span> controls the distribution of words per topic (large <span class="math inline">\(\beta\)</span> = more words). Ideally, you want a few topics per document and a few words per topic, so <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> are typically set below one. <span class="math inline">\(K\)</span> is set using a combination of domain knowledge, coherence, and exclusivity.</p>
 <p>Notice that LDA is a “bag of words” method. It does not consider the order of the tokens in the text, so where tokens are located what other tokens are nearby do not factor into the output.</p>
-</div>
-<div id="data-preparation" class="section level3 unnumbered hasAnchor">
-<h3>Data Preparation<a href="lda.html#data-preparation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>In addition to the cleaned text produced in Chapter <a href="data-prep.html#data-prep">1</a>, there are a few more data preparation tasks for LDA. Create a bag of words from the union of the word and bigram reviews to get all terms. Keep only the decent sized reviews (&gt;= 25 words).</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="lda.html#cb26-1" tabindex="-1"></a>lda_dat <span class="ot">&lt;-</span></span>
-<span id="cb26-2"><a href="lda.html#cb26-2" tabindex="-1"></a>  hotel_prep <span class="sc">%&gt;%</span></span>
-<span id="cb26-3"><a href="lda.html#cb26-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">combined =</span> <span class="fu">paste</span>(review_words, review_bigrams)) <span class="sc">%&gt;%</span></span>
-<span id="cb26-4"><a href="lda.html#cb26-4" tabindex="-1"></a>  <span class="fu">select</span>(review_id, combined) <span class="sc">%&gt;%</span></span>
-<span id="cb26-5"><a href="lda.html#cb26-5" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="at">output =</span> <span class="st">&quot;word&quot;</span>, <span class="at">input =</span> combined) <span class="sc">%&gt;%</span></span>
-<span id="cb26-6"><a href="lda.html#cb26-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> review_id, <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb26-7"><a href="lda.html#cb26-7" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;=</span> <span class="dv">25</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb26-8"><a href="lda.html#cb26-8" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>n)</span>
-<span id="cb26-9"><a href="lda.html#cb26-9" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="lda.html#cb26-10" tabindex="-1"></a>lda_dat <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code></pre></div>
-<pre><code>## Rows: 3,288,371
-## Columns: 2
-## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
-## $ word      &lt;chr&gt; &quot;pleasure&quot;, &quot;stay&quot;, &quot;night&quot;, &quot;recently&quot;, &quot;perfect&quot;, &quot;communi…</code></pre>
-<p>The next step is optional. If this is a predictive model, create a train/test split. You might even weight the splitting by rating (if that is the outcome variable) to ensure proportional coverage.</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="lda.html#cb28-1" tabindex="-1"></a>hotel_split <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(hotel_prep, <span class="at">prop =</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">strata =</span> review_id)</span>
-<span id="cb28-2"><a href="lda.html#cb28-2" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="lda.html#cb28-3" tabindex="-1"></a>lda_train_0 <span class="ot">&lt;-</span></span>
-<span id="cb28-4"><a href="lda.html#cb28-4" tabindex="-1"></a>  lda_dat <span class="sc">%&gt;%</span></span>
-<span id="cb28-5"><a href="lda.html#cb28-5" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">training</span>(hotel_split) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review_id, rating), <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span>
-<span id="cb28-6"><a href="lda.html#cb28-6" tabindex="-1"></a></span>
-<span id="cb28-7"><a href="lda.html#cb28-7" tabindex="-1"></a>lda_test <span class="ot">&lt;-</span></span>
-<span id="cb28-8"><a href="lda.html#cb28-8" tabindex="-1"></a>  lda_dat <span class="sc">%&gt;%</span></span>
-<span id="cb28-9"><a href="lda.html#cb28-9" tabindex="-1"></a>  <span class="fu">inner_join</span>(<span class="fu">testing</span>(hotel_split) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review_id, rating), <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span>
-<span id="cb28-10"><a href="lda.html#cb28-10" tabindex="-1"></a></span>
-<span id="cb28-11"><a href="lda.html#cb28-11" tabindex="-1"></a><span class="fu">glimpse</span>(lda_train_0)</span>
-<span id="cb28-12"><a href="lda.html#cb28-12" tabindex="-1"></a><span class="do">## Rows: 2,460,378</span></span>
-<span id="cb28-13"><a href="lda.html#cb28-13" tabindex="-1"></a><span class="do">## Columns: 3</span></span>
-<span id="cb28-14"><a href="lda.html#cb28-14" tabindex="-1"></a><span class="do">## $ review_id &lt;int&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, …</span></span>
-<span id="cb28-15"><a href="lda.html#cb28-15" tabindex="-1"></a><span class="do">## $ word      &lt;chr&gt; &quot;lovely&quot;, &quot;visit&quot;, &quot;iconic&quot;, &quot;bar&quot;, &quot;wonderful&quot;, &quot;service&quot;, …</span></span>
-<span id="cb28-16"><a href="lda.html#cb28-16" tabindex="-1"></a><span class="do">## $ rating    &lt;fct&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span>
-<span id="cb28-17"><a href="lda.html#cb28-17" tabindex="-1"></a><span class="fu">glimpse</span>(lda_test)</span>
-<span id="cb28-18"><a href="lda.html#cb28-18" tabindex="-1"></a><span class="do">## Rows: 827,993</span></span>
-<span id="cb28-19"><a href="lda.html#cb28-19" tabindex="-1"></a><span class="do">## Columns: 3</span></span>
-<span id="cb28-20"><a href="lda.html#cb28-20" tabindex="-1"></a><span class="do">## $ review_id &lt;int&gt; 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …</span></span>
-<span id="cb28-21"><a href="lda.html#cb28-21" tabindex="-1"></a><span class="do">## $ word      &lt;chr&gt; &quot;pleasure&quot;, &quot;stay&quot;, &quot;night&quot;, &quot;recently&quot;, &quot;perfect&quot;, &quot;communi…</span></span>
-<span id="cb28-22"><a href="lda.html#cb28-22" tabindex="-1"></a><span class="do">## $ rating    &lt;fct&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span></code></pre></div>
-<p>Low frequency tokens impact the topic model analysis. 49% of the data is composed of tokens that appear &lt;=3 times. Just use the high frequency tokens, the ones occurring at least 4 times in the training data. This is (hopefully) enough to learn topics from tokens that occur together in reviews.</p>
-<div class="rmdnote">
-<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020b</a>)</span> explains that TF-IDF, which combines the within-document token frequency and document frequency, is not always the best way to whittle down the token set. When documents are small, which is common in online reviews, the within document frequency is low and the IDF part is over-weighted.</p>
-</div>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="lda.html#cb29-1" tabindex="-1"></a>lda_train_0 <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href="lda.html#cb29-2" tabindex="-1"></a>  <span class="fu">count</span>(word, <span class="at">name =</span> <span class="st">&quot;token_n&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb29-3"><a href="lda.html#cb29-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">token_n =</span> <span class="fu">if_else</span>(token_n <span class="sc">&gt;</span> <span class="dv">20</span>, <span class="dv">20</span>, token_n)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-4"><a href="lda.html#cb29-4" tabindex="-1"></a>  <span class="fu">count</span>(token_n) <span class="sc">%&gt;%</span></span>
-<span id="cb29-5"><a href="lda.html#cb29-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="at">cum_pct =</span> <span class="fu">cumsum</span>(pct)) <span class="sc">%&gt;%</span></span>
-<span id="cb29-6"><a href="lda.html#cb29-6" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> token_n)) <span class="sc">+</span></span>
-<span id="cb29-7"><a href="lda.html#cb29-7" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> pct)) <span class="sc">+</span></span>
-<span id="cb29-8"><a href="lda.html#cb29-8" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> cum_pct)) <span class="sc">+</span></span>
-<span id="cb29-9"><a href="lda.html#cb29-9" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb29-10"><a href="lda.html#cb29-10" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Token Frequency&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Pct of Tokens&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Token Frequency&quot;</span>)</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="lda.html#cb30-1" tabindex="-1"></a></span>
-<span id="cb30-2"><a href="lda.html#cb30-2" tabindex="-1"></a>lda_train <span class="ot">&lt;-</span> lda_train_0 <span class="sc">%&gt;%</span></span>
-<span id="cb30-3"><a href="lda.html#cb30-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> word, <span class="at">corpus_token_n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb30-4"><a href="lda.html#cb30-4" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> <span class="fu">c</span>(review_id, word), <span class="at">review_token_n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
-<span id="cb30-5"><a href="lda.html#cb30-5" tabindex="-1"></a>  <span class="fu">filter</span>(corpus_token_n <span class="sc">&gt;=</span> <span class="dv">4</span>)</span>
-<span id="cb30-6"><a href="lda.html#cb30-6" tabindex="-1"></a></span>
-<span id="cb30-7"><a href="lda.html#cb30-7" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
-<span id="cb30-8"><a href="lda.html#cb30-8" tabindex="-1"></a>  <span class="st">`</span><span class="at">high freq words</span><span class="st">`</span> <span class="ot">=</span> lda_train <span class="sc">%&gt;%</span> </span>
-<span id="cb30-9"><a href="lda.html#cb30-9" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">total_words =</span> <span class="fu">n</span>(), <span class="at">distinct_words =</span> <span class="fu">n_distinct</span>(word)),</span>
-<span id="cb30-10"><a href="lda.html#cb30-10" tabindex="-1"></a>  <span class="st">`</span><span class="at">low freq words</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">anti_join</span>(lda_train_0, lda_train, <span class="at">by =</span> <span class="fu">join_by</span>(review_id, word)) <span class="sc">%&gt;%</span></span>
-<span id="cb30-11"><a href="lda.html#cb30-11" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">total_words =</span> <span class="fu">n</span>(), <span class="at">distinct_words =</span> <span class="fu">n_distinct</span>(word)),</span>
-<span id="cb30-12"><a href="lda.html#cb30-12" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&quot;partition&quot;</span></span>
-<span id="cb30-13"><a href="lda.html#cb30-13" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-14"><a href="lda.html#cb30-14" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_pct =</span> total_words <span class="sc">/</span> <span class="fu">sum</span>(total_words) <span class="sc">*</span> <span class="dv">100</span>, </span>
-<span id="cb30-15"><a href="lda.html#cb30-15" tabindex="-1"></a>         <span class="at">distinct_pct =</span> distinct_words <span class="sc">/</span> <span class="fu">sum</span>(distinct_words) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb30-16"><a href="lda.html#cb30-16" tabindex="-1"></a>  <span class="fu">select</span>(partition, total_words, total_pct, distinct_words, distinct_pct)</span>
-<span id="cb30-17"><a href="lda.html#cb30-17" tabindex="-1"></a><span class="do">## # A tibble: 2 × 5</span></span>
-<span id="cb30-18"><a href="lda.html#cb30-18" tabindex="-1"></a><span class="do">##   partition       total_words total_pct distinct_words distinct_pct</span></span>
-<span id="cb30-19"><a href="lda.html#cb30-19" tabindex="-1"></a><span class="do">##   &lt;chr&gt;                 &lt;int&gt;     &lt;dbl&gt;          &lt;int&gt;        &lt;dbl&gt;</span></span>
-<span id="cb30-20"><a href="lda.html#cb30-20" tabindex="-1"></a><span class="do">## 1 high freq words     2420232     98.4           15589         51.2</span></span>
-<span id="cb30-21"><a href="lda.html#cb30-21" tabindex="-1"></a><span class="do">## 2 low freq words        40146      1.63          14882         48.8</span></span></code></pre></div>
-<p>Now we can create a document term matrix (DTM).</p>
-<div class="rmdnote">
-<p>Again from <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020b</a>)</span>, you might expect the document specific term frequency (<code>review_token_n</code>), however I use the overall token frequency <code>corpus_token_n</code> to give more emphasis to terms that are more frequent in general. Reviews are short compared to books or articles, so the probability of a token occurring repeatedly in a review is low.</p>
-</div>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="lda.html#cb31-1" tabindex="-1"></a>lda_dtm <span class="ot">&lt;-</span> <span class="fu">cast_dtm</span>(lda_train, <span class="at">document =</span> review_id, <span class="at">term =</span> word, <span class="at">value =</span> corpus_token_n)</span>
-<span id="cb31-2"><a href="lda.html#cb31-2" tabindex="-1"></a></span>
-<span id="cb31-3"><a href="lda.html#cb31-3" tabindex="-1"></a><span class="fu">dim</span>(lda_dtm)</span>
-<span id="cb31-4"><a href="lda.html#cb31-4" tabindex="-1"></a><span class="do">## [1] 17452 15589</span></span>
-<span id="cb31-5"><a href="lda.html#cb31-5" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="lda.html#cb31-6" tabindex="-1"></a><span class="co"># Average token frequency.</span></span>
-<span id="cb31-7"><a href="lda.html#cb31-7" tabindex="-1"></a><span class="fu">sum</span>(lda_dtm) <span class="sc">/</span> <span class="fu">sum</span>(lda_dtm <span class="sc">!=</span> <span class="dv">0</span>)</span>
-<span id="cb31-8"><a href="lda.html#cb31-8" tabindex="-1"></a><span class="do">## [1] 5020.583</span></span></code></pre></div>
+<div id="preprocessing" class="section level3 unnumbered hasAnchor">
+<h3>Preprocessing<a href="lda.html#preprocessing" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We already cleaned the text in Chapter <a href="data-prep.html#data-prep">1</a>. The next step is to create a document-term matrix (DTM). A DTM has one row per per document, one column per term, and the cells are frequencies. The DTM contains mostly unhelpful infrequently used terms, so the pre-processing step removes sparse terms.</p>
+<p>Keep only the decent sized reviews, ones with at least 25 words. If this is a predictive model, now is the time to create a train/test split. Consider weighting the split by the outcome variable (<code>rating</code> in this case) to ensure proportional coverage.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="lda.html#cb22-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb22-2"><a href="lda.html#cb22-2" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="lda.html#cb22-3" tabindex="-1"></a>hotel_lda <span class="ot">&lt;-</span> prepped_hotel <span class="sc">%&gt;%</span> <span class="fu">filter</span>(prepped_wrdcnt <span class="sc">&gt;=</span> <span class="dv">25</span>)</span>
+<span id="cb22-4"><a href="lda.html#cb22-4" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="lda.html#cb22-5" tabindex="-1"></a><span class="co"># Parameter `strata` ensures proportional coverage of ratings.</span></span>
+<span id="cb22-6"><a href="lda.html#cb22-6" tabindex="-1"></a>lda_split <span class="ot">&lt;-</span> rsample<span class="sc">::</span><span class="fu">initial_split</span>(hotel_lda, <span class="at">prop =</span> <span class="dv">3</span><span class="sc">/</span><span class="dv">4</span>, <span class="at">strata =</span> rating)</span>
+<span id="cb22-7"><a href="lda.html#cb22-7" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="lda.html#cb22-8" tabindex="-1"></a>lda_train <span class="ot">&lt;-</span> token <span class="sc">%&gt;%</span> <span class="fu">semi_join</span>(<span class="fu">training</span>(lda_split), <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span>
+<span id="cb22-9"><a href="lda.html#cb22-9" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="lda.html#cb22-10" tabindex="-1"></a>lda_test <span class="ot">&lt;-</span> token <span class="sc">%&gt;%</span> <span class="fu">semi_join</span>(<span class="fu">testing</span>(lda_split), <span class="at">by =</span> <span class="fu">join_by</span>(review_id))</span></code></pre></div>
+<p>Most words add little value to a topic model because they appear infrequently or too frequently. Including them only wastes computing resources. The most common metric for removing sparse terms is the term frequency-inverse document frequency (TF-IDF). TF(t,d) is term t’s usage proportion in document d. IDF(t) the log of the inverse of the term t’s proportion of documents it appears in. For example, “savoy” appears in n = 1,873 of the N = 12,121 training documents. Its IDF is log(N/n) = 1.87. “savoy” appears in review #5 in 2 of 30 (6.67%) of the terms. The TF-IDF score is the product of the two numbers. Here is that prepped review.</p>
+<blockquote>
+<p>form moment arrive leave experience absolute perfection service excellence savoy staff famous personalise service rich heritage savoy win hotel world stay eat dine woud highly recommend kaspers restaurant wait return</p>
+</blockquote>
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020b</a>)</span> suggests another route. You’ve already removed stop words, so you needn’t worry about the over-used words. The TF-IDF approach was developed for long documents. Smaller documents like online reviews have little TF variation (most words are used only once or twice in a review), and the IDF ends up dominating. Nagelkerke suggests using the overall word frequency instead.</p>
+<p>In the end, you need to experiment to find the right cutoff. The elbow in the TD-IDF plot below is around .2. Using that as a threshold would throw out about about 90% of the vocabulary. The corpus frequency plot after that has an elbow around 5 occurrences. Using that as a threshold would retain about 20% of the vocabulary.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="lda.html#cb23-1" tabindex="-1"></a>lda_word_stats <span class="ot">&lt;-</span></span>
+<span id="cb23-2"><a href="lda.html#cb23-2" tabindex="-1"></a>  lda_train <span class="sc">%&gt;%</span> </span>
+<span id="cb23-3"><a href="lda.html#cb23-3" tabindex="-1"></a>  <span class="fu">count</span>(review_id, word, <span class="at">name =</span> <span class="st">&quot;doc_freq&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-4"><a href="lda.html#cb23-4" tabindex="-1"></a>  <span class="fu">bind_tf_idf</span>(word, review_id, doc_freq) <span class="sc">%&gt;%</span></span>
+<span id="cb23-5"><a href="lda.html#cb23-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">.by =</span> word, <span class="at">corp_freq =</span> <span class="fu">sum</span>(doc_freq)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-6"><a href="lda.html#cb23-6" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">corp_pct =</span> corp_freq <span class="sc">/</span> <span class="fu">sum</span>(doc_freq))</span>
+<span id="cb23-7"><a href="lda.html#cb23-7" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="lda.html#cb23-8" tabindex="-1"></a>lda_word_stats <span class="sc">%&gt;%</span> </span>
+<span id="cb23-9"><a href="lda.html#cb23-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">tf_idf_bin =</span> <span class="fu">cut</span>(tf_idf, <span class="at">breaks =</span> <span class="dv">50</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-10"><a href="lda.html#cb23-10" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> tf_idf_bin, <span class="at">vocab =</span> <span class="fu">n_distinct</span>(word)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-11"><a href="lda.html#cb23-11" tabindex="-1"></a>  <span class="fu">arrange</span>(tf_idf_bin) <span class="sc">%&gt;%</span></span>
+<span id="cb23-12"><a href="lda.html#cb23-12" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> vocab <span class="sc">/</span> <span class="fu">sum</span>(vocab), <span class="at">cumpct =</span> <span class="fu">cumsum</span>(pct)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-13"><a href="lda.html#cb23-13" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> tf_idf_bin)) <span class="sc">+</span> </span>
+<span id="cb23-14"><a href="lda.html#cb23-14" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> pct)) <span class="sc">+</span></span>
+<span id="cb23-15"><a href="lda.html#cb23-15" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> cumpct, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb23-16"><a href="lda.html#cb23-16" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">9</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb23-17"><a href="lda.html#cb23-17" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;vocabulary&quot;</span>, <span class="at">title =</span> <span class="st">&quot;TF-IDF Method&quot;</span>) <span class="sc">+</span></span>
+<span id="cb23-18"><a href="lda.html#cb23-18" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, .<span class="dv">1</span>), <span class="at">labels =</span> <span class="fu">percent_format</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb23-19"><a href="lda.html#cb23-19" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> .<span class="dv">5</span>))</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="lda.html#cb24-1" tabindex="-1"></a>lda_word_stats <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="lda.html#cb24-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-3"><a href="lda.html#cb24-3" tabindex="-1"></a>    <span class="at">corp_freq_bin =</span> <span class="fu">if_else</span>(corp_freq <span class="sc">&gt;</span> <span class="dv">19</span>, <span class="st">&quot;20+&quot;</span>, <span class="fu">as.character</span>(corp_freq)),</span>
+<span id="cb24-4"><a href="lda.html#cb24-4" tabindex="-1"></a>    <span class="at">corp_freq_bin =</span> <span class="fu">factor</span>(corp_freq_bin, <span class="at">levels =</span> <span class="fu">c</span>(<span class="fu">as.character</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">19</span>), <span class="st">&quot;20+&quot;</span>))</span>
+<span id="cb24-5"><a href="lda.html#cb24-5" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-6"><a href="lda.html#cb24-6" tabindex="-1"></a>  <span class="co"># mutate(corp_pct_bin = cut(corp_pct, breaks = 100)) %&gt;%</span></span>
+<span id="cb24-7"><a href="lda.html#cb24-7" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> corp_freq_bin, <span class="at">vocab =</span> <span class="fu">n_distinct</span>(word)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-8"><a href="lda.html#cb24-8" tabindex="-1"></a>  <span class="fu">arrange</span>(corp_freq_bin) <span class="sc">%&gt;%</span></span>
+<span id="cb24-9"><a href="lda.html#cb24-9" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> vocab <span class="sc">/</span> <span class="fu">sum</span>(vocab), <span class="at">cumpct =</span> <span class="fu">cumsum</span>(pct)) <span class="sc">%&gt;%</span></span>
+<span id="cb24-10"><a href="lda.html#cb24-10" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> corp_freq_bin, <span class="at">y =</span> cumpct)) <span class="sc">+</span> </span>
+<span id="cb24-11"><a href="lda.html#cb24-11" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">y =</span> pct)) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="lda.html#cb24-12" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> cumpct, <span class="at">group =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb24-13"><a href="lda.html#cb24-13" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">5</span>, <span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb24-14"><a href="lda.html#cb24-14" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;vocabulary&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Corpus Frequency Method&quot;</span>) <span class="sc">+</span></span>
+<span id="cb24-15"><a href="lda.html#cb24-15" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, .<span class="dv">1</span>), <span class="at">labels =</span> <span class="fu">percent_format</span>(<span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb24-16"><a href="lda.html#cb24-16" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> .<span class="dv">5</span>))</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-16-2.png" width="672" /></p>
+<p>Below is the DTM associated with both methods. The TF-IDF method removed half the documents while retaining 11K terms. The corpus frequency method retained all of the documents while reducing the vocabulary to 6K terms. Corpus frequency does indeed seem superior in this case, so I’ll move forward with it.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="lda.html#cb25-1" tabindex="-1"></a>(lda_dtm_tfidf <span class="ot">&lt;-</span></span>
+<span id="cb25-2"><a href="lda.html#cb25-2" tabindex="-1"></a>  lda_word_stats <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="lda.html#cb25-3" tabindex="-1"></a>  <span class="fu">filter</span>(tf_idf <span class="sc">&gt;</span> .<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="lda.html#cb25-4" tabindex="-1"></a>  <span class="fu">cast_dtm</span>(<span class="at">document =</span> review_id, <span class="at">term =</span> word, <span class="at">value =</span> doc_freq))</span>
+<span id="cb25-5"><a href="lda.html#cb25-5" tabindex="-1"></a><span class="do">## &lt;&lt;DocumentTermMatrix (documents: 5623, terms: 10922)&gt;&gt;</span></span>
+<span id="cb25-6"><a href="lda.html#cb25-6" tabindex="-1"></a><span class="do">## Non-/sparse entries: 15782/61398624</span></span>
+<span id="cb25-7"><a href="lda.html#cb25-7" tabindex="-1"></a><span class="do">## Sparsity           : 100%</span></span>
+<span id="cb25-8"><a href="lda.html#cb25-8" tabindex="-1"></a><span class="do">## Maximal term length: 37</span></span>
+<span id="cb25-9"><a href="lda.html#cb25-9" tabindex="-1"></a><span class="do">## Weighting          : term frequency (tf)</span></span>
+<span id="cb25-10"><a href="lda.html#cb25-10" tabindex="-1"></a></span>
+<span id="cb25-11"><a href="lda.html#cb25-11" tabindex="-1"></a>(lda_dtm_corpfreq <span class="ot">&lt;-</span></span>
+<span id="cb25-12"><a href="lda.html#cb25-12" tabindex="-1"></a>  lda_word_stats <span class="sc">%&gt;%</span></span>
+<span id="cb25-13"><a href="lda.html#cb25-13" tabindex="-1"></a>  <span class="fu">filter</span>(corp_freq <span class="sc">&gt;</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-14"><a href="lda.html#cb25-14" tabindex="-1"></a>  <span class="fu">cast_dtm</span>(<span class="at">document =</span> review_id, <span class="at">term =</span> word, <span class="at">value =</span> doc_freq))</span>
+<span id="cb25-15"><a href="lda.html#cb25-15" tabindex="-1"></a><span class="do">## &lt;&lt;DocumentTermMatrix (documents: 12121, terms: 5821)&gt;&gt;</span></span>
+<span id="cb25-16"><a href="lda.html#cb25-16" tabindex="-1"></a><span class="do">## Non-/sparse entries: 606488/69949853</span></span>
+<span id="cb25-17"><a href="lda.html#cb25-17" tabindex="-1"></a><span class="do">## Sparsity           : 99%</span></span>
+<span id="cb25-18"><a href="lda.html#cb25-18" tabindex="-1"></a><span class="do">## Maximal term length: 16</span></span>
+<span id="cb25-19"><a href="lda.html#cb25-19" tabindex="-1"></a><span class="do">## Weighting          : term frequency (tf)</span></span>
+<span id="cb25-20"><a href="lda.html#cb25-20" tabindex="-1"></a></span>
+<span id="cb25-21"><a href="lda.html#cb25-21" tabindex="-1"></a>lda_dtm <span class="ot">&lt;-</span> lda_dtm_corpfreq</span></code></pre></div>
+<p>The pre-processing step sure pared down the corpus. The high frequency terms comprise only 20% of the vocabulary, but are still 95% of the total word usage.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="lda.html#cb26-1" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb26-2"><a href="lda.html#cb26-2" tabindex="-1"></a>  <span class="st">`</span><span class="at">high freq words</span><span class="st">`</span> <span class="ot">=</span> lda_word_stats <span class="sc">%&gt;%</span> <span class="fu">filter</span>(corp_freq <span class="sc">&gt;</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-3"><a href="lda.html#cb26-3" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">distinct_words =</span> <span class="fu">n_distinct</span>(word), <span class="at">total_words =</span> <span class="fu">sum</span>(doc_freq)),</span>
+<span id="cb26-4"><a href="lda.html#cb26-4" tabindex="-1"></a>  <span class="st">`</span><span class="at">low freq words</span><span class="st">`</span> <span class="ot">=</span> lda_word_stats <span class="sc">%&gt;%</span> <span class="fu">filter</span>(corp_freq <span class="sc">&lt;=</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-5"><a href="lda.html#cb26-5" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">distinct_words =</span> <span class="fu">n_distinct</span>(word), <span class="at">total_words =</span> <span class="fu">sum</span>(doc_freq)),</span>
+<span id="cb26-6"><a href="lda.html#cb26-6" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&quot;partition&quot;</span></span>
+<span id="cb26-7"><a href="lda.html#cb26-7" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-8"><a href="lda.html#cb26-8" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">total_pct =</span> total_words <span class="sc">/</span> <span class="fu">sum</span>(total_words) <span class="sc">*</span> <span class="dv">100</span>, </span>
+<span id="cb26-9"><a href="lda.html#cb26-9" tabindex="-1"></a>         <span class="at">distinct_pct =</span> distinct_words <span class="sc">/</span> <span class="fu">sum</span>(distinct_words) <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-10"><a href="lda.html#cb26-10" tabindex="-1"></a>  <span class="fu">select</span>(partition, distinct_words, distinct_pct, total_words, total_pct) <span class="sc">%&gt;%</span></span>
+<span id="cb26-11"><a href="lda.html#cb26-11" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">adorn_totals</span>()</span></code></pre></div>
+<pre><code>##        partition distinct_words distinct_pct total_words  total_pct
+##  high freq words           5821     20.18377      723170  95.396707
+##   low freq words          23019     79.81623       34896   4.603293
+##            Total          28840    100.00000      758066 100.000000</code></pre>
 </div>
 <div id="fit" class="section level3 unnumbered hasAnchor">
 <h3>Fit<a href="lda.html#fit" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<p>There are several parameters you might tweak for the model fit. The biggest surprise is that you set the number of topics, <code>k</code>. <a href="https://knowledger.rbind.io/post/topic-modeling-using-r/">This article</a> explains the harmonic mean method for optimization, but <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020b</a>)</span> suggests sticking with the art vs science method and pick your own <code>k</code>.</p>
+<p>There are several parameters you might tweak for the model fit. The biggest surprise is that you set the number of topics, <code>k</code>. In general, you only want as many topics as are clearly distinct and that you can easily communicate to others. <a href="https://knowledger.rbind.io/post/topic-modeling-using-r/">knowledgeR</a> explains the harmonic mean method for optimization, but <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020b">2020b</a>)</span> suggests sticking with the art vs science approach and picking your own <code>k</code>.</p>
 <div class="rmdnote">
-<p>The model fit took about 3 minutes to run. I ran it once then saved the result.</p>
+<p>Another option is to use the perplexity statistic to help identify a good value for <code>k</code>. Perplexity is a measure of how well a probability model fits a new set of data. Look for the elbow in a scree plot. The code below does that, but it runs forever, especially as you get to higher values of k. I abandoned it.</p>
 </div>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="lda.html#cb32-1" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">LDA</span>(lda_dtm, <span class="at">k =</span> <span class="dv">3</span>)</span>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="lda.html#cb28-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb28-2"><a href="lda.html#cb28-2" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="lda.html#cb28-3" tabindex="-1"></a>train_ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(lda_dtm), <span class="fu">floor</span>(<span class="fl">0.75</span><span class="sc">*</span><span class="fu">nrow</span>(lda_dtm)))</span>
+<span id="cb28-4"><a href="lda.html#cb28-4" tabindex="-1"></a>k_train <span class="ot">&lt;-</span> lda_dtm[train_ind, ]</span>
+<span id="cb28-5"><a href="lda.html#cb28-5" tabindex="-1"></a>k_test <span class="ot">&lt;-</span> lda_dtm[<span class="sc">-</span>train_ind, ]</span>
+<span id="cb28-6"><a href="lda.html#cb28-6" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="lda.html#cb28-7" tabindex="-1"></a>k <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="at">from =</span> <span class="dv">2</span>, <span class="at">to =</span> <span class="dv">5</span>, <span class="at">by =</span> <span class="dv">1</span>))</span>
+<span id="cb28-8"><a href="lda.html#cb28-8" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="lda.html#cb28-9" tabindex="-1"></a>perp <span class="ot">&lt;-</span> k <span class="sc">%&gt;%</span> </span>
+<span id="cb28-10"><a href="lda.html#cb28-10" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">LDA</span>(k_train, <span class="at">k =</span> .x)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-11"><a href="lda.html#cb28-11" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">perplexity</span>(.x, <span class="at">newdata =</span> k_test)) <span class="sc">%&gt;%</span></span>
+<span id="cb28-12"><a href="lda.html#cb28-12" tabindex="-1"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb28-13"><a href="lda.html#cb28-13" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="lda.html#cb28-14" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">k =</span> k, <span class="at">perplexity =</span> perp) <span class="sc">%&gt;%</span></span>
+<span id="cb28-15"><a href="lda.html#cb28-15" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> k, <span class="at">y =</span> perplexity)) <span class="sc">+</span> </span>
+<span id="cb28-16"><a href="lda.html#cb28-16" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb28-17"><a href="lda.html#cb28-17" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;loess&quot;</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb28-18"><a href="lda.html#cb28-18" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Perplexity Plot for LDM model&quot;</span>)</span></code></pre></div>
+<p>I will stick with a simple k = 3 model.</p>
+<div class="rmdnote">
+<p>The model fit took a minute to run, so I ran it once then saved the result.</p>
+</div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="lda.html#cb29-1" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">LDA</span>(lda_dtm, <span class="at">k =</span> <span class="dv">3</span>)</span>
+<span id="cb29-2"><a href="lda.html#cb29-2" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="lda.html#cb29-3" tabindex="-1"></a><span class="fu">saveRDS</span>(lda_fit, <span class="at">file =</span> <span class="st">&quot;input/lda_fit.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="lda.html#cb30-1" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/lda_fit.RDS&quot;</span>)</span></code></pre></div>
+<p>The fitted object contains two matrices. The <strong>beta</strong> (aka “phi”) matrix is the distribution of tokens (cols) over topics (rows). The <strong>gamma</strong> (aka “theta”) matrix is the distribution of documents (rows) over topics (cols). The row sum is 1 for each matrix (sum of topic probabilities, some of document probabilities).</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="lda.html#cb31-1" tabindex="-1"></a>lda_beta_mtrx <span class="ot">&lt;-</span> <span class="fu">posterior</span>(lda_fit) <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb31-2"><a href="lda.html#cb31-2" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="lda.html#cb31-3" tabindex="-1"></a><span class="co"># One row per topic, one col per token.</span></span>
+<span id="cb31-4"><a href="lda.html#cb31-4" tabindex="-1"></a><span class="fu">dim</span>(lda_beta_mtrx)</span>
+<span id="cb31-5"><a href="lda.html#cb31-5" tabindex="-1"></a><span class="do">## [1]    3 5821</span></span>
+<span id="cb31-6"><a href="lda.html#cb31-6" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="lda.html#cb31-7" tabindex="-1"></a><span class="co"># Word probability distribution sums to 1 for each topic.</span></span>
+<span id="cb31-8"><a href="lda.html#cb31-8" tabindex="-1"></a><span class="fu">sum</span>(lda_beta_mtrx[<span class="dv">1</span>, ])</span>
+<span id="cb31-9"><a href="lda.html#cb31-9" tabindex="-1"></a><span class="do">## [1] 1</span></span>
+<span id="cb31-10"><a href="lda.html#cb31-10" tabindex="-1"></a></span>
+<span id="cb31-11"><a href="lda.html#cb31-11" tabindex="-1"></a>lda_gamma_mtrx <span class="ot">&lt;-</span> <span class="fu">posterior</span>(lda_fit) <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">&quot;topics&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb31-12"><a href="lda.html#cb31-12" tabindex="-1"></a></span>
+<span id="cb31-13"><a href="lda.html#cb31-13" tabindex="-1"></a><span class="co"># One row per document, one col per topic</span></span>
+<span id="cb31-14"><a href="lda.html#cb31-14" tabindex="-1"></a><span class="fu">dim</span>(lda_gamma_mtrx)</span>
+<span id="cb31-15"><a href="lda.html#cb31-15" tabindex="-1"></a><span class="do">## [1] 12121     3</span></span>
+<span id="cb31-16"><a href="lda.html#cb31-16" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="lda.html#cb31-17" tabindex="-1"></a><span class="co"># Topic probability distribution sums to 1 for each document.</span></span>
+<span id="cb31-18"><a href="lda.html#cb31-18" tabindex="-1"></a><span class="fu">sum</span>(lda_gamma_mtrx[<span class="dv">1</span>, ])</span>
+<span id="cb31-19"><a href="lda.html#cb31-19" tabindex="-1"></a><span class="do">## [1] 1</span></span></code></pre></div>
+<p><code>tidytext::tidy()</code> pivots the beta matrix into a [topic, term, beta] data frame.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="lda.html#cb32-1" tabindex="-1"></a>lda_beta <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lda_fit, <span class="at">matrix =</span> <span class="st">&quot;beta&quot;</span>)</span>
 <span id="cb32-2"><a href="lda.html#cb32-2" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="lda.html#cb32-3" tabindex="-1"></a><span class="fu">saveRDS</span>(lda_fit, <span class="at">file =</span> <span class="st">&quot;input/lda_fit.RDS&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="lda.html#cb33-1" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/lda_fit.RDS&quot;</span>)</span></code></pre></div>
-<p>The fitted object contains two matrices. The <strong>phi</strong> matrix is the distribution of tokens (cols) over topics (rows). The <strong>theta</strong> matrix is the distribution of documents (rows) over topics (cols). The row sum is 1 for each matrix (sum of topic probabilities, some of document probabilities).
-In each case, the values are probabilities that sum to 1 for each topic.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="lda.html#cb34-1" tabindex="-1"></a>lda_phi <span class="ot">&lt;-</span> <span class="fu">posterior</span>(lda_fit) <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">&quot;terms&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
-<span id="cb34-2"><a href="lda.html#cb34-2" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="lda.html#cb34-3" tabindex="-1"></a><span class="fu">dim</span>(lda_phi)</span>
-<span id="cb34-4"><a href="lda.html#cb34-4" tabindex="-1"></a><span class="do">## [1]     3 15694</span></span>
-<span id="cb34-5"><a href="lda.html#cb34-5" tabindex="-1"></a><span class="fu">sum</span>(lda_phi[<span class="dv">1</span>, ])</span>
-<span id="cb34-6"><a href="lda.html#cb34-6" tabindex="-1"></a><span class="do">## [1] 1</span></span>
-<span id="cb34-7"><a href="lda.html#cb34-7" tabindex="-1"></a></span>
-<span id="cb34-8"><a href="lda.html#cb34-8" tabindex="-1"></a>lda_theta <span class="ot">&lt;-</span> <span class="fu">posterior</span>(lda_fit) <span class="sc">%&gt;%</span> <span class="fu">pluck</span>(<span class="st">&quot;topics&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">as.matrix</span>()</span>
-<span id="cb34-9"><a href="lda.html#cb34-9" tabindex="-1"></a></span>
-<span id="cb34-10"><a href="lda.html#cb34-10" tabindex="-1"></a><span class="fu">dim</span>(lda_theta)</span>
-<span id="cb34-11"><a href="lda.html#cb34-11" tabindex="-1"></a><span class="do">## [1] 17458     3</span></span>
-<span id="cb34-12"><a href="lda.html#cb34-12" tabindex="-1"></a><span class="fu">sum</span>(lda_theta[<span class="dv">1</span>, ])</span>
-<span id="cb34-13"><a href="lda.html#cb34-13" tabindex="-1"></a><span class="do">## [1] 1</span></span></code></pre></div>
-<p>The <code>tidytext::tidy()</code> function calculates the beta matrix then pivots-longer into a [topic, term, beta] data frame.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="lda.html#cb35-1" tabindex="-1"></a>lda_tidy <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lda_fit)</span>
-<span id="cb35-2"><a href="lda.html#cb35-2" tabindex="-1"></a></span>
-<span id="cb35-3"><a href="lda.html#cb35-3" tabindex="-1"></a>lda_top_tokens <span class="ot">&lt;-</span> </span>
-<span id="cb35-4"><a href="lda.html#cb35-4" tabindex="-1"></a>  lda_tidy <span class="sc">%&gt;%</span></span>
-<span id="cb35-5"><a href="lda.html#cb35-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic =</span> <span class="fu">factor</span>(<span class="fu">paste</span>(<span class="st">&quot;Topic&quot;</span>, topic))) <span class="sc">%&gt;%</span></span>
-<span id="cb35-6"><a href="lda.html#cb35-6" tabindex="-1"></a>  <span class="fu">group_by</span>(topic) <span class="sc">%&gt;%</span></span>
-<span id="cb35-7"><a href="lda.html#cb35-7" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> beta, <span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb35-8"><a href="lda.html#cb35-8" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb35-9"><a href="lda.html#cb35-9" tabindex="-1"></a></span>
-<span id="cb35-10"><a href="lda.html#cb35-10" tabindex="-1"></a>lda_top_tokens <span class="sc">%&gt;%</span></span>
-<span id="cb35-11"><a href="lda.html#cb35-11" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> <span class="fu">reorder_within</span>(term, <span class="at">by =</span> beta, <span class="at">within =</span> topic))) <span class="sc">+</span></span>
-<span id="cb35-12"><a href="lda.html#cb35-12" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb35-13"><a href="lda.html#cb35-13" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
-<span id="cb35-14"><a href="lda.html#cb35-14" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(topic), <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
-<span id="cb35-15"><a href="lda.html#cb35-15" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;LDA Top 10 Terms&quot;</span>)</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<p>There is a downside to this evaluation. Popular words like “stay” appear at or near the top in all three topics. You might want to look at <em>relative</em> popularity instead: the popularity within the topic divided by overall popularity. That’s problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. <code>LDAvis::serVis()</code> can help you do that.</p>
+<span id="cb32-3"><a href="lda.html#cb32-3" tabindex="-1"></a>lda_top_tokens <span class="ot">&lt;-</span> </span>
+<span id="cb32-4"><a href="lda.html#cb32-4" tabindex="-1"></a>  lda_beta <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="lda.html#cb32-5" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic =</span> <span class="fu">factor</span>(<span class="fu">paste</span>(<span class="st">&quot;Topic&quot;</span>, topic))) <span class="sc">%&gt;%</span></span>
+<span id="cb32-6"><a href="lda.html#cb32-6" tabindex="-1"></a>  <span class="fu">group_by</span>(topic) <span class="sc">%&gt;%</span></span>
+<span id="cb32-7"><a href="lda.html#cb32-7" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> beta, <span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb32-8"><a href="lda.html#cb32-8" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb32-9"><a href="lda.html#cb32-9" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="lda.html#cb32-10" tabindex="-1"></a>lda_top_tokens <span class="sc">%&gt;%</span></span>
+<span id="cb32-11"><a href="lda.html#cb32-11" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> <span class="fu">reorder_within</span>(term, <span class="at">by =</span> beta, <span class="at">within =</span> topic))) <span class="sc">+</span></span>
+<span id="cb32-12"><a href="lda.html#cb32-12" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb32-13"><a href="lda.html#cb32-13" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
+<span id="cb32-14"><a href="lda.html#cb32-14" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(topic), <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
+<span id="cb32-15"><a href="lda.html#cb32-15" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;LDA Top 10 Terms&quot;</span>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p>Word clouds tell you more or less the same thing.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="lda.html#cb33-1" tabindex="-1"></a>colors6 <span class="ot">&lt;-</span> RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">3</span>, <span class="at">name =</span> <span class="st">&quot;Set2&quot;</span>)</span>
+<span id="cb33-2"><a href="lda.html#cb33-2" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="lda.html#cb33-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
+<span id="cb33-4"><a href="lda.html#cb33-4" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>), </span>
+<span id="cb33-5"><a href="lda.html#cb33-5" tabindex="-1"></a>  <span class="sc">~</span> <span class="fu">with</span>(lda_beta <span class="sc">%&gt;%</span> <span class="fu">filter</span>(topic <span class="sc">==</span> .x), </span>
+<span id="cb33-6"><a href="lda.html#cb33-6" tabindex="-1"></a>         wordcloud<span class="sc">::</span><span class="fu">wordcloud</span>(</span>
+<span id="cb33-7"><a href="lda.html#cb33-7" tabindex="-1"></a>           term, </span>
+<span id="cb33-8"><a href="lda.html#cb33-8" tabindex="-1"></a>           beta, </span>
+<span id="cb33-9"><a href="lda.html#cb33-9" tabindex="-1"></a>           <span class="at">max.words =</span> <span class="dv">20</span>,</span>
+<span id="cb33-10"><a href="lda.html#cb33-10" tabindex="-1"></a>           <span class="at">colors =</span> colors6[.x]</span>
+<span id="cb33-11"><a href="lda.html#cb33-11" tabindex="-1"></a>         ))</span>
+<span id="cb33-12"><a href="lda.html#cb33-12" tabindex="-1"></a>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-24-1.png" width="672" /><img src="nlp_files/figure-html/unnamed-chunk-24-2.png" width="672" /><img src="nlp_files/figure-html/unnamed-chunk-24-3.png" width="672" /></p>
+<p>There is a downside to this evaluation. Popular words like “room” and “stay” appear at or near the top in all three topics. You might want to look at <em>relative</em> popularity instead: the popularity within the topic divided by overall popularity. That’s problematic too because words that only appear in few reviews will pop to the top. What you want is a combination of both absolute term probability and relative term probability. <code>LDAvis::serVis()</code> can help you do that.</p>
 <div class="rmdnote">
 <p>Unfortunately, the plot from <code>LDAvis::serVis()</code> is interactive and does not render in the RMarkdown notebook html, so below is just a screenshot of the code chunk output.</p>
 </div>
 <p>The left side shows the topic sizes (documents) and topic distances. The right side shows the most important tokens.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="lda.html#cb36-1" tabindex="-1"></a>doc_length <span class="ot">&lt;-</span> lda_train <span class="sc">%&gt;%</span> <span class="fu">count</span>(review_id) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n)</span>
-<span id="cb36-2"><a href="lda.html#cb36-2" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="lda.html#cb36-3" tabindex="-1"></a><span class="co"># vocabulary: unique tokens</span></span>
-<span id="cb36-4"><a href="lda.html#cb36-4" tabindex="-1"></a>vocab <span class="ot">&lt;-</span> <span class="fu">colnames</span>(lda_phi) </span>
-<span id="cb36-5"><a href="lda.html#cb36-5" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="lda.html#cb36-6" tabindex="-1"></a><span class="co"># overall token frequency</span></span>
-<span id="cb36-7"><a href="lda.html#cb36-7" tabindex="-1"></a>term_frequency <span class="ot">&lt;-</span> lda_train <span class="sc">%&gt;%</span> <span class="fu">count</span>(word) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(word, vocab)) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n) </span>
-<span id="cb36-8"><a href="lda.html#cb36-8" tabindex="-1"></a></span>
-<span id="cb36-9"><a href="lda.html#cb36-9" tabindex="-1"></a><span class="co"># create JSON containing all needed elements</span></span>
-<span id="cb36-10"><a href="lda.html#cb36-10" tabindex="-1"></a>json <span class="ot">&lt;-</span> LDAvis<span class="sc">::</span><span class="fu">createJSON</span>(lda_phi, lda_theta, doc_length, vocab, term_frequency)</span>
-<span id="cb36-11"><a href="lda.html#cb36-11" tabindex="-1"></a></span>
-<span id="cb36-12"><a href="lda.html#cb36-12" tabindex="-1"></a>LDAvis<span class="sc">::</span><span class="fu">serVis</span>(json)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="lda.html#cb34-1" tabindex="-1"></a><span class="co"># word count for each document</span></span>
+<span id="cb34-2"><a href="lda.html#cb34-2" tabindex="-1"></a>doc_length <span class="ot">&lt;-</span> lda_word_stats <span class="sc">%&gt;%</span> <span class="fu">filter</span>(corp_freq <span class="sc">&gt;</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="lda.html#cb34-3" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">n =</span> <span class="fu">sum</span>(doc_freq)) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n)</span>
+<span id="cb34-4"><a href="lda.html#cb34-4" tabindex="-1"></a></span>
+<span id="cb34-5"><a href="lda.html#cb34-5" tabindex="-1"></a><span class="co"># vocabulary: unique tokens</span></span>
+<span id="cb34-6"><a href="lda.html#cb34-6" tabindex="-1"></a>vocab <span class="ot">&lt;-</span> <span class="fu">colnames</span>(lda_beta_mtrx) </span>
+<span id="cb34-7"><a href="lda.html#cb34-7" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="lda.html#cb34-8" tabindex="-1"></a><span class="co"># overall token frequency</span></span>
+<span id="cb34-9"><a href="lda.html#cb34-9" tabindex="-1"></a>term_frequency <span class="ot">&lt;-</span> lda_word_stats <span class="sc">%&gt;%</span> <span class="fu">filter</span>(corp_freq <span class="sc">&gt;</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-10"><a href="lda.html#cb34-10" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> word, <span class="at">n =</span> <span class="fu">sum</span>(doc_freq)) <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">match</span>(word, vocab)) <span class="sc">%&gt;%</span> <span class="fu">pull</span>(n) </span>
+<span id="cb34-11"><a href="lda.html#cb34-11" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="lda.html#cb34-12" tabindex="-1"></a><span class="co"># create JSON containing all needed elements</span></span>
+<span id="cb34-13"><a href="lda.html#cb34-13" tabindex="-1"></a>json <span class="ot">&lt;-</span> LDAvis<span class="sc">::</span><span class="fu">createJSON</span>(lda_beta_mtrx, lda_gamma_mtrx, doc_length, vocab, term_frequency)</span>
+<span id="cb34-14"><a href="lda.html#cb34-14" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="lda.html#cb34-15" tabindex="-1"></a>LDAvis<span class="sc">::</span><span class="fu">serVis</span>(json)</span></code></pre></div>
 <p><img src="images/ldavis.png" /></p>
-<p>Iterate through the model by tweaking <code>k</code>, excluding words that dominate and suppress more interesting subdomains, and/or changing the minimal token frequency to focus on more/less dominant tokens. You can also change the document sampling strategy to promote interesting domains, like we did when we over sampled the low hotel ratings.</p>
+<p>The gamma matrix shows topic distributions. You can use it to see if topics vary by a covariate.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="lda.html#cb35-1" tabindex="-1"></a><span class="fu">tidy</span>(lda_fit, <span class="at">matrix =</span> <span class="st">&quot;gamma&quot;</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-2"><a href="lda.html#cb35-2" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">document =</span> <span class="fu">as.numeric</span>(document), <span class="at">topic =</span> <span class="fu">factor</span>(topic)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="lda.html#cb35-3" tabindex="-1"></a>  <span class="fu">inner_join</span>(prepped_hotel, <span class="at">by =</span> <span class="fu">join_by</span>(document <span class="sc">==</span> review_id)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-4"><a href="lda.html#cb35-4" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> <span class="fu">c</span>(hotel, topic), <span class="at">gamma =</span> <span class="fu">mean</span>(gamma)) <span class="sc">%&gt;%</span></span>
+<span id="cb35-5"><a href="lda.html#cb35-5" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> gamma, <span class="at">y =</span> <span class="fu">fct_rev</span>(hotel), <span class="at">fill =</span> topic)) <span class="sc">+</span></span>
+<span id="cb35-6"><a href="lda.html#cb35-6" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb35-7"><a href="lda.html#cb35-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;LDA Topic Distribution&quot;</span>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>Iterate through the model by tweaking <code>k</code>, excluding words that dominate and suppress the more interesting subdomains, and/or changing the minimal token frequency to focus on more/less dominant tokens. You can also change the document sampling strategy to promote interesting domains, like we did when we over sampled the low hotel ratings.</p>
 </div>
 <div id="topic-labeling-with-chatgpt" class="section level3 unnumbered hasAnchor">
 <h3>Topic Labeling with ChatGPT<a href="lda.html#topic-labeling-with-chatgpt" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="rmdnote">
 <p>To OpenAI’s ChatGPT API service requires an API token. I created one at <a href="https://platform.openai.com/api-keys" class="uri">https://platform.openai.com/api-keys</a> and saved it to .Renviron. See <code>usethis::edit_r_environ()</code>.</p>
 </div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="lda.html#cb37-1" tabindex="-1"></a><span class="co"># Create a function to send each list of topic words to Open AI as a separate request.</span></span>
-<span id="cb37-2"><a href="lda.html#cb37-2" tabindex="-1"></a>get_topic_from_openai <span class="ot">&lt;-</span> <span class="cf">function</span>(prompt) {</span>
-<span id="cb37-3"><a href="lda.html#cb37-3" tabindex="-1"></a>  my_resp <span class="ot">&lt;-</span></span>
-<span id="cb37-4"><a href="lda.html#cb37-4" tabindex="-1"></a>    <span class="fu">request</span>(<span class="st">&quot;https://api.openai.com/v1/chat/completions&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb37-5"><a href="lda.html#cb37-5" tabindex="-1"></a>    <span class="fu">req_headers</span>(<span class="at">Authorization =</span> <span class="fu">paste</span>(<span class="st">&quot;Bearer&quot;</span>, <span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb37-6"><a href="lda.html#cb37-6" tabindex="-1"></a>    <span class="fu">req_body_json</span>(<span class="fu">list</span>(</span>
-<span id="cb37-7"><a href="lda.html#cb37-7" tabindex="-1"></a>      <span class="at">model =</span> <span class="st">&quot;gpt-3.5-turbo&quot;</span>,</span>
-<span id="cb37-8"><a href="lda.html#cb37-8" tabindex="-1"></a>      <span class="co"># Temperature [0,2] controls creativity, predictable -&gt; variable. </span></span>
-<span id="cb37-9"><a href="lda.html#cb37-9" tabindex="-1"></a>      <span class="at">temperature =</span> <span class="dv">1</span>,</span>
-<span id="cb37-10"><a href="lda.html#cb37-10" tabindex="-1"></a>      <span class="at">messages =</span> <span class="fu">list</span>(</span>
-<span id="cb37-11"><a href="lda.html#cb37-11" tabindex="-1"></a>        <span class="co"># System prompt sets repeated context. It is prefixed to prompts.</span></span>
-<span id="cb37-12"><a href="lda.html#cb37-12" tabindex="-1"></a>        <span class="fu">list</span>(</span>
-<span id="cb37-13"><a href="lda.html#cb37-13" tabindex="-1"></a>          <span class="at">role =</span> <span class="st">&quot;system&quot;</span>,</span>
-<span id="cb37-14"><a href="lda.html#cb37-14" tabindex="-1"></a>          <span class="at">content =</span> <span class="fu">paste</span>(<span class="st">&quot;You are a topic modeling assistant. You accept lists &quot;</span>,</span>
-<span id="cb37-15"><a href="lda.html#cb37-15" tabindex="-1"></a>                          <span class="st">&quot;of words in a topic and summarizes them into a salient &quot;</span>,</span>
-<span id="cb37-16"><a href="lda.html#cb37-16" tabindex="-1"></a>                          <span class="st">&quot;topic label of five words or less. How would you &quot;</span>,</span>
-<span id="cb37-17"><a href="lda.html#cb37-17" tabindex="-1"></a>                          <span class="st">&quot;summarize the following list? The list is in descending &quot;</span>,</span>
-<span id="cb37-18"><a href="lda.html#cb37-18" tabindex="-1"></a>                          <span class="st">&quot;order of importance, so the first term in the list is most &quot;</span>,</span>
-<span id="cb37-19"><a href="lda.html#cb37-19" tabindex="-1"></a>                          <span class="st">&quot;strongly tied to the topic. Return just the topic label and &quot;</span>,</span>
-<span id="cb37-20"><a href="lda.html#cb37-20" tabindex="-1"></a>                          <span class="st">&quot;nothing else.&quot;</span>)</span>
-<span id="cb37-21"><a href="lda.html#cb37-21" tabindex="-1"></a>        ),</span>
-<span id="cb37-22"><a href="lda.html#cb37-22" tabindex="-1"></a>        <span class="fu">list</span>(</span>
-<span id="cb37-23"><a href="lda.html#cb37-23" tabindex="-1"></a>          <span class="at">role =</span> <span class="st">&quot;user&quot;</span>,</span>
-<span id="cb37-24"><a href="lda.html#cb37-24" tabindex="-1"></a>          <span class="at">content =</span> prompt</span>
-<span id="cb37-25"><a href="lda.html#cb37-25" tabindex="-1"></a>        )</span>
-<span id="cb37-26"><a href="lda.html#cb37-26" tabindex="-1"></a>      )</span>
-<span id="cb37-27"><a href="lda.html#cb37-27" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span></span>
-<span id="cb37-28"><a href="lda.html#cb37-28" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb37-29"><a href="lda.html#cb37-29" tabindex="-1"></a>    <span class="fu">resp_body_json</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb37-30"><a href="lda.html#cb37-30" tabindex="-1"></a>    <span class="fu">pluck</span>(<span class="st">&quot;choices&quot;</span>, <span class="dv">1</span>, <span class="st">&quot;message&quot;</span>, <span class="st">&quot;content&quot;</span>)</span>
-<span id="cb37-31"><a href="lda.html#cb37-31" tabindex="-1"></a>}</span>
-<span id="cb37-32"><a href="lda.html#cb37-32" tabindex="-1"></a></span>
-<span id="cb37-33"><a href="lda.html#cb37-33" tabindex="-1"></a>lda_topics <span class="ot">&lt;-</span> </span>
-<span id="cb37-34"><a href="lda.html#cb37-34" tabindex="-1"></a>  lda_top_tokens <span class="sc">%&gt;%</span></span>
-<span id="cb37-35"><a href="lda.html#cb37-35" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> term, <span class="at">.by =</span> topic) <span class="sc">%&gt;%</span></span>
-<span id="cb37-36"><a href="lda.html#cb37-36" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb37-37"><a href="lda.html#cb37-37" tabindex="-1"></a>    <span class="at">token_str =</span> <span class="fu">map</span>(data, <span class="sc">~</span><span class="fu">paste</span>(.<span class="sc">$</span>term, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>)),</span>
-<span id="cb37-38"><a href="lda.html#cb37-38" tabindex="-1"></a>    <span class="at">topic_lbl =</span> <span class="fu">map_chr</span>(token_str, get_topic_from_openai),</span>
-<span id="cb37-39"><a href="lda.html#cb37-39" tabindex="-1"></a>    <span class="at">topic_lbl =</span> <span class="fu">str_remove_all</span>(topic_lbl, <span class="st">&#39;</span><span class="sc">\\</span><span class="st">&quot;&#39;</span>),</span>
-<span id="cb37-40"><a href="lda.html#cb37-40" tabindex="-1"></a>    <span class="at">topic_lbl =</span> snakecase<span class="sc">::</span><span class="fu">to_any_case</span>(topic_lbl, <span class="st">&quot;title&quot;</span>)</span>
-<span id="cb37-41"><a href="lda.html#cb37-41" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb37-42"><a href="lda.html#cb37-42" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>data)</span>
-<span id="cb37-43"><a href="lda.html#cb37-43" tabindex="-1"></a></span>
-<span id="cb37-44"><a href="lda.html#cb37-44" tabindex="-1"></a><span class="co"># Save to file system to avoid regenerating.</span></span>
-<span id="cb37-45"><a href="lda.html#cb37-45" tabindex="-1"></a><span class="fu">saveRDS</span>(lda_topics, <span class="at">file =</span> <span class="st">&quot;input/lda_topics.RDS&quot;</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="lda.html#cb38-1" tabindex="-1"></a>lda_topics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/lda_topics.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="lda.html#cb36-1" tabindex="-1"></a><span class="co"># Create a function to send each list of topic words to Open AI as a separate request.</span></span>
+<span id="cb36-2"><a href="lda.html#cb36-2" tabindex="-1"></a>get_topic_from_openai <span class="ot">&lt;-</span> <span class="cf">function</span>(prompt) {</span>
+<span id="cb36-3"><a href="lda.html#cb36-3" tabindex="-1"></a>  my_resp <span class="ot">&lt;-</span></span>
+<span id="cb36-4"><a href="lda.html#cb36-4" tabindex="-1"></a>    <span class="fu">request</span>(<span class="st">&quot;https://api.openai.com/v1/chat/completions&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="lda.html#cb36-5" tabindex="-1"></a>    <span class="fu">req_headers</span>(<span class="at">Authorization =</span> <span class="fu">paste</span>(<span class="st">&quot;Bearer&quot;</span>, <span class="fu">Sys.getenv</span>(<span class="st">&quot;OPENAI_API_KEY&quot;</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb36-6"><a href="lda.html#cb36-6" tabindex="-1"></a>    <span class="fu">req_body_json</span>(<span class="fu">list</span>(</span>
+<span id="cb36-7"><a href="lda.html#cb36-7" tabindex="-1"></a>      <span class="at">model =</span> <span class="st">&quot;gpt-3.5-turbo&quot;</span>,</span>
+<span id="cb36-8"><a href="lda.html#cb36-8" tabindex="-1"></a>      <span class="co"># Temperature [0,2] controls creativity, predictable -&gt; variable. </span></span>
+<span id="cb36-9"><a href="lda.html#cb36-9" tabindex="-1"></a>      <span class="at">temperature =</span> <span class="dv">1</span>,</span>
+<span id="cb36-10"><a href="lda.html#cb36-10" tabindex="-1"></a>      <span class="at">messages =</span> <span class="fu">list</span>(</span>
+<span id="cb36-11"><a href="lda.html#cb36-11" tabindex="-1"></a>        <span class="co"># System prompt sets repeated context. It is prefixed to prompts.</span></span>
+<span id="cb36-12"><a href="lda.html#cb36-12" tabindex="-1"></a>        <span class="fu">list</span>(</span>
+<span id="cb36-13"><a href="lda.html#cb36-13" tabindex="-1"></a>          <span class="at">role =</span> <span class="st">&quot;system&quot;</span>,</span>
+<span id="cb36-14"><a href="lda.html#cb36-14" tabindex="-1"></a>          <span class="at">content =</span> <span class="fu">paste</span>(<span class="st">&quot;You are a topic modeling assistant. You accept lists &quot;</span>,</span>
+<span id="cb36-15"><a href="lda.html#cb36-15" tabindex="-1"></a>                          <span class="st">&quot;of words in a topic and summarizes them into a salient &quot;</span>,</span>
+<span id="cb36-16"><a href="lda.html#cb36-16" tabindex="-1"></a>                          <span class="st">&quot;topic label of five words or less. How would you &quot;</span>,</span>
+<span id="cb36-17"><a href="lda.html#cb36-17" tabindex="-1"></a>                          <span class="st">&quot;summarize the following list? The list is in descending &quot;</span>,</span>
+<span id="cb36-18"><a href="lda.html#cb36-18" tabindex="-1"></a>                          <span class="st">&quot;order of importance, so the first term in the list is most &quot;</span>,</span>
+<span id="cb36-19"><a href="lda.html#cb36-19" tabindex="-1"></a>                          <span class="st">&quot;strongly tied to the topic. Return just the topic label and &quot;</span>,</span>
+<span id="cb36-20"><a href="lda.html#cb36-20" tabindex="-1"></a>                          <span class="st">&quot;nothing else.&quot;</span>)</span>
+<span id="cb36-21"><a href="lda.html#cb36-21" tabindex="-1"></a>        ),</span>
+<span id="cb36-22"><a href="lda.html#cb36-22" tabindex="-1"></a>        <span class="fu">list</span>(</span>
+<span id="cb36-23"><a href="lda.html#cb36-23" tabindex="-1"></a>          <span class="at">role =</span> <span class="st">&quot;user&quot;</span>,</span>
+<span id="cb36-24"><a href="lda.html#cb36-24" tabindex="-1"></a>          <span class="at">content =</span> prompt</span>
+<span id="cb36-25"><a href="lda.html#cb36-25" tabindex="-1"></a>        )</span>
+<span id="cb36-26"><a href="lda.html#cb36-26" tabindex="-1"></a>      )</span>
+<span id="cb36-27"><a href="lda.html#cb36-27" tabindex="-1"></a>    )) <span class="sc">%&gt;%</span></span>
+<span id="cb36-28"><a href="lda.html#cb36-28" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb36-29"><a href="lda.html#cb36-29" tabindex="-1"></a>    <span class="fu">resp_body_json</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb36-30"><a href="lda.html#cb36-30" tabindex="-1"></a>    <span class="fu">pluck</span>(<span class="st">&quot;choices&quot;</span>, <span class="dv">1</span>, <span class="st">&quot;message&quot;</span>, <span class="st">&quot;content&quot;</span>)</span>
+<span id="cb36-31"><a href="lda.html#cb36-31" tabindex="-1"></a>}</span>
+<span id="cb36-32"><a href="lda.html#cb36-32" tabindex="-1"></a></span>
+<span id="cb36-33"><a href="lda.html#cb36-33" tabindex="-1"></a>lda_topics <span class="ot">&lt;-</span> </span>
+<span id="cb36-34"><a href="lda.html#cb36-34" tabindex="-1"></a>  lda_top_tokens <span class="sc">%&gt;%</span></span>
+<span id="cb36-35"><a href="lda.html#cb36-35" tabindex="-1"></a>  <span class="fu">nest</span>(<span class="at">data =</span> term, <span class="at">.by =</span> topic) <span class="sc">%&gt;%</span></span>
+<span id="cb36-36"><a href="lda.html#cb36-36" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-37"><a href="lda.html#cb36-37" tabindex="-1"></a>    <span class="at">token_str =</span> <span class="fu">map</span>(data, <span class="sc">~</span><span class="fu">paste</span>(.<span class="sc">$</span>term, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>)),</span>
+<span id="cb36-38"><a href="lda.html#cb36-38" tabindex="-1"></a>    <span class="at">topic_lbl =</span> <span class="fu">map_chr</span>(token_str, get_topic_from_openai),</span>
+<span id="cb36-39"><a href="lda.html#cb36-39" tabindex="-1"></a>    <span class="at">topic_lbl =</span> <span class="fu">str_remove_all</span>(topic_lbl, <span class="st">&#39;</span><span class="sc">\\</span><span class="st">&quot;&#39;</span>),</span>
+<span id="cb36-40"><a href="lda.html#cb36-40" tabindex="-1"></a>    <span class="at">topic_lbl =</span> snakecase<span class="sc">::</span><span class="fu">to_any_case</span>(topic_lbl, <span class="st">&quot;title&quot;</span>)</span>
+<span id="cb36-41"><a href="lda.html#cb36-41" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb36-42"><a href="lda.html#cb36-42" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>data)</span>
+<span id="cb36-43"><a href="lda.html#cb36-43" tabindex="-1"></a></span>
+<span id="cb36-44"><a href="lda.html#cb36-44" tabindex="-1"></a><span class="co"># Save to file system to avoid regenerating.</span></span>
+<span id="cb36-45"><a href="lda.html#cb36-45" tabindex="-1"></a><span class="fu">saveRDS</span>(lda_topics, <span class="at">file =</span> <span class="st">&quot;input/lda_topics.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="lda.html#cb37-1" tabindex="-1"></a>lda_topics <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">&quot;input/lda_topics.RDS&quot;</span>)</span></code></pre></div>
 <p>Let’s see the topic summary with the newly generated labels.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="lda.html#cb39-1" tabindex="-1"></a>lda_top_tokens <span class="sc">%&gt;%</span></span>
-<span id="cb39-2"><a href="lda.html#cb39-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(lda_topics, <span class="at">by =</span> <span class="fu">join_by</span>(topic)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-3"><a href="lda.html#cb39-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic_lbl =</span> <span class="fu">str_wrap</span>(topic_lbl, <span class="dv">25</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb39-4"><a href="lda.html#cb39-4" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> <span class="fu">reorder_within</span>(term, <span class="at">by =</span> beta, <span class="at">within =</span> topic_lbl))) <span class="sc">+</span></span>
-<span id="cb39-5"><a href="lda.html#cb39-5" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
-<span id="cb39-6"><a href="lda.html#cb39-6" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
-<span id="cb39-7"><a href="lda.html#cb39-7" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(topic_lbl), <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
-<span id="cb39-8"><a href="lda.html#cb39-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;LDA Top 10 Terms&quot;</span>)</span></code></pre></div>
-<p><img src="nlp_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="lda.html#cb38-1" tabindex="-1"></a>lda_top_tokens <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="lda.html#cb38-2" tabindex="-1"></a>  <span class="fu">inner_join</span>(lda_topics, <span class="at">by =</span> <span class="fu">join_by</span>(topic)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="lda.html#cb38-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">topic_lbl =</span> <span class="fu">str_wrap</span>(topic_lbl, <span class="dv">25</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="lda.html#cb38-4" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> beta, <span class="at">y =</span> <span class="fu">reorder_within</span>(term, <span class="at">by =</span> beta, <span class="at">within =</span> topic_lbl))) <span class="sc">+</span></span>
+<span id="cb38-5"><a href="lda.html#cb38-5" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb38-6"><a href="lda.html#cb38-6" tabindex="-1"></a>  <span class="fu">scale_y_reordered</span>() <span class="sc">+</span></span>
+<span id="cb38-7"><a href="lda.html#cb38-7" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="at">facets =</span> <span class="fu">vars</span>(topic_lbl), <span class="at">scales =</span> <span class="st">&quot;free_y&quot;</span>) <span class="sc">+</span></span>
+<span id="cb38-8"><a href="lda.html#cb38-8" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">title =</span> <span class="st">&quot;LDA Top 10 Terms&quot;</span>)</span></code></pre></div>
+<p><img src="nlp_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 </div>
 <div id="todo" class="section level3 unnumbered hasAnchor">
 <h3>TODO<a href="lda.html#todo" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>I still need to learn more about</p>
 <ul>
 <li>Held-out Likelihood (Wallach et al., 2009).</li>
-<li>Semantic Coherence</li>
-<li>Exclusivity. Generally, the greater the number of topics in a model, the lower the quality of the smallest topics. One way around this is simply hiding the low-quality topics. The coherence measure evaluates topics.</li>
+<li>Semantic Coherence. The coherence measure evaluates topics.</li>
+<li>Exclusivity. Generally, the greater the number of topics in a model, the lower the quality of the smallest topics. One way around this is hiding the low-quality topics.</li>
 </ul>
 </div>
 </div>
