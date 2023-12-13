@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-12-07" />
+<meta name="date" content="2023-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -167,28 +167,28 @@ div.csl-indent {
 <li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
 <li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
-<li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
-<li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
+<li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
+<li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
 <li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
 <li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
+<li class="chapter" data-level="2.1" data-path="pre-processing.html"><a href="pre-processing.html"><i class="fa fa-check"></i><b>2.1</b> Pre-processing</a></li>
+<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
+<li class="chapter" data-level="2.2.1" data-path="lda.html"><a href="lda.html#discussion"><i class="fa fa-check"></i><b>2.2.1</b> Discussion</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
+<li class="chapter" data-level="2.3" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.3</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
+<li class="chapter" data-level="2.4" data-path="prediction.html"><a href="prediction.html"><i class="fa fa-check"></i><b>2.4</b> Prediction</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
@@ -221,9 +221,9 @@ div.csl-indent {
 <div id="bigrams" class="section level2 hasAnchor" number="1.7">
 <h2><span class="header-section-number">1.7</span> Bigrams<a href="bigrams.html#bigrams" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>If you intend to present bigrams, don’t simply tokenize the raw or prepped text into bigrams because you don’t want stop words in bigram, nor do you want words that aren’t actually adjacent because you’ve removed stop words. Instead, tokenize into bigrams, split the bigrams into words, and filter out rows where one or both words is stop word.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="bigrams.html#cb17-1" tabindex="-1"></a><span class="co"># Reassemble token_1 into text and re-tokenize so you get the spalling corrections.</span></span>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="bigrams.html#cb17-1" tabindex="-1"></a><span class="co"># Reassemble token_2 into text and re-tokenize so you get the spelling corrections.</span></span>
 <span id="cb17-2"><a href="bigrams.html#cb17-2" tabindex="-1"></a>bigram_0 <span class="ot">&lt;-</span></span>
-<span id="cb17-3"><a href="bigrams.html#cb17-3" tabindex="-1"></a>  token_1 <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="bigrams.html#cb17-3" tabindex="-1"></a>  token_2 <span class="sc">%&gt;%</span></span>
 <span id="cb17-4"><a href="bigrams.html#cb17-4" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">.by =</span> review_id, <span class="at">reconstructed =</span> <span class="fu">paste</span>(word, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb17-5"><a href="bigrams.html#cb17-5" tabindex="-1"></a>  <span class="fu">unnest_tokens</span>(<span class="st">&quot;bigram&quot;</span>, reconstructed, <span class="at">token =</span> <span class="st">&quot;ngrams&quot;</span>, <span class="at">n =</span> <span class="dv">2</span>)</span>
 <span id="cb17-6"><a href="bigrams.html#cb17-6" tabindex="-1"></a></span>
@@ -238,8 +238,8 @@ div.csl-indent {
 <span id="cb17-15"><a href="bigrams.html#cb17-15" tabindex="-1"></a></span>
 <span id="cb17-16"><a href="bigrams.html#cb17-16" tabindex="-1"></a><span class="co"># Example</span></span>
 <span id="cb17-17"><a href="bigrams.html#cb17-17" tabindex="-1"></a><span class="fu">bind_cols</span>(</span>
-<span id="cb17-18"><a href="bigrams.html#cb17-18" tabindex="-1"></a>  hotel_2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review),</span>
-<span id="cb17-19"><a href="bigrams.html#cb17-19" tabindex="-1"></a>  bigram <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">==</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-18"><a href="bigrams.html#cb17-18" tabindex="-1"></a>  hotel_2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">==</span> hotel_2[<span class="dv">1</span>, ]<span class="sc">$</span>review_id) <span class="sc">%&gt;%</span> <span class="fu">select</span>(review),</span>
+<span id="cb17-19"><a href="bigrams.html#cb17-19" tabindex="-1"></a>  bigram <span class="sc">%&gt;%</span> <span class="fu">filter</span>(review_id <span class="sc">==</span> hotel_2[<span class="dv">1</span>, ]<span class="sc">$</span>review_id) <span class="sc">%&gt;%</span> </span>
 <span id="cb17-20"><a href="bigrams.html#cb17-20" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">bigrams =</span> <span class="fu">paste</span>(bigram, <span class="at">collapse =</span> <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>))</span>
 <span id="cb17-21"><a href="bigrams.html#cb17-21" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
 <span id="cb17-22"><a href="bigrams.html#cb17-22" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">flextable</span>() <span class="sc">%&gt;%</span></span>
@@ -247,7 +247,7 @@ div.csl-indent {
 <span id="cb17-24"><a href="bigrams.html#cb17-24" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">width</span>(<span class="at">j =</span> <span class="dv">1</span>, <span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">unit =</span> <span class="st">&quot;in&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb17-25"><a href="bigrams.html#cb17-25" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">width</span>(<span class="at">j =</span> <span class="dv">2</span>, <span class="at">width =</span> <span class="fl">1.5</span>, <span class="at">unit =</span> <span class="st">&quot;in&quot;</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb17-26"><a href="bigrams.html#cb17-26" tabindex="-1"></a>  flextable<span class="sc">::</span><span class="fu">valign</span>(<span class="at">valign =</span> <span class="st">&quot;top&quot;</span>)</span></code></pre></div>
-<div class="tabwid tabwid_left"><style>.cl-2d7b0000{}.cl-2d75700e{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-2d757018{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-2d77a93c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-2d77a950{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-2d77b63e{width:4.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2d77b648{width:1.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2d77b652{width:4.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-2d77b653{width:1.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-2d7b0000'><thead><tr style="overflow-wrap:break-word;"><th class="cl-2d77b63e"><p class="cl-2d77a93c"><span class="cl-2d75700e">review</span></p></th><th class="cl-2d77b648"><p class="cl-2d77a93c"><span class="cl-2d75700e">bigrams</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-2d77b652"><p class="cl-2d77a950"><span class="cl-2d757018">A very lovely first visit to this iconic hotel bar Wonderful service without being intrusive at all Very delicious cocktails and just generally all round a very indulgent experience Well worth visiting only for that 'once in a lifetime' experience though do make sure you are feeling 'flush' it doesn't come cheap</span></p></td><td class="cl-2d77b653"><p class="cl-2d77a950"><span class="cl-2d757018">lovely first</span><br><span class="cl-2d757018">first visit</span><br><span class="cl-2d757018">bar wonderful</span><br><span class="cl-2d757018">wonderful service</span><br><span class="cl-2d757018">delicious cocktails</span><br><span class="cl-2d757018">indulgent experience</span><br><span class="cl-2d757018">worth visiting</span><br><span class="cl-2d757018">lifetime experience</span><br><span class="cl-2d757018">feeling flush</span></p></td></tr></tbody></table></div>
+<div class="tabwid tabwid_left"><style>.cl-4e950702{}.cl-4e8edb5c{font-family:'Arial';font-size:10pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4e8edb66{font-family:'Arial';font-size:10pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4e91213c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4e912146{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4e912fb0{width:4.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4e912fba{width:1.5in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4e912fbb{width:4.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4e912fc4{width:1.5in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing='true' class='cl-4e950702'><thead><tr style="overflow-wrap:break-word;"><th class="cl-4e912fb0"><p class="cl-4e91213c"><span class="cl-4e8edb5c">review</span></p></th><th class="cl-4e912fba"><p class="cl-4e91213c"><span class="cl-4e8edb5c">bigrams</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4e912fbb"><p class="cl-4e912146"><span class="cl-4e8edb66">Love Love Love The Savoy If you are looking for a luxe hotel that isn't stuffy this is the place for you You feel like a millionaire even if you're not one and it's a great place to hang out if you fancy keeping off the streets of London for a while Classy decor wonderful food and cocktails and the staff are wonderful it is an absolute allrounder and if I could afford it I would probably live there</span></p></td><td class="cl-4e912fc4"><p class="cl-4e912146"><span class="cl-4e8edb66">love love</span><br><span class="cl-4e8edb66">love love</span><br><span class="cl-4e8edb66">classy decor</span><br><span class="cl-4e8edb66">decor wonderful</span><br><span class="cl-4e8edb66">wonderful food</span><br><span class="cl-4e8edb66">absolute allrounder</span></p></td></tr></tbody></table></div>
 </div>
             </section>
 
@@ -313,20 +313,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

@@ -23,7 +23,7 @@
 <meta name="author" content="Michael Foley" />
 
 
-<meta name="date" content="2023-12-07" />
+<meta name="date" content="2023-12-12" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -167,28 +167,28 @@ div.csl-indent {
 <li class="chapter" data-level="1.1" data-path="scrub.html"><a href="scrub.html"><i class="fa fa-check"></i><b>1.1</b> Scrub</a></li>
 <li class="chapter" data-level="1.2" data-path="tokenize.html"><a href="tokenize.html"><i class="fa fa-check"></i><b>1.2</b> Tokenize</a></li>
 <li class="chapter" data-level="1.3" data-path="spell-check.html"><a href="spell-check.html"><i class="fa fa-check"></i><b>1.3</b> Spell-check</a></li>
-<li class="chapter" data-level="1.4" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.4</b> Remove Stop Words</a></li>
-<li class="chapter" data-level="1.5" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.5</b> Lemmatize</a></li>
+<li class="chapter" data-level="1.4" data-path="lemmatize.html"><a href="lemmatize.html"><i class="fa fa-check"></i><b>1.4</b> Lemmatize</a></li>
+<li class="chapter" data-level="1.5" data-path="remove-stop-words.html"><a href="remove-stop-words.html"><i class="fa fa-check"></i><b>1.5</b> Remove Stop Words</a></li>
 <li class="chapter" data-level="1.6" data-path="prepped-data.html"><a href="prepped-data.html"><i class="fa fa-check"></i><b>1.6</b> Prepped Data</a></li>
 <li class="chapter" data-level="1.7" data-path="bigrams.html"><a href="bigrams.html"><i class="fa fa-check"></i><b>1.7</b> Bigrams</a></li>
 <li class="chapter" data-level="1.8" data-path="save.html"><a href="save.html"><i class="fa fa-check"></i><b>1.8</b> Save</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="topicmodeling.html"><a href="topicmodeling.html"><i class="fa fa-check"></i><b>2</b> Topic Modeling</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.1</b> LDA</a>
+<li class="chapter" data-level="2.1" data-path="pre-processing.html"><a href="pre-processing.html"><i class="fa fa-check"></i><b>2.1</b> Pre-processing</a></li>
+<li class="chapter" data-level="2.2" data-path="lda.html"><a href="lda.html"><i class="fa fa-check"></i><b>2.2</b> LDA</a>
 <ul>
-<li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#preprocessing"><i class="fa fa-check"></i>Preprocessing</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#fit"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#topic-labeling-with-chatgpt"><i class="fa fa-check"></i>Topic Labeling with ChatGPT</a></li>
+<li class="chapter" data-level="2.2.1" data-path="lda.html"><a href="lda.html#discussion"><i class="fa fa-check"></i><b>2.2.1</b> Discussion</a></li>
 <li class="chapter" data-level="" data-path="lda.html"><a href="lda.html#todo"><i class="fa fa-check"></i>TODO</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.2</b> STM</a>
+<li class="chapter" data-level="2.3" data-path="stm.html"><a href="stm.html"><i class="fa fa-check"></i><b>2.3</b> STM</a>
 <ul>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#algorithm"><i class="fa fa-check"></i>Algorithm</a></li>
-<li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#data-preparation"><i class="fa fa-check"></i>Data Preparation</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#fit-1"><i class="fa fa-check"></i>Fit</a></li>
 <li class="chapter" data-level="" data-path="stm.html"><a href="stm.html#interpret"><i class="fa fa-check"></i>Interpret</a></li>
 </ul></li>
+<li class="chapter" data-level="2.4" data-path="prediction.html"><a href="prediction.html"><i class="fa fa-check"></i><b>2.4</b> Prediction</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="sentimentanalysis.html"><a href="sentimentanalysis.html"><i class="fa fa-check"></i><b>3</b> Sentiment Analysis</a>
 <ul>
@@ -220,7 +220,7 @@ div.csl-indent {
             <section class="normal" id="section-">
 <div id="scrub" class="section level2 hasAnchor" number="1.1">
 <h2><span class="header-section-number">1.1</span> Scrub<a href="scrub.html#scrub" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>The data needs to be cleaned. I’ll follow some of the techniques used by <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020a</a>)</span>. One issue is tags like <em>&lt;e9&gt;</em> and unicode characters like <em>&lt;U+0440&gt;</em>. <a href="https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters">One way</a> to get rid of unicode characters is to convert them to ASCII tags with <code>iconv()</code> and then remove the ASCII tags with <code>str_remove()</code>. E.g., <code>iconv()</code> converts &lt;U+0093&gt; to &lt;93&gt; which you can remove with regex <code>"\\&lt;[:alnum]+\\&gt;]"</code>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> There are also some reviews in other languages that I’ll just drop. And some hotel names are pretty long, so I’ll abbreviate them.</p>
+<p>The data needs to be cleaned. I’ll follow some of the techniques used by <span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span>. One issue is tags like <em>&lt;e9&gt;</em> and unicode characters like <em>&lt;U+0440&gt;</em>. <a href="https://stackoverflow.com/questions/36108790/trouble-with-strings-with-u0092-unicode-characters">One way</a> to get rid of unicode characters is to convert them to ASCII tags with <code>iconv()</code> and then remove the ASCII tags with <code>str_remove()</code>. E.g., <code>iconv()</code> converts &lt;U+0093&gt; to &lt;93&gt; which you can remove with regex <code>"\\&lt;[:alnum]+\\&gt;]"</code>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> There are also some reviews in other languages that I’ll just drop. And some hotel names are pretty long, so I’ll abbreviate them.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="scrub.html#cb4-1" tabindex="-1"></a>hotel_1 <span class="ot">&lt;-</span> hotel_0 <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="scrub.html#cb4-2" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb4-3"><a href="scrub.html#cb4-3" tabindex="-1"></a>    <span class="co"># Create ASCII bytes</span></span>
@@ -263,7 +263,7 @@ div.csl-indent {
 <p>That might be enough. Let’s explore the data. We have 9 hotels. Reviewers are binned into 3 locations. 90% of reviews rate the property a 4 or 5. Some reviews are as small as 1 character, but they can get quite large.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="scrub.html#cb5-1" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(hotel_1)</span></code></pre></div>
 <table>
-<caption><span id="tab:unnamed-chunk-5">Table 1.1: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-4">Table 1.1: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -271,7 +271,7 @@ div.csl-indent {
 </tr>
 <tr class="even">
 <td align="left">Number of rows</td>
-<td align="left">23611</td>
+<td align="left">1448</td>
 </tr>
 <tr class="odd">
 <td align="left">Number of columns</td>
@@ -308,16 +308,16 @@ div.csl-indent {
 </tbody>
 </table>
 <p><strong>Variable type: character</strong></p>
-<table>
+<table style="width:100%;">
 <colgroup>
-<col width="18%" />
+<col width="19%" />
 <col width="13%" />
-<col width="18%" />
+<col width="19%" />
 <col width="5%" />
-<col width="8%" />
+<col width="6%" />
 <col width="8%" />
 <col width="12%" />
-<col width="14%" />
+<col width="15%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -337,9 +337,9 @@ div.csl-indent {
 <td align="right">0</td>
 <td align="right">1</td>
 <td align="right">1</td>
-<td align="right">29798</td>
+<td align="right">7157</td>
 <td align="right">0</td>
-<td align="right">23572</td>
+<td align="right">1448</td>
 <td align="right">0</td>
 </tr>
 </tbody>
@@ -352,7 +352,7 @@ div.csl-indent {
 <col width="14%" />
 <col width="8%" />
 <col width="9%" />
-<col width="43%" />
+<col width="41%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -370,8 +370,8 @@ div.csl-indent {
 <td align="right">0</td>
 <td align="right">1</td>
 <td align="left">TRUE</td>
-<td align="right">9</td>
-<td align="left">Sav: 5054, Mon: 3933, Oth: 3770, Rem: 2553</td>
+<td align="right">10</td>
+<td align="left">Sav: 307, Mon: 237, Rem: 176, Cor: 156</td>
 </tr>
 <tr class="even">
 <td align="left">rating</td>
@@ -379,7 +379,7 @@ div.csl-indent {
 <td align="right">1</td>
 <td align="left">FALSE</td>
 <td align="right">4</td>
-<td align="left">5: 16333, 4: 4827, 3: 1368, 1-2: 1083</td>
+<td align="left">5: 959, 4: 299, 3: 115, 1-2: 75</td>
 </tr>
 <tr class="odd">
 <td align="left">reviewer_loc</td>
@@ -387,7 +387,7 @@ div.csl-indent {
 <td align="right">1</td>
 <td align="left">FALSE</td>
 <td align="right">3</td>
-<td align="left">Oth: 13958, Uni: 8552, Uni: 1101</td>
+<td align="left">Oth: 830, Uni: 549, Uni: 69</td>
 </tr>
 </tbody>
 </table>
@@ -397,12 +397,12 @@ div.csl-indent {
 <col width="15%" />
 <col width="11%" />
 <col width="15%" />
-<col width="8%" />
+<col width="10%" />
 <col width="8%" />
 <col width="3%" />
 <col width="7%" />
 <col width="6%" />
-<col width="8%" />
+<col width="6%" />
 <col width="6%" />
 <col width="6%" />
 </colgroup>
@@ -426,36 +426,36 @@ div.csl-indent {
 <td align="left">review_id</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">13655.3</td>
-<td align="right">7875.48</td>
-<td align="right">2</td>
-<td align="right">6830.5</td>
-<td align="right">13666</td>
-<td align="right">20464.5</td>
-<td align="right">27330</td>
+<td align="right">13972.61</td>
+<td align="right">7879.17</td>
+<td align="right">34</td>
+<td align="right">7063.5</td>
+<td align="right">14472</td>
+<td align="right">20657</td>
+<td align="right">27295</td>
 <td align="left">▇▇▇▇▇</td>
 </tr>
 <tr class="even">
 <td align="left">raw_chrcnt</td>
 <td align="right">0</td>
 <td align="right">1</td>
-<td align="right">696.4</td>
-<td align="right">676.68</td>
+<td align="right">712.05</td>
+<td align="right">653.40</td>
 <td align="right">1</td>
-<td align="right">301.0</td>
-<td align="right">502</td>
-<td align="right">848.0</td>
-<td align="right">29798</td>
+<td align="right">308.0</td>
+<td align="right">521</td>
+<td align="right">870</td>
+<td align="right">7157</td>
 <td align="left">▇▁▁▁▁</td>
 </tr>
 </tbody>
 </table>
-<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020a</a>)</span> recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (&lt;= 3 chars) for anything other than sentiment analysis. I’m going to keep punctuation and short reviews for now even though some of those extremely short reviews are gibberish.</p>
+<p><span class="citation">Nagelkerke (<a href="#ref-Nagelkerke2020a">2020</a>)</span> recommends removing punctuation to focus on the entire text rather than the sentences within. Nagelkerke also suggests removing very short (&lt;= 3 chars) for anything other than sentiment analysis. I’m going to keep punctuation and short reviews for now even though some of those extremely short reviews are gibberish.</p>
 </div>
 <h3>References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-Nagelkerke2020a" class="csl-entry">
-Nagelkerke, Jurriaan. 2020a. <span>“NLP with r Part 0: Preparing Review Data for NLP and Predictive Modeling,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312">https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312</a>.
+Nagelkerke, Jurriaan. 2020. <span>“NLP with r Part 0: Preparing Review Data for NLP and Predictive Modeling,”</span> November. <a href="https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312">https://medium.com/cmotions/nlp-with-r-part-0-preparing-review-data-for-nlp-and-predictive-modeling-c1f2907d8312</a>.
 </div>
 </div>
 <div class="footnotes">
@@ -528,20 +528,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>

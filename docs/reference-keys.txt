@@ -15,3 +15,7 @@ sentimentanalysis
 subjectivity-lexicons
 polarity-scoring
 statistical-test
+tab:unnamed-chunk-4
+prediction
+pre-processing
+discussion

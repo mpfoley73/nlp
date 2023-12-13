@@ -93,6 +93,58 @@
             "volume": "10"
         },
         {
+            "URL": "https://authors.library.caltech.edu/52278/7/topicmodelsopenendedexperiments.pdf",
+            "author": [
+                {
+                    "family": "Roberts",
+                    "given": "Margaret E"
+                },
+                {
+                    "family": "Stewart",
+                    "given": "Brandon M"
+                },
+                {
+                    "family": "Tingley",
+                    "given": "Dustin"
+                },
+                {
+                    "family": "Lucas",
+                    "given": "Christopher"
+                },
+                {
+                    "family": "Leder-Luis",
+                    "given": "Jetson"
+                },
+                {
+                    "family": "Gadarian",
+                    "given": "Shana Kushner"
+                },
+                {
+                    "family": "Albertson",
+                    "given": "Bethany"
+                },
+                {
+                    "family": "Rand",
+                    "given": "David G"
+                }
+            ],
+            "container-title": "American journal of political science",
+            "id": "roberts2014structural",
+            "issue": "4",
+            "issued": {
+                "date-parts": [
+                    [
+                        2014
+                    ]
+                ]
+            },
+            "page": "1064-1082",
+            "publisher": "Wiley Online Library",
+            "title": "Structural topic models for open-ended survey responses",
+            "type": "article-journal",
+            "volume": "58"
+        },
+        {
             "URL": "https://medium.com/broadhorizon-cmotions/natural-language-processing-for-predictive-purposes-with-r-cb65f009c12b",
             "author": [
                 {
