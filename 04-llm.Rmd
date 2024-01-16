@@ -1,0 +1,124 @@
+# Large Language Models {#sentimentanalysis}
+
+Large Language Models (LLMs) are models designed to understand and generate human-like text at a large scale. These models are typically trained on massive datasets to learn the patterns and nuances of human language. One prominent example of an LLM is OpenAI's GPT-3 (Generative Pre-trained Transformer 3), which is part of the Transformer architecture.
+
+LLMs like GPT-3 are pre-trained on diverse internet text data, allowing them to perform a wide range of natural language processing tasks, including text completion, translation, summarization, question-answering, and more. These models can generate coherent and contextually relevant responses based on the input they receive.
+
+It's important to note that while LLMs showcase impressive language capabilities, they don't possess true understanding or consciousness. They rely on statistical patterns and associations learned during training to generate text responses. This section continues with the hotel data from \@ref(data-prep).
+
+```{r include=FALSE}
+library(tidyverse)
+library(httr2)
+library(jsonlite)
+library(glue)
+```
+
+## Prompt Engineering
+
+:::rmdnote
+An API token is required for OpenAI's ChatGPT API service. I created one at https://platform.openai.com/api-keys and saved it to .Renviron. See `usethis::edit_r_environ()`. 
+:::
+
+It is possible to elicit responses from OpenAI models in a particular format. Large models like GPT-3.5 will adapt their responses to the format you specify. Let's try a few examples. First, set up a function to make the call.
+
+```{r}
+# a little help from 
+# https://www.youtube.com/watch?v=d7l4EZYlZE0
+get_openai_response <- function(message_list) {
+  my_resp <-
+    request("https://api.openai.com/v1/chat/completions") %>%
+    req_headers(Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY"))) %>%
+    req_body_json(list(
+      model = "gpt-3.5-turbo",
+      temperature = 1, # predictable..creative [0..2]
+      messages = message_list
+    )) %>%
+    req_retry(max_tries = 4) %>%
+    req_throttle(rate = 15) %>%
+    req_perform() %>% 
+    resp_body_json() %>%
+    pluck("choices", 1, "message", "content")
+}
+```
+
+A standard prompt with system message like "You are an expert in Major League Baseball." followed by user message "Who won the 2016 World Series?" might return a free-form text response like this:
+
+```{r}
+get_openai_response(
+  message_list = list(
+    list(role = "system", content = "You are an expert in Major League Baseball."),
+    list(role = "user", content = "Who won the 2016 World Series?")
+  )
+) %>% cat()
+```
+
+You can tweak the system prompt to set a formatted response. The following is called a one-shot because it gives a single example for the model to learn from.
+
+```{r}
+get_openai_response(
+  message_list = list(
+    list(role = "system", content = glue(
+    "You are an expert in Major League Baseball.\n\n",
+    "Who won the 2016 World Series?\n",
+    "Winning Team: Chicago Cubs.\n",
+    "Losing Team: Cleveland Indians.")),
+    list(role = "user", content = "Who won the 2016 World Series?")
+  )
+) %>% cat()
+```
+
+That didn't work. How about a two-shot?
+
+```{r}
+get_openai_response(
+  message_list = list(
+    list(role = "system", content = glue(
+    "You are an expert in Major League Baseball.\n\n",
+    "Who won the 2016 World Series?\n",
+    "Winning Team: Chicago Cubs.\n",
+    "Losing Team: Cleveland Indians.\n\n",
+    "Who won the 1997 World Series?\n",
+    "Winning Team: Florida Marlins.\n",
+    "Losing Team: Cleveland Indians.")),
+    list(role = "user", content = "Who won the 2016 World Series?")
+  )
+) %>% cat()
+```
+
+Thought that would do it... There is another way. The model learns best by conversation. Use the assistant role to help it along.
+
+```{r}
+get_openai_response(
+  message_list = list(
+    list(role = "system", content = "You are an expert in Major League Baseball.\n\n"),
+    list(role = "user", content = "Who won the 2016 World Series?"),
+    list(role = "assistant", content = glue("Winning Team: Chicago Cubs.\n",
+                                            "Losing Team: Cleveland Indians.")),
+    list(role = "user", content = "Who won the 1997 World Series?"),
+    list(role = "assistant", content = glue("Winning Team: Florida Marlins.\n",
+                                            "Losing Team: Cleveland Indians.")),
+    list(role = "user", content = "Who won the 2016 World Series?")
+  )
+) %>% cat()
+```
+
+You would operationalize that by putting the system and user-assistant pairs in the function definition. Still one more option is to supply explicit instructions. Below, I combine explicit instructions with two-shot.
+
+```{r}
+get_openai_response(
+  message_list = list(
+    list(role = "system", content = glue("You are an expert in Major League Baseball.\n\n",
+                                         "Answer the question with the winning team ",
+                                         "and losing team. Use the following format:\n",
+                                         "Winning Team: \n",
+                                         "Losing Team: ")),
+    list(role = "user", content = "Who won the 2016 World Series?"),
+    list(role = "assistant", content = glue("Winning Team: Chicago Cubs.\n",
+                                            "Losing Team: Cleveland Indians.")),
+    list(role = "user", content = "Who won the 1997 World Series?"),
+    list(role = "assistant", content = glue("Winning Team: Florida Marlins.\n",
+                                            "Losing Team: Cleveland Indians.")),
+    list(role = "user", content = "Who won the 2016 World Series?")
+  )
+) %>% cat()
+```
